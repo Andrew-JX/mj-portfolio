@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  /* 不花里胡哨：偏灰黑文本 + 白底 */
+  @apply bg-white text-slate-900;
+}

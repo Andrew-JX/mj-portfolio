@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+/* 下面是“简单大气”的底色：尽量克制 */
+:root {
+  color-scheme: light;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  /* 不花里胡哨：偏灰黑文本 + 白底 */
+  @apply bg-white text-slate-900;
+}
