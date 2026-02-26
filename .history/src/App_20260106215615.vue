@@ -14,10 +14,10 @@
         </div>
 
         <nav class="flex items-center gap-5 text-sm">
-          <RouterLink class="text-slate-300 hover:text-white" to="/">关于</RouterLink>
-          <RouterLink class="text-slate-300 hover:text-white" to="/projects">项目</RouterLink>
-          <RouterLink class="text-slate-300 hover:text-white" to="/skills">技能</RouterLink>
-          <RouterLink class="text-slate-300 hover:text-white" to="/resume">简历</RouterLink>
+          <RouterLink class="text-slate-300 hover:text-white" to="/">About</RouterLink>
+          <RouterLink class="text-slate-300 hover:text-white" to="/projects">Projects</RouterLink>
+          <RouterLink class="text-slate-300 hover:text-white" to="/skills">Skills</RouterLink>
+          <RouterLink class="text-slate-300 hover:text-white" to="/resume">Resume</RouterLink>
 
           <a class="text-slate-300 hover:text-white" href="https://github.com/Andrew-JX/" target="_blank"
             rel="noreferrer">
@@ -35,7 +35,7 @@
       <div class="mx-auto max-w-5xl px-6 py-8 text-sm text-slate-400 flex flex-col gap-2">
         <div class="flex items-center gap-2">
           <span class="inline-block h-1.5 w-1.5 rounded-full bg-sky-400"></span>
-          <span>Portfolio · 项目 / 技能 / 简历</span>
+          <span>Portfolio · Projects / Skills / Resume</span>
         </div>
         <div>© {{ new Date().getFullYear() }} Minyu Ji</div>
       </div>

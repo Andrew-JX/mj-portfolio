@@ -5,12 +5,6 @@ import { projects } from '../data/projects'
 
 const route = useRoute()
 const project = computed(() => projects.find(p => p.slug === route.params.slug))
-
-const liveEmbedUrl = computed(() => {
-  const url = project.value?.links.live
-  if (!url) return null
-  return url.startsWith('https://') ? url : null
-})
 </script>
 
 <template>
@@ -45,25 +39,6 @@ const liveEmbedUrl = computed(() => {
         <span class="text-slate-500">Role:</span> {{ project.role }}
       </div>
     </div>
-
-    <section v-if="project.links.live" class="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3">
-      <div class="flex items-center justify-between gap-3 flex-wrap">
-        <div class="font-semibold">Live Demo</div>
-        <a class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
-          :href="project.links.live" target="_blank" rel="noreferrer">
-          Open in new tab
-        </a>
-      </div>
-
-      <div v-if="liveEmbedUrl" class="rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
-        <iframe :src="liveEmbedUrl" class="w-full h-[60vh] md:h-[70vh]" title="Live Demo" loading="lazy"
-          referrerpolicy="no-referrer"></iframe>
-      </div>
-
-      <div v-else class="text-xs text-slate-500 leading-relaxed">
-        该 Demo 为 http 地址；当你的个人站以 https 部署时，浏览器会阻止在页面内 iframe 嵌入（混合内容）。请使用上方按钮在新标签打开。
-      </div>
-    </section>
 
     <section class="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3">
       <div class="font-semibold">Summary</div>

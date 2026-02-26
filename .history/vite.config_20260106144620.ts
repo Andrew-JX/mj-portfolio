@@ -10,12 +10,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-
-  // 允许 CloudStudio / 反向代理域名访问（避免 Vite 返回 403 host not allowed）
-  server: {
-    allowedHosts: true,
-  },
-  preview: {
-    allowedHosts: true,
-  },
 })
