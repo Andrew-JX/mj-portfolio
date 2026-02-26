@@ -34,8 +34,7 @@ export const projects: Project[] = [
       live: 'http://124.221.65.3:8080',
       repo: 'https://github.com/Andrew-JX/SharpTraining.git',
     },
-    note:
-      '提示：该 Demo 当前为 http 服务；如果你的个人站以 https 部署，浏览器会阻止 http 内容的 iframe 内嵌（混合内容），但“新标签打开”访问不受影响。',
+
   },
 
   {
@@ -74,9 +73,8 @@ export const projects: Project[] = [
     ],
     links: {
       repo: 'https://github.com/Andrew-JX/fit5046-studyapp.git',
-      video: '把你云端视频链接粘贴到这里（后面你补）',
+      video: '',
     },
-    note: '不确定你目前是否已录演示视频；如果没有，建议补一个 60~90 秒的功能演示（任务/番茄钟/提醒/进度）。',
   },
 
   {
@@ -110,7 +108,6 @@ export const projects: Project[] = [
       'AI 推理：使用 PyTorch + ResNet-18 完成识别推理；前端通过接口获取结果并展示，形成端到端闭环。',
     ],
     links: {},
-    note: '我不确定你现在是否方便公开演示链接/仓库；若可以，补一段 30~60 秒演示视频会显著提升说服力。',
   },
 
   {

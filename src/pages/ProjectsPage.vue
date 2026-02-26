@@ -58,25 +58,25 @@ const filtered = computed(() => {
         <div class="flex flex-wrap gap-2 mt-4">
           <RouterLink class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
             :to="`/projects/${p.slug}`">
-            Details
+            详情
           </RouterLink>
 
           <a v-if="p.links.live"
             class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
             :href="p.links.live" target="_blank" rel="noreferrer">
-            Live
+            在线演示
           </a>
 
           <a v-if="p.links.repo"
             class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
             :href="p.links.repo" target="_blank" rel="noreferrer">
-            GitHub
+            仓库
           </a>
 
-          <a v-if="p.links.video && !String(p.links.video).includes('把你云端视频')"
+          <a v-if="p.links.video"
             class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
             :href="p.links.video" target="_blank" rel="noreferrer">
-            Video
+            演示视频
           </a>
         </div>
       </article>

@@ -30,28 +30,28 @@ const liveEmbedUrl = computed(() => {
       <div class="flex flex-wrap gap-2 pt-4">
         <a v-if="project.links.live"
           class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
-          :href="project.links.live" target="_blank" rel="noreferrer">Live</a>
+          :href="project.links.live" target="_blank" rel="noreferrer">在线演示</a>
 
         <a v-if="project.links.repo"
           class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
-          :href="project.links.repo" target="_blank" rel="noreferrer">GitHub</a>
+          :href="project.links.repo" target="_blank" rel="noreferrer">仓库</a>
 
-        <a v-if="project.links.video && !String(project.links.video).includes('把你云端视频')"
+        <a v-if="project.links.video"
           class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
-          :href="project.links.video" target="_blank" rel="noreferrer">Video</a>
+          :href="project.links.video" target="_blank" rel="noreferrer">演示视频</a>
       </div>
 
       <div class="pt-2 text-sm text-slate-300">
-        <span class="text-slate-500">Role:</span> {{ project.role }}
+        <span class="text-slate-500">职责：</span> {{ project.role }}
       </div>
     </div>
 
     <section v-if="project.links.live" class="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3">
       <div class="flex items-center justify-between gap-3 flex-wrap">
-        <div class="font-semibold">Live Demo</div>
+        <div class="font-semibold">在线演示</div>
         <a class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
           :href="project.links.live" target="_blank" rel="noreferrer">
-          Open in new tab
+          新标签打开
         </a>
       </div>
 
@@ -60,18 +60,16 @@ const liveEmbedUrl = computed(() => {
           referrerpolicy="no-referrer"></iframe>
       </div>
 
-      <div v-else class="text-xs text-slate-500 leading-relaxed">
-        该 Demo 为 http 地址；当你的个人站以 https 部署时，浏览器会阻止在页面内 iframe 嵌入（混合内容）。请使用上方按钮在新标签打开。
-      </div>
+
     </section>
 
     <section class="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3">
-      <div class="font-semibold">Summary</div>
+      <div class="font-semibold">概述</div>
       <p class="text-sm text-slate-300 leading-relaxed">{{ project.summary }}</p>
     </section>
 
     <section class="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3">
-      <div class="font-semibold">Key Work</div>
+      <div class="font-semibold">关键工作</div>
       <ul class="list-disc pl-5 text-sm text-slate-300 space-y-2">
         <li v-for="b in project.bullets" :key="b">{{ b }}</li>
       </ul>
@@ -82,7 +80,7 @@ const liveEmbedUrl = computed(() => {
     </section>
 
     <div>
-      <RouterLink class="text-sm text-slate-300 hover:text-white" to="/projects">← Back to Projects</RouterLink>
+      <RouterLink class="text-sm text-slate-300 hover:text-white" to="/projects">← 返回项目列表</RouterLink>
     </div>
   </div>
 
