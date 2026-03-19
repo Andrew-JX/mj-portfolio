@@ -1,0 +1,10 @@
+node_modules
+.dist
+dist
+.git
+.history
+*.log
+.vscode
+.idea
+.DS_Store
+Thumbs.db
