@@ -1,0 +1,10 @@
+services:
+  mj-portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mj-portfolio
+    restart: unless-stopped
+    ports:
+      - "${PORT:-80}:80"
+
