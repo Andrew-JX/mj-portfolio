@@ -1,82 +1,127 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
-import { projects } from '../data/projects'
+import { RouterLink, useRoute } from 'vue-router'
+import { projects } from '@/data/projects'
+import type { ProjectLinkKey } from '@/types'
 
 const route = useRoute()
-const project = computed(() => projects.find(p => p.slug === route.params.slug))
+const project = computed(() => projects.find((item) => item.slug === route.params.slug))
 
-const liveEmbedUrl = computed(() => {
-  const url = project.value?.links.live
-  if (!url) return null
-  return url.startsWith('https://') ? url : null
-})
+const linkLabels: Record<ProjectLinkKey, string> = {
+  live: 'Live',
+  repo: 'Repo',
+  doc: 'Doc',
+  video: 'Video',
+}
 </script>
 
 <template>
   <div v-if="project" class="space-y-8">
-    <div class="space-y-2">
-      <div class="text-xs text-slate-500">{{ project.period ?? '—' }}</div>
-      <h1 class="text-2xl font-semibold tracking-tight">{{ project.title }}</h1>
-      <p class="text-slate-300">{{ project.subtitle }}</p>
+    <section class="hero-panel space-y-6">
+      <div class="space-y-3">
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="rounded-full border border-sky-400/20 bg-sky-400/10 px-3 py-1 text-xs font-medium text-sky-100">
+            {{ project.positionTag }}
+          </span>
+          <span class="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">{{ project.period }}</span>
+        </div>
 
-      <div class="flex flex-wrap gap-2 pt-2">
-        <span v-for="t in project.tech" :key="t"
-          class="px-2.5 py-1 rounded-full text-xs bg-slate-900 border border-slate-800 text-slate-200">
-          {{ t }}
+        <h1 class="text-3xl font-semibold tracking-tight text-white sm:text-4xl">{{ project.title }}</h1>
+        <p class="max-w-3xl text-base leading-8 text-slate-300">{{ project.oneLiner }}</p>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <span v-for="tech in project.stack" :key="tech" class="chip">
+          {{ tech }}
         </span>
       </div>
 
-      <div class="flex flex-wrap gap-2 pt-4">
-        <a v-if="project.links.live"
-          class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
-          :href="project.links.live" target="_blank" rel="noreferrer">在线演示</a>
-
-        <a v-if="project.links.repo"
-          class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
-          :href="project.links.repo" target="_blank" rel="noreferrer">仓库</a>
-
-        <a v-if="project.links.video"
-          class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
-          :href="project.links.video" target="_blank" rel="noreferrer">演示视频</a>
-      </div>
-
-      <div class="pt-2 text-sm text-slate-300">
-        <span class="text-slate-500">职责：</span> {{ project.role }}
-      </div>
-    </div>
-
-    <section v-if="project.links.live" class="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3">
-      <div class="flex items-center justify-between gap-3 flex-wrap">
-        <div class="font-semibold">在线演示</div>
-        <a class="px-3 py-2 rounded-xl text-sm border border-slate-800 bg-slate-900 hover:border-slate-700"
-          :href="project.links.live" target="_blank" rel="noreferrer">
-          新标签打开
+      <div class="flex flex-wrap gap-2">
+        <a
+          v-for="(url, key) in project.links"
+          :key="key"
+          class="button-secondary"
+          :href="url"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {{ linkLabels[key as ProjectLinkKey] }}
         </a>
       </div>
-
-      <div v-if="liveEmbedUrl" class="rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
-        <iframe :src="liveEmbedUrl" class="w-full h-[60vh] md:h-[70vh]" title="Live Demo" loading="lazy"
-          referrerpolicy="no-referrer"></iframe>
-      </div>
-
-
     </section>
 
-    <section class="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3">
-      <div class="font-semibold">概述</div>
-      <p class="text-sm text-slate-300 leading-relaxed">{{ project.summary }}</p>
+    <section
+      v-if="project.visibility === 'nda'"
+      class="rounded-3xl border border-amber-400/20 bg-amber-400/8 px-5 py-4 text-sm leading-7 text-amber-100"
+    >
+      NDA 说明：不展示客户名称、业务数据与代码细节，本页仅描述职责边界、技术方案和可公开讨论的工程经验。
     </section>
 
-    <section class="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3">
-      <div class="font-semibold">关键工作</div>
-      <ul class="list-disc pl-5 text-sm text-slate-300 space-y-2">
-        <li v-for="b in project.bullets" :key="b">{{ b }}</li>
+    <section class="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+      <article class="panel-card space-y-4">
+        <div class="section-title">Summary</div>
+        <p class="text-sm leading-7 text-slate-300">{{ project.oneLiner }}</p>
+        <div class="space-y-2 text-sm text-slate-300">
+          <div v-for="(url, key) in project.links" :key="`${key}-summary`" class="flex flex-wrap items-center gap-2">
+            <span class="w-12 text-slate-500">{{ linkLabels[key as ProjectLinkKey] }}</span>
+            <a :href="url" target="_blank" rel="noreferrer">{{ url }}</a>
+          </div>
+        </div>
+      </article>
+
+      <article v-if="project.note" class="panel-card space-y-4">
+        <div class="section-title">Project Note</div>
+        <p class="text-sm leading-7 text-slate-300">{{ project.note }}</p>
+      </article>
+    </section>
+
+    <section class="panel-card space-y-4">
+      <div class="section-title">What I did</div>
+      <ul class="space-y-3 text-sm leading-7 text-slate-300">
+        <li v-for="item in project.contributions" :key="item" class="detail-list-item">
+          {{ item }}
+        </li>
       </ul>
     </section>
 
-    <section v-if="project.note" class="rounded-2xl border border-sky-500/30 bg-sky-500/5 p-6">
-      <div class="text-sm text-slate-200 leading-relaxed">{{ project.note }}</div>
+    <section class="panel-card space-y-4">
+      <div class="section-title">Engineering highlights</div>
+      <ul class="space-y-3 text-sm leading-7 text-slate-300">
+        <li v-for="item in project.highlights" :key="item" class="detail-list-item">
+          {{ item }}
+        </li>
+      </ul>
+    </section>
+
+    <section class="panel-card space-y-4">
+      <div class="section-title">Interview grill</div>
+      <ol class="space-y-3 text-sm leading-7 text-slate-300">
+        <li v-for="(item, index) in project.interviewGrill" :key="item" class="flex gap-3">
+          <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-sky-400/20 bg-sky-400/10 text-xs text-sky-100">
+            Q{{ index + 1 }}
+          </span>
+          <span>{{ item }}</span>
+        </li>
+      </ol>
+    </section>
+
+    <section v-if="project.aiNote" class="panel-card space-y-4">
+      <div class="section-title">AI collaboration</div>
+      <div class="grid gap-4 lg:grid-cols-2">
+        <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="text-sm font-semibold text-sky-200">我负责</div>
+          <p class="mt-3 text-sm leading-7 text-slate-300">
+            产品设想、需求拆解、交互方案、提示词设计、验收标准、代码评审、部署与联调，以及将 AI 生成结果收敛为可上线的实现。
+          </p>
+        </div>
+        <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
+          <div class="text-sm font-semibold text-sky-200">AI 负责</div>
+          <p class="mt-3 text-sm leading-7 text-slate-300">
+            代码脚手架生成、重复性模块实现和部分方案草稿输出；最终结构、边界和交付质量由我做选择、修订和验收。
+          </p>
+        </div>
+      </div>
+      <p class="text-sm leading-7 text-slate-300">{{ project.aiNote }}</p>
     </section>
 
     <div>
