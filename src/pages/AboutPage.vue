@@ -1,77 +1,87 @@
 <template>
   <div class="space-y-10">
-    <section class="space-y-4">
-      <div class="inline-flex items-center gap-2 text-sm text-slate-300">
+    <section class="hero-panel space-y-6">
+      <div class="inline-flex items-center gap-2 rounded-full border border-sky-400/20 bg-sky-400/10 px-3 py-1 text-sm text-sky-100">
         <span class="inline-block h-2 w-2 rounded-full bg-sky-400"></span>
-        <span>求职：大前端工程师（Web / 三维可视化 / 多端）</span>
+        <span>主投方向：平台 / 中后台 / 数据产品 / 可视化 / AI 应用前端</span>
       </div>
 
-      <h1 class="text-3xl font-semibold tracking-tight">
-        大前端方向 · 工程化与三维可视化实践
-      </h1>
+      <div class="space-y-4">
+        <h1 class="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+          大前端工程师
+          <span class="mt-2 block text-2xl text-slate-300 sm:text-3xl">工程化前端 / 全栈 / 3D 可视化</span>
+        </h1>
 
-      <p class="text-slate-300 leading-relaxed max-w-3xl">
-        我专注 Web 大前端开发，方向偏工程化与可视化交付：Vue3 + TypeScript 业务开发、Cesium/EarthSDK 三维交互组件封装，
-        具备基础的联调与部署能力。2024.08-2025.01 在江苏省基础地理信息中心前端实习，参与实景三维数据管理平台开发。
-      </p>
+        <p class="max-w-3xl text-base leading-8 text-slate-300">
+          作品集主线聚焦全栈工程化、性能安全与可部署交付，其次覆盖三维可视化与移动端架构实践。项目以 TypeScript、React/Vue、Node.js、
+          PostgreSQL、Docker、Nginx 为核心，能解释从页面实现到接口、鉴权、缓存、部署的完整链路。
+        </p>
+      </div>
 
-      <div class="flex flex-wrap gap-2 pt-2">
-        <span class="px-2.5 py-1 rounded-full text-xs bg-slate-900 border border-slate-800">Vue3</span>
-        <span class="px-2.5 py-1 rounded-full text-xs bg-slate-900 border border-slate-800">TypeScript</span>
-        <span class="px-2.5 py-1 rounded-full text-xs bg-slate-900 border border-slate-800">Vue Router</span>
-        <span class="px-2.5 py-1 rounded-full text-xs bg-slate-900 border border-slate-800">Pinia</span>
-        <span class="px-2.5 py-1 rounded-full text-xs bg-slate-900 border border-slate-800">Cesium</span>
-        <span class="px-2.5 py-1 rounded-full text-xs bg-slate-900 border border-slate-800">EarthSDK</span>
-        <span class="px-2.5 py-1 rounded-full text-xs bg-slate-900 border border-slate-800">Three.js</span>
-        <span class="px-2.5 py-1 rounded-full text-xs bg-slate-900 border border-slate-800">Docker / Nginx</span>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip">TypeScript</span>
+        <span class="chip">React / Vue</span>
+        <span class="chip">Vite</span>
+        <span class="chip">Node.js / Express</span>
+        <span class="chip">PostgreSQL</span>
+        <span class="chip">Docker / Nginx</span>
+        <span class="chip">Cesium / EarthSDK</span>
+        <span class="chip">Jetpack Compose</span>
       </div>
     </section>
 
-
-
-    <section class="grid md:grid-cols-3 gap-4">
-      <div class="rounded-2xl bg-slate-900/40 border border-slate-800 p-5">
-        <div class="font-semibold">三维可视化交付</div>
-        <p class="text-sm text-slate-300 mt-2">
-          Cesium/EarthSDK 三维场景与空间分析；把测量/体积/角度分析做成组件，降低业务耦合，提升复用与维护效率。
+    <section class="grid gap-4 lg:grid-cols-3">
+      <article class="panel-card space-y-3">
+        <div class="text-sm font-semibold text-sky-200">工程化 + 交付</div>
+        <p class="text-sm leading-7 text-slate-300">
+          以 Vite、TypeScript 和组件化为基础组织前端工程，能把部署、代理、缓存和构建问题一起解决；在 SunSafe 与 Ruilian 中做过
+          Vercel、Render、Docker Compose、Nginx 的真实交付链路。
         </p>
-      </div>
+      </article>
 
-      <div class="rounded-2xl bg-slate-900/40 border border-slate-800 p-5">
-        <div class="font-semibold">工程化与质量意识</div>
-        <p class="text-sm text-slate-300 mt-2">
-          TypeScript 数据模型约束、模块化组织、路由与状态管理；遇到线上/构建问题能定位原因并稳定交付。
+      <article class="panel-card space-y-3">
+        <div class="text-sm font-semibold text-sky-200">全栈链路</div>
+        <p class="text-sm leading-7 text-slate-300">
+          能承担 Node.js / Express、PostgreSQL、JWT、WebSocket、API 设计与前后端联调，重点关注登录态、安全边界、分页索引、
+          缓存 TTL 和多端同步这些会真正影响上线质量的问题。
         </p>
-      </div>
+      </article>
 
-      <div class="rounded-2xl bg-slate-900/40 border border-slate-800 p-5">
-        <div class="font-semibold">多端与部署补强</div>
-        <p class="text-sm text-slate-300 mt-2">
-          Android（Jetpack Compose + MVVM）项目实践；了解 Docker / Nginx 基础部署与前后端联调。
+      <article class="panel-card space-y-3">
+        <div class="text-sm font-semibold text-sky-200">可视化 / 图形</div>
+        <p class="text-sm leading-7 text-slate-300">
+          参与过 Cesium、EarthSDK、SuperMap3D 和 Three.js 相关项目，能够将测量、体积、分析等三维能力组件化，并处理多引擎兼容与联调问题。
         </p>
-      </div>
+      </article>
     </section>
 
-    <section class="rounded-2xl bg-slate-900/40 border border-slate-800 p-6 space-y-3">
-      <div class="font-semibold">基本信息</div>
-      <div class="text-sm text-slate-300 leading-relaxed space-y-2">
-        <div>教育：Monash University · Master of Information Technology（2025.03-2026.09）</div>
-        <div>本科：南京信息工程大学 · 软件工程（GPA 3.1 / Top 10%）</div>
-        <div>语言：CET-6，PTE 58（≈ IELTS 6.5）</div>
-
-        <div class="pt-2 space-y-2">
-          <div>邮箱：<span class="text-slate-200">JX15996596656@163.com</span></div>
-          <div>
-            GitHub：<a class="text-slate-300 hover:text-white" href="https://github.com/Andrew-JX/" target="_blank"
-              rel="noreferrer">Andrew-JX</a>
-          </div>
-          <div>
-            Gitee：<a class="text-slate-300 hover:text-white" href="https://gitee.com/ji-minyu" target="_blank"
-              rel="noreferrer">ji-minyu</a>
-          </div>
-
+    <section class="grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
+      <article class="panel-card space-y-4">
+        <div class="section-title">我做过什么</div>
+        <div class="space-y-3 text-sm leading-7 text-slate-300">
+          <p>2024.08 到 2025.01 在江苏省基础地理信息中心参与政企 WebGIS 实景三维平台开发，负责三维交互组件封装、兼容性排障与接口联调。</p>
+          <p>在课程与个人项目中补齐了更偏国内大前端岗位的能力链路，包括全栈同步系统、防晒健康平台、安全与性能优化、移动端数据架构，以及 AI 协作开发流程。</p>
+          <p>当前主投 React/Vue + TypeScript 方向的工程化前端岗位，希望做平台、中后台、数据产品、可视化或 AI 应用前端，能写 Node 会更好。</p>
         </div>
-      </div>
+      </article>
+
+      <article class="panel-card space-y-4">
+        <div class="section-title">基本信息</div>
+        <div class="space-y-2 text-sm leading-7 text-slate-300">
+          <div>教育：Monash University · Master of Information Technology（2025.03 - 2026.09）</div>
+          <div>本科：南京信息工程大学 · 软件工程（GPA 3.1 / Top 10%）</div>
+          <div>语言：CET-6，PTE 58（约 IELTS 6.5）</div>
+          <div>邮箱：<span class="text-slate-100">JX15996596656@163.com</span></div>
+          <div>
+            GitHub：
+            <a href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer">Andrew-JX</a>
+          </div>
+          <div>
+            Gitee：
+            <a href="https://gitee.com/ji-minyu" target="_blank" rel="noreferrer">ji-minyu</a>
+          </div>
+        </div>
+      </article>
     </section>
   </div>
 </template>

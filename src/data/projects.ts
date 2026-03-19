@@ -2,126 +2,221 @@ import type { Project } from '@/types'
 
 export const projects: Project[] = [
   {
-    slug: 'sharp-training',
-    title: '锐练 SharpTraining（训练 / 饮食 / 身体数据记录）',
-    subtitle: '训练数据化 + 饮食反馈闭环 + 多端同步（可在线体验）',
-    period: '2026.01 - Now',
-    role: '独立开发：产品设计 + 前端实现 + 云端同步 + 部署交付',
-    tech: [
-      'Vite',
+    slug: 'ruilian',
+    title: 'Ruilian 训练与健康数据管理系统',
+    period: '2025.12 - 2026.01',
+    positionTag: 'Full-stack / Engineering',
+    stack: [
       'React',
       'TypeScript',
-      'TDesign React',
-      'TailwindCSS',
-      'dayjs',
+      'Vite',
       'Node.js',
       'Express',
       'PostgreSQL(JSONB)',
-      'WebSocket(ws)',
-      'Docker',
-      'docker compose',
+      'WebSocket',
+      'JWT',
+      'Docker Compose',
       'Nginx',
     ],
-    summary:
-      '面向训练人群的记录工具：把训练（动作/组数/重量/强度）、饮食（热量与三大营养素）与身体数据（体重/体脂/可选经期）统一建模，支持长期趋势回看，让“进步”可追踪。',
-    bullets: [
-      '数据模型：以动作/组数/重量/强度为核心，支持训练记录与回看，便于长期对比与复盘。',
-      '营养闭环：记录热量与三大营养素，重点呈现长期趋势，减少“只看当天”的噪声干扰。',
-      '同步方案：Express 提供空间级别快照读写接口（/api/state/:spaceId），PostgreSQL(JSONB) 存储；WebSocket 推送变更，提升多端一致性体验。',
-      '部署落地：Docker compose 编排；Nginx 托管前端静态资源并同域转发 /api 与 /ws，便于一键部署与后续扩展。',
-    ],
+    oneLiner:
+      '面向训练、饮食与身体数据的多端记录与同步系统，支持 Space 多人共享与权限控制，具备近实时同步能力。',
     links: {
       live: 'http://124.221.65.3:8080',
       repo: 'https://github.com/Andrew-JX/SharpTraining.git',
     },
-
-  },
-
-  {
-    slug: 'real-scene-3d-platform',
-    title: '实景三维数据管理平台（政企项目）',
-    subtitle: 'WebGIS / 三维可视化（脱敏介绍）',
-    period: '2024.08 - 2025.01',
-    role: '前端开发实习生：三维交互组件封装 / 兼容性排障 / 接口联调',
-    tech: ['Vue3', 'TypeScript', 'Cesium', 'EarthSDK', 'Pinia', 'Vue Router'],
-    summary:
-      '面向三维地理数据管理与分析的 Web 平台：支持多源三维数据加载、空间分析与业务可视化展示。',
-    bullets: [
-      '工程架构：基于 Vue3 + Vue Router + Pinia 组织多模块业务页面，推动三维分析能力在页面中可维护地落地。',
-      '组件封装：实现地形测量、体积计算、角度分析等三维交互功能，并沉淀为独立组件（measure / volume / analysis），降低三维逻辑与业务页面耦合。',
-      '兼容排障：在 Cesium / EarthSDK / SuperMap 并存场景下进行版本兼容问题排查与接口差异适配，解决渲染异常与 API 不兼容问题。',
-      '联调交付：对三维数据加载与渲染流程做拆分封装；与 Spring Boot 接口联调，协助定位并修复线上/联调问题。',
+    aiNote:
+      'AI 协作：该项目在腾讯 AI Coding 课程中使用 CodeBuddy 进行结对开发；我负责产品设想、需求拆解、提示词设计、交互与验收标准、代码评审、部署与联调，代码脚手架与主体实现由 CodeBuddy 辅助生成并持续迭代。',
+    contributions: [
+      '定义训练、饮食、身体数据的一体化模型，统一记录、回看和趋势分析链路，避免功能各自为政。',
+      '设计本地持久化 + 云端快照 + WebSocket 广播的同步方案，让多设备状态可以近实时可见。',
+      '实现 Space 权限模型，支持 public 演示模式与登录受控空间，并区分 owner、admin、member、viewer 权限边界。',
+      '使用 PostgreSQL JSONB 存储空间快照，优先保证迭代速度与结构灵活性，同时为后续拆表演进预留空间。',
+      '通过 Docker Compose 拉起前后端与 Postgres，使用 Nginx 同域反代 /api 与 /ws，降低跨域与部署复杂度。',
     ],
+    highlights: [
+      '用 JSONB 快照承接复杂训练数据结构，降低早期 schema 频繁变动成本，适合快速试错与课程项目交付。',
+      'WebSocket 广播配合快照读写实现近实时同步，适合多端数据一致性演示与后续协作场景扩展。',
+      'Nginx 同域代理同时覆盖 HTTP API 和 WebSocket 升级链路，减少前端跨域 cookie、端口暴露和环境差异问题。',
+      'Space + 权限体系让项目从单机记录工具升级为可扩展的平台化原型。',
+    ],
+    interviewGrill: [
+      '为什么用 JSONB 快照而不是训练、饮食、身体数据完全拆表？后续怎么演进到更细粒度模型？',
+      '同步冲突策略为什么先选 LWW？如果要做更强一致性或离线合并，方案会怎么变？',
+      'JWT 如何用于 WebSocket 鉴权？连接建立后 token 过期要怎么处理？',
+      'WebSocket 广播和轮询相比分别解决了什么问题？系统负载上会带来什么成本？',
+      'Nginx 同域转发解决了哪些前端问题？/ws 升级代理需要注意哪些配置点？',
+      'Space 的 public 和登录受控权限边界怎么设计？哪些操作必须后端兜底？',
+      'Docker Compose 在本地和服务器部署里分别承担什么作用？环境变量和数据卷怎么管理？',
+      '如果后续要加审计日志、历史版本和协作回滚，现有数据模型哪里最需要先调整？',
+    ],
+    visibility: 'public',
+  },
+  {
+    slug: 'sunsafe',
+    title: 'SunSafe 防晒健康平台',
+    period: '2026.03 - 2026.04（课程项目）',
+    positionTag: 'Full-stack / Web',
+    stack: [
+      'Vue3',
+      'TypeScript',
+      'Pinia',
+      'Vue Router',
+      'Express',
+      'PostgreSQL',
+      'Cloudinary',
+      'Vercel',
+      'Render',
+      'Open Data',
+    ],
+    oneLiner:
+      '面向防晒意识与皮肤健康记录的公网可访问平台，围绕 Diary、Profile 与 UV 数据联动建立完整使用闭环。',
     links: {
-      live: 'https://blog.csdn.net/weixin_51983847/article/details/142140218?spm=1001.2014.3001.5501',
+      live: 'https://fit5120-tp-12-onboarding-i7v5.vercel.app/',
+      doc: 'TODO',
     },
-    note:
-      '说明：政企项目不公开代码与数据，本页面仅展示脱敏职责与技术要点。上方链接为相关介绍文章/记录。',
-  },
-
-  {
-    slug: 'studysmart-android',
-    title: 'StudySmart 学习助手 App',
-    subtitle: 'Android / Kotlin / Jetpack Compose',
-    role: '独立开发：功能实现 + 架构组织（MVVM）',
-    tech: ['Kotlin', 'Jetpack Compose', 'Room', 'Retrofit', 'WorkManager', 'AlarmManager'],
-    summary: '学习与任务管理 App：任务规划、学习会话与进度追踪，支持提醒与后台任务。',
-    bullets: [
-      '架构组织：采用 MVVM 管理 UI 状态与业务逻辑，提升可维护性与扩展性。',
-      '数据与网络：使用 Room 做本地持久化；Retrofit 负责网络请求与数据获取。',
-      '提醒能力：集成 WorkManager / AlarmManager，实现学习提醒与后台任务调度。',
+    contributions: [
+      '负责 Diary 与 Profile 模块，实现皮肤日记 CRUD、图片上传、个人中心和 UV 数据联动展示。',
+      '将媒体资源托管到 Cloudinary，减少后端静态文件压力，并让图片上传链路适配公网部署场景。',
+      '处理跨域登录态保持，联动前端 withCredentials、后端 CORS、secure cookie 与代理信任配置。',
+      '为项目增加路由懒加载与接口分层，减少首屏下载压力并提升维护可读性。',
     ],
+    highlights: [
+      '安全：落地双层限流、XSS 清洗、参数化查询、CORS 白名单和 secure cookie，覆盖登录与日记写入等高风险入口。',
+      '性能：为 UV 外部数据增加 30 分钟缓存 TTL，将外部 API 调用量压缩约 95%，热点接口响应降到 20ms 以内。',
+      '查询层：对 Diary 列表使用分页、page size 限制与 user_id、entry_date 索引，保证记录量提升后仍可稳定查询。',
+      '部署：前端部署到 Vercel，后端与 Postgres 部署到 Render，形成可对外演示的完整交付链路。',
+    ],
+    interviewGrill: [
+      '跨域 cookie 为什么会丢？sameSite、secure、domain 和 withCredentials 分别起什么作用？',
+      'Render 场景下为什么经常要配置 trust proxy？不配会影响哪些 cookie 或安全判断？',
+      '为什么限流要分成全局限流和登录限流两层？两层分别拦什么流量？',
+      'XSS 清洗应该做在输入侧、输出侧还是两边都做？富文本和纯文本策略有什么差异？',
+      '缓存 TTL 为什么选择 30 分钟？如果遇到缓存击穿、雪崩或陈旧数据怎么处理？',
+      '为什么分页查询要限制 page size？无限 page size 会带来哪些数据库和接口风险？',
+      '索引为什么建在 user_id 和 entry_date？联合索引和单列索引应该怎么选？',
+      '前端路由懒加载为什么能改善首屏？哪些页面值得切，哪些页面不值得切？',
+    ],
+    visibility: 'course',
+  },
+  {
+    slug: 'real-scene-3d',
+    title: '政企 WebGIS 实景三维数据管理平台（政企项目，信息脱敏）',
+    period: '2024.08 - 2025.01（实习）',
+    positionTag: '3D / Visualization',
+    stack: ['Vue3', 'TypeScript', 'Cesium', 'EarthSDK', 'SuperMap3D', 'Pinia', 'Spring Boot'],
+    oneLiner:
+      '围绕三维交互与空间分析能力做组件化封装，完成多引擎兼容排障与接口联调，支撑政企场景落地。',
+    links: {
+      doc: 'https://blog.csdn.net/weixin_51983847/article/details/142140218?spm=1001.2014.3001.5501',
+    },
+    contributions: [
+      '实现地形测量、体积计算、角度分析等三维交互能力，并接入实际业务页面。',
+      '抽离 measure、volume、analysis 组件，降低三维能力与业务页面耦合，重复实现量减少约 40%。',
+      '排查 Cesium、EarthSDK、SuperMap3D 并存场景下的渲染异常、版本差异与 API 不兼容问题，完成适配方案。',
+      '参与 Spring Boot 接口联调与问题定位，梳理三维数据加载和渲染链路的异常排查思路。',
+    ],
+    highlights: [
+      '三维工具组件化后，业务页面只消费统一能力入口，便于复用、排障和后续扩展。',
+      '建立多引擎兼容排障流程，从最小复现、版本对比到适配层抽象，减少对单一 SDK 行为的硬编码依赖。',
+      '在不暴露客户数据与代码的前提下，仍能完整说明职责边界、技术方案和交付结果。',
+    ],
+    interviewGrill: [
+      '三维交互工具怎么做成可复用组件？状态、事件流和浮层 UI 如何解耦？',
+      'SDK 升级后渲染异常怎么定位？怎么做最小复现和版本差异比对？',
+      '多引擎 API 差异为什么要做适配层？哪些能力应该放适配层，哪些留在业务层？',
+      '三维分析能力接入真实业务页面时，性能和交互体验通常会遇到哪些问题？',
+      '为什么组件化能减少约 40% 重复实现？这个收益是怎么体现到开发流程里的？',
+    ],
+    note: '不展示客户名称、业务数据和代码细节，仅描述本人职责范围内的技术方案与交付方式。',
+    visibility: 'nda',
+  },
+  {
+    slug: 'agri-identification',
+    title: '农产品自动识别系统',
+    period: '2024.01 - 2024.05',
+    positionTag: 'AI App / Full-stack',
+    stack: ['Vue', 'Spring Boot', 'PyTorch', 'ResNet-18', 'RESTful API', 'WeChat Mini Program'],
+    oneLiner:
+      '围绕“上传即识别 + 溯源查询”建立识别闭环，将图像推理能力真正接入 Web 与小程序业务流程。',
+    links: {
+      repo: 'https://github.com/Andrew-JX/Design-and-implementation-of-an-automatic-agricultural-product-identification-system-.git',
+    },
+    contributions: [
+      '采用前后端分离方案，使用 Vue 完成图片上传、识别结果展示与用户操作流程。',
+      '使用 Spring Boot 提供识别、查询和用户相关 API，串起前端展示与后端推理链路。',
+      '接入 PyTorch + ResNet-18 图像分类模型，让推理结果进入业务页面而不是停留在离线实验阶段。',
+      '补充 Web 与微信小程序双端入口，验证接口复用与多终端访问能力。',
+    ],
+    highlights: [
+      '强调 AI 能力的工程闭环，而不是只展示模型指标，形成上传、推理、回传、展示的完整链路。',
+      'RESTful API 作为中间层隔离模型实现细节，让前端和推理服务可以独立演进。',
+      '适合作为“从业务需求到 AI 接入”的项目叙事，能覆盖接口设计、文件上传与结果展示问题。',
+    ],
+    interviewGrill: [
+      '推理服务为什么要封成接口？同步和异步调用各适合什么场景？',
+      '文件上传链路如何做大小限制、MIME 校验、存储隔离和路径安全控制？',
+      '如果模型要更新版本，怎么保证结果可回溯并支持灰度切换？',
+      'Web 与小程序共用接口时，鉴权、限流和资源访问策略有什么差异？',
+    ],
+    visibility: 'public',
+  },
+  {
+    slug: 'studysmart',
+    title: 'StudySmart 学习助手 App',
+    period: '2025.08 - 2025.10',
+    positionTag: 'Mobile / Architecture',
+    stack: ['Kotlin', 'Jetpack Compose', 'MVVM', 'Room', 'Hilt', 'Retrofit', 'WorkManager', 'AlarmManager'],
+    oneLiner:
+      '围绕任务、科目与学习会话建立移动端数据闭环，覆盖本地存储、依赖注入、后台任务与提醒调度。',
     links: {
       repo: 'https://github.com/Andrew-JX/fit5046-studyapp.git',
-      video: '',
+      video: 'STUDYSMART_VIDEO_URL',
     },
-  },
-
-  {
-    slug: 'fit5032-fitness-center',
-    title: 'Fitness Center（FIT5032 课程项目）',
-    subtitle: 'Vue / Firebase Hosting',
-    role: '课程项目交付：页面实现 + 线上部署',
-    tech: ['Vue', 'Firebase Hosting'],
-    summary: '课程项目：完成可在线访问的 Web 应用，验证从开发到上线的完整交付流程。',
-    bullets: [
-      '页面实现：按课程需求完成核心页面与基础交互流程（表单/路由/数据展示等）。',
-      '部署上线：通过 Firebase Hosting 发布静态站点，提供可访问链接用于演示与验收。',
+    contributions: [
+      '按 MVVM 组织 Task、Subject、Session 数据流，梳理 ViewModel、Repository 和 UI 状态边界。',
+      '使用 Room 建立本地持久化模型，并通过 Repository 与 Mapper 隔离数据源与 UI 表达。',
+      '引入 Hilt 进行依赖注入，减少页面和数据层耦合，方便模块测试与替换。',
+      '集成 Retrofit、WorkManager 和 AlarmManager，覆盖网络访问、后台任务和提醒调度能力。',
     ],
+    highlights: [
+      '项目重点在于从表单输入到 ViewModel、Repository、Room 和列表刷新的完整数据闭环。',
+      '通过 Hilt 和 MVVM 控制模块边界，让移动端结构更接近可维护的工程项目。',
+      'WorkManager 与 AlarmManager 组合使用，既覆盖延迟后台任务，也覆盖用户可感知的提醒触达。',
+    ],
+    interviewGrill: [
+      'Room 表设计和 schema migration 应该怎么做？哪些字段变化会最容易踩坑？',
+      'Repository 层为什么值得保留？直接在 ViewModel 里调 DAO 有什么问题？',
+      'WorkManager 和 AlarmManager 各自解决什么问题？为什么两个组件同时存在？',
+      'Compose 状态管理如何减少不必要重组？UI state 和 domain state 怎么分层？',
+      'Hilt 在移动端项目里主要解决什么问题？如果不用 DI，代码会怎么退化？',
+    ],
+    visibility: 'course',
+  },
+  {
+    slug: 'fit5032-fitness',
+    title: 'FIT5032 Fitness Center',
+    period: '2025（课程项目）',
+    positionTag: 'Web',
+    stack: ['Vue', 'Firebase Hosting'],
+    oneLiner: '课程 Web 项目，重点验证基础页面实现、部署上线与可访问交付。',
     links: {
       live: 'https://fit5032-fitness.web.app/',
       repo: 'https://github.com/Andrew-JX/fit5032-FitnessCenter.git',
     },
-  },
-
-  {
-    slug: 'agri-recognition',
-    title: '农产品自动识别系统（毕业设计）',
-    subtitle: '前后端分离 + AI 推理',
-    period: '2024.01 - 2024.04',
-    role: '全栈实现：前端页面 + 后端 API + 模型推理联调',
-    tech: ['Vue', 'Spring Boot', 'PyTorch', 'ResNet-18', 'RESTful API'],
-    summary: '用户上传图片即可识别农产品类别，并支持溯源查询；Web 与微信小程序可访问。',
-    bullets: [
-      '前端：使用 Vue 实现图片上传、识别结果展示与业务流程页面。',
-      '后端：基于 Spring Boot 提供 RESTful API，完成用户管理与数据交互。',
-      'AI 推理：使用 PyTorch + ResNet-18 完成识别推理；前端通过接口获取结果并展示，形成端到端闭环。',
+    contributions: [
+      '完成课程要求的核心页面与基础交互流程，保证页面可访问与演示可用。',
+      '将项目部署到 Firebase Hosting，形成从开发到线上交付的最小闭环。',
+      '整理公开链接作为作品集补充，方便快速展示基础 Web 开发与部署能力。',
     ],
-    links: {},
-  },
-
-  {
-    slug: 'reservoir-3d-prototype',
-    title: '水库三维可视化原型系统（Academic Prototype）',
-    subtitle: 'Three.js / WebGL',
-    role: '三维渲染与交互原型探索',
-    tech: ['Three.js', 'WebGL', 'Ruoyi（集成）'],
-    summary: '浏览器端三维场景渲染与基础交互原型，用于验证三维渲染流程与工程集成思路。',
-    bullets: [
-      '渲染与交互：基于 Three.js + WebGL 实现基础场景渲染与交互控制。',
-      '流程实践：调研并实践场景构建、相机控制、模型加载与渲染流程。',
-      '工程集成：与若依（Ruoyi）后台框架做基础页面集成与数据管理（教学/原型性质）。',
+    highlights: [
+      '具备 live 链接，可用于快速演示基础 Web 项目交付效果。',
+      '适合作为课程项目补充，不与工程化全栈项目争夺主叙事位置。',
     ],
-    links: {},
+    interviewGrill: [
+      'Firebase Hosting 的发布流程是什么？静态站点和前端路由分别怎么处理？',
+      '课程项目为什么也值得保留在作品集里？它主要证明哪一类基础能力？',
+      '如果这个项目要继续演进成真实产品，下一步最先补什么？',
+    ],
+    visibility: 'course',
   },
 ]
