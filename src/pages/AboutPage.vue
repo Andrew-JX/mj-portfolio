@@ -117,8 +117,8 @@ onUnmounted(() => clearTimeout(typingTimer))
         <div class="section-title">我做过什么</div>
         <div class="space-y-3 text-sm leading-7 text-slate-300">
           <p>2024.08 到 2025.01 在江苏省基础地理信息中心参与政企 WebGIS 实景三维平台开发，负责三维交互组件封装、兼容性排障与接口联调。</p>
-          <p>在课程与个人项目中补齐了更偏国内大前端岗位的能力链路，包括全栈同步系统（Ruilian）、防晒健康平台（SunSafe）、安全与性能优化、移动端数据架构，以及 AI 协作开发流程。</p>
-          <p>当前主投 React/Vue + TypeScript 方向的工程化前端岗位，希望做平台、中后台、数据产品、可视化或 AI 应用前端，能写 Node 会更好。</p>
+          <p>在课程与个人项目中系统推进了全栈工程化实践，涵盖多端同步系统（Ruilian）、防晒健康平台（SunSafe）、安全与性能优化、移动端数据架构，以及 AI 协作开发流程。</p>
+          <p>专注 React/Vue + TypeScript 工程化前端方向，目标领域涵盖平台、中后台、数据产品、可视化与 AI 应用，具备 Node.js 全栈延伸能力。</p>
         </div>
       </article>
 

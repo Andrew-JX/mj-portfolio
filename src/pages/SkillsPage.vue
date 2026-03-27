@@ -23,7 +23,7 @@ const groups: SkillGroup[] = [
     points: [
       '基于 Vite 做开发与构建，关注代码组织、构建速度和部署路径的稳定性。',
       '性能优化路径可以落到路由懒加载、接口缓存、静态资源拆分与代理配置。',
-      '当前仓库未配置 CI/CD 流程，后续可补 GitHub Actions；现阶段以构建通过和部署可访问作为交付基线。',
+      '从本地构建到线上交付完整跑通，覆盖 Vercel、Render、Docker Compose + Nginx 等不同部署场景，关注构建稳定性与部署路径可重复性。',
     ],
     evidence: [
       { label: 'SunSafe', to: '/projects/sunsafe' },
