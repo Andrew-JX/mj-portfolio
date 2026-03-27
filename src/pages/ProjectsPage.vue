@@ -42,11 +42,8 @@ const linkLabels: Record<ProjectLinkKey, string> = {
 
 <template>
   <div class="space-y-8">
-    <section class="space-y-3">
+    <section>
       <h1 class="text-3xl font-semibold tracking-tight text-white">Projects</h1>
-      <p class="max-w-3xl text-sm leading-7 text-slate-400">
-        按国内大前端求职叙事排序：全栈工程化与可部署交付优先，其次是性能安全、三维可视化和移动端架构。列表页负责速览和筛选，详情页用于准备面试追问。
-      </p>
     </section>
 
     <section class="panel-card space-y-5">

@@ -11,6 +11,7 @@ body {
 
 body {
   @apply bg-slate-950 text-slate-100 antialiased;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 a {
@@ -25,24 +26,42 @@ a {
   @apply min-h-screen;
 }
 
+/* ===== Component Classes ===== */
+
 .panel-card {
-  @apply rounded-3xl border border-slate-800/90 bg-slate-900/55 p-6 shadow-[0_10px_50px_rgba(2,6,23,0.35)] backdrop-blur-sm transition-all duration-300;
+  @apply rounded-3xl border border-slate-800/90 bg-slate-900/55 p-6 backdrop-blur-sm;
+  box-shadow: 0 10px 50px rgba(2, 6, 23, 0.35);
+  transition: transform 0.32s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.32s cubic-bezier(0.23, 1, 0.32, 1),
+              border-color 0.32s ease,
+              background 0.5s ease;
+  will-change: transform;
 }
 
 .panel-card:hover {
-  box-shadow: 0 14px 60px rgba(2,6,23,0.48), 0 0 0 1px rgba(14,165,233,0.07), 0 0 35px rgba(14,165,233,0.04);
+  box-shadow: 0 20px 70px rgba(2, 6, 23, 0.52), 0 0 0 1px rgba(14, 165, 233, 0.09), 0 0 40px rgba(14, 165, 233, 0.05);
+  transform: translateY(-4px) perspective(900px) rotateX(1.2deg);
+  border-color: rgba(14, 165, 233, 0.12);
 }
 
 .hero-panel {
-  @apply rounded-[28px] border border-slate-800/90 bg-slate-900/60 p-6 shadow-[0_14px_60px_rgba(2,6,23,0.38)] backdrop-blur-sm sm:p-8;
+  @apply rounded-[28px] border border-slate-800/90 bg-slate-900/60 p-6 backdrop-blur-sm sm:p-8;
+  box-shadow: 0 14px 60px rgba(2, 6, 23, 0.38);
+  transition: background 0.5s ease, border-color 0.5s ease;
 }
 
 .chip {
   @apply rounded-full border border-slate-700/80 bg-slate-950/80 px-3 py-1 text-xs font-medium text-slate-200;
+  transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
 }
 
 .chip-button {
-  @apply rounded-full border border-slate-800 bg-slate-950/70 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-slate-700 hover:text-white;
+  @apply rounded-full border border-slate-800 bg-slate-950/70 px-3 py-1.5 text-xs font-medium text-slate-300;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.chip-button:hover {
+  @apply border-slate-700 text-white;
 }
 
 .chip-button-active {
@@ -50,15 +69,26 @@ a {
 }
 
 .button-primary {
-  @apply inline-flex items-center justify-center rounded-2xl border border-sky-400/20 bg-sky-400/12 px-4 py-2.5 text-sm font-medium text-sky-100 transition hover:border-sky-300/30 hover:bg-sky-400/18 hover:text-white;
+  @apply inline-flex items-center justify-center rounded-2xl border border-sky-400/20 bg-sky-400/12 px-4 py-2.5 text-sm font-medium text-sky-100;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.button-primary:hover {
+  @apply border-sky-300/30 bg-sky-400/18 text-white;
 }
 
 .button-secondary {
-  @apply inline-flex items-center justify-center rounded-2xl border border-slate-800 bg-slate-950/80 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:border-slate-700 hover:text-white;
+  @apply inline-flex items-center justify-center rounded-2xl border border-slate-800 bg-slate-950/80 px-4 py-2.5 text-sm font-medium text-slate-200;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.button-secondary:hover {
+  @apply border-slate-700 text-white;
 }
 
 .section-title {
   @apply text-sm font-semibold uppercase tracking-[0.2em] text-slate-400;
+  transition: color 0.3s ease;
 }
 
 .detail-list-item {
@@ -68,16 +98,34 @@ a {
 .detail-list-item::before {
   content: "";
   @apply mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400;
+  transition: background-color 0.3s ease;
 }
 
 .nav-link {
-  @apply rounded-full border border-transparent px-3 py-1.5 text-slate-300 transition hover:border-slate-700 hover:bg-slate-900/70 hover:text-white;
+  @apply rounded-full border border-transparent px-3 py-1.5 text-slate-300;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.nav-link:hover {
+  @apply border-slate-700 bg-slate-900/70 text-white;
+}
+
+/* ===== Grain overlay ===== */
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
 }
 
 /* ===== Animations ===== */
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -88,24 +136,30 @@ a {
 
 @keyframes orb-drift-1 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(45px, -30px) scale(1.07); }
-  66%      { transform: translate(-22px, 18px) scale(0.95); }
+  33%      { transform: translate(48px, -32px) scale(1.08); }
+  66%      { transform: translate(-24px, 20px) scale(0.94); }
 }
 
 @keyframes orb-drift-2 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(-50px, 28px) scale(1.1); }
+  50%      { transform: translate(-52px, 30px) scale(1.11); }
 }
 
 @keyframes orb-drift-3 {
   0%, 100% { transform: translate(0, 0); }
-  45%      { transform: translate(22px, -32px); }
-  80%      { transform: translate(-12px, 14px); }
+  45%      { transform: translate(24px, -34px); }
+  80%      { transform: translate(-14px, 16px); }
+}
+
+@keyframes orb-drift-4 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%      { transform: translate(-30px, 40px) scale(1.06); }
+  75%      { transform: translate(20px, -20px) scale(0.93); }
 }
 
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(14,165,233,0.2); }
-  50%       { box-shadow: 0 0 20px rgba(14,165,233,0.45), 0 0 40px rgba(14,165,233,0.15); }
+  0%, 100% { box-shadow: 0 0 8px rgba(14, 165, 233, 0.2); }
+  50%       { box-shadow: 0 0 22px rgba(14, 165, 233, 0.48), 0 0 44px rgba(14, 165, 233, 0.16); }
 }
 
 @keyframes shimmer-slide {
@@ -122,6 +176,7 @@ a {
 .animate-orb-1 { animation: orb-drift-1 14s ease-in-out infinite; }
 .animate-orb-2 { animation: orb-drift-2 19s ease-in-out infinite; }
 .animate-orb-3 { animation: orb-drift-3 11s ease-in-out infinite; }
+.animate-orb-4 { animation: orb-drift-4 23s ease-in-out infinite; }
 
 .animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
 
@@ -140,9 +195,10 @@ a {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  transition: background 0.5s ease;
 }
 
-/* Shimmer text (for section accents) */
+/* Shimmer text */
 .text-shimmer {
   background: linear-gradient(120deg, #94a3b8, #e2e8f0, #38bdf8, #94a3b8);
   background-size: 300% auto;
@@ -152,9 +208,195 @@ a {
   animation: shimmer-slide 4s linear infinite;
 }
 
-/* Glowing dot indicator */
+/* Glowing dot */
 .dot-live {
   @apply inline-block h-2 w-2 rounded-full bg-sky-400;
   box-shadow: 0 0 6px rgba(56, 189, 248, 0.8), 0 0 12px rgba(56, 189, 248, 0.4);
   animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* ===================================================
+   LIGHT MODE OVERRIDES
+   data-theme="light" is set on <html>
+   These rules have higher specificity than Tailwind
+   utilities (attribute + class > class alone).
+   =================================================== */
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="light"] body {
+  background-color: #f0f9ff;
+  color: #0f172a;
+}
+
+[data-theme="light"] .grain-overlay {
+  opacity: 0.016;
+}
+
+/* Nav */
+[data-theme="light"] .nav-link {
+  color: #334155;
+}
+
+[data-theme="light"] .nav-link:hover {
+  border-color: rgba(148, 163, 184, 0.45);
+  background: rgba(241, 245, 249, 0.75);
+  color: #0f172a;
+}
+
+/* Cards */
+[data-theme="light"] .panel-card {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(186, 230, 253, 0.7);
+  box-shadow: 0 10px 50px rgba(148, 163, 184, 0.18);
+}
+
+[data-theme="light"] .panel-card:hover {
+  box-shadow: 0 20px 70px rgba(148, 163, 184, 0.28), 0 0 0 1px rgba(14, 165, 233, 0.2);
+  border-color: rgba(14, 165, 233, 0.25);
+}
+
+[data-theme="light"] .hero-panel {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(186, 230, 253, 0.75);
+  box-shadow: 0 14px 60px rgba(148, 163, 184, 0.2);
+}
+
+/* Section title */
+[data-theme="light"] .section-title {
+  color: #64748b;
+}
+
+/* Chips & buttons */
+[data-theme="light"] .chip {
+  background: rgba(240, 249, 255, 0.9);
+  border-color: rgba(148, 163, 184, 0.55);
+  color: #1e293b;
+}
+
+[data-theme="light"] .chip-button {
+  background: rgba(248, 250, 252, 0.9);
+  border-color: rgba(148, 163, 184, 0.45);
+  color: #334155;
+}
+
+[data-theme="light"] .chip-button:hover {
+  background: rgba(241, 245, 249, 0.95);
+  border-color: rgba(100, 116, 139, 0.55);
+  color: #0f172a;
+}
+
+[data-theme="light"] .chip-button-active {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.35);
+  color: #0369a1;
+}
+
+[data-theme="light"] .button-primary {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0369a1;
+}
+
+[data-theme="light"] .button-primary:hover {
+  background: rgba(14, 165, 233, 0.16);
+  border-color: rgba(14, 165, 233, 0.45);
+  color: #0284c7;
+}
+
+[data-theme="light"] .button-secondary {
+  background: rgba(248, 250, 252, 0.95);
+  border-color: rgba(148, 163, 184, 0.45);
+  color: #334155;
+}
+
+[data-theme="light"] .button-secondary:hover {
+  border-color: rgba(100, 116, 139, 0.55);
+  color: #0f172a;
+}
+
+/* List bullet */
+[data-theme="light"] .detail-list-item::before {
+  background-color: #0284c7;
+}
+
+/* Live dot */
+[data-theme="light"] .dot-live {
+  background-color: #0ea5e9;
+}
+
+/* Gradient text — shift to deeper blues in light */
+[data-theme="light"] .text-gradient-sky {
+  background: linear-gradient(120deg, #0284c7 0%, #0ea5e9 48%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Tailwind colour class overrides for light mode */
+[data-theme="light"] .text-white   { color: #0f172a; }
+[data-theme="light"] .text-slate-100 { color: #1e293b; }
+[data-theme="light"] .text-slate-200 { color: #1e293b; }
+[data-theme="light"] .text-slate-300 { color: #334155; }
+[data-theme="light"] .text-slate-400 { color: #475569; }
+[data-theme="light"] .text-slate-500 { color: #64748b; }
+[data-theme="light"] .text-sky-100  { color: #0369a1; }
+[data-theme="light"] .text-sky-200  { color: #0369a1; }
+[data-theme="light"] .text-sky-400  { color: #0284c7; }
+[data-theme="light"] .text-amber-100 { color: #92400e; }
+
+/* Background overrides */
+[data-theme="light"] .bg-slate-950\/70 {
+  background-color: rgba(241, 245, 249, 0.85);
+}
+[data-theme="light"] .bg-slate-950\/80 {
+  background-color: rgba(248, 250, 252, 0.92);
+}
+[data-theme="light"] .bg-sky-400\/10 {
+  background-color: rgba(14, 165, 233, 0.08);
+}
+[data-theme="light"] .bg-amber-400\/8 {
+  background-color: rgba(251, 191, 36, 0.1);
+}
+
+/* Border overrides */
+[data-theme="light"] .border-slate-800 {
+  border-color: rgba(148, 163, 184, 0.4);
+}
+[data-theme="light"] .border-slate-800\/90 {
+  border-color: rgba(148, 163, 184, 0.4);
+}
+[data-theme="light"] .border-slate-800\/60 {
+  border-color: rgba(148, 163, 184, 0.3);
+}
+[data-theme="light"] .border-slate-700\/80 {
+  border-color: rgba(148, 163, 184, 0.5);
+}
+[data-theme="light"] .border-sky-400\/20 {
+  border-color: rgba(14, 165, 233, 0.28);
+}
+[data-theme="light"] .border-sky-400\/25 {
+  border-color: rgba(14, 165, 233, 0.35);
+}
+[data-theme="light"] .border-amber-400\/20 {
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+/* Search input */
+[data-theme="light"] input:not([type="checkbox"]) {
+  background-color: rgba(248, 250, 252, 0.95) !important;
+  border-color: rgba(148, 163, 184, 0.45) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] input:not([type="checkbox"])::placeholder {
+  color: #94a3b8;
+}
+
+/* Status badge */
+[data-theme="light"] .border-sky-400\/25.bg-sky-400\/10 {
+  background-color: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.3);
 }

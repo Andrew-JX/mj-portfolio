@@ -23,7 +23,6 @@ const quickReads = [
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div>
         <h1 class="text-3xl font-semibold tracking-tight text-white">Resume</h1>
-        <p class="mt-2 text-sm leading-7 text-slate-400">默认简历文件为 <code>public/resume.pdf</code>，页面保留在线预览与下载入口，方便投递前快速回看。</p>
       </div>
 
       <a class="button-primary" href="/resume.pdf" download>Download PDF</a>

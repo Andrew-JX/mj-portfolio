@@ -77,11 +77,8 @@ const groups: SkillGroup[] = [
 
 <template>
   <div class="space-y-8">
-    <section class="space-y-3">
-      <h1 class="text-3xl font-semibold tracking-tight text-white">Skills</h1>
-      <p class="max-w-3xl text-sm leading-7 text-slate-400">
-        技能页不写“会什么名词”，只写“我能扛什么问题”。每组都附上证据链接，尽量落在做过、能解释、能被追问的层面。
-      </p>
+    <section>
+      <h1 class=”text-3xl font-semibold tracking-tight text-white”>Skills</h1>
     </section>
 
     <section class="grid gap-4 lg:grid-cols-2">
