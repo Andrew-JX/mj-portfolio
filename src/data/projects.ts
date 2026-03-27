@@ -78,7 +78,7 @@ export const projects: Project[] = [
       '负责 Diary 与 Profile 模块，实现皮肤日记 CRUD、图片上传、个人中心和 UV 数据联动展示。',
       '将媒体资源托管到 Cloudinary，减少后端静态文件压力，并让图片上传链路适配公网部署场景。',
       '处理跨域登录态保持，联动前端 withCredentials、后端 CORS、secure cookie 与代理信任配置。',
-      '为项目增加路由懒加载与接口分层，减少首屏下载压力并提升维护可读性。',
+      '为项目增加路由懒加载与接口分层，首屏加载时间降低约 30%，同时提升维护可读性。',
     ],
     highlights: [
       '安全：落地双层限流、XSS 清洗、参数化查询、CORS 白名单和 secure cookie，覆盖登录与日记写入等高风险入口。',

@@ -67,8 +67,8 @@ const groups: SkillGroup[] = [
     title: 'AI 协作开发',
     points: [
       '把 AI 工具当成研发协作放大器，而不是替代判断的黑盒，重点用在需求拆解、提示词、评审和验收。',
-      '在腾讯 AI Coding 课程中用 CodeBuddy 结对完成 Ruilian，负责产品设想、评审、部署联调与交付质量收口。',
-      '也会使用 Cursor、Copilot 等工具辅助阅读代码、生成初稿和验证方案，但最终以工程可维护性为准。',
+      '日常使用 Cursor · Claude Code · GitHub Copilot，具备完整 AI 辅助开发工作流（需求拆解 → 编码 → 自检 → Code Review），能编写高效提示词提升开发效率。',
+      '在腾讯 AI Coding 课程中用 CodeBuddy 结对完成 Ruilian，负责产品设想、评审、部署联调与交付质量收口；最终结构、边界和交付质量由我做选择、修订和验收。',
     ],
     evidence: [{ label: 'Ruilian', to: '/projects/ruilian' }],
   },
