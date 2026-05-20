@@ -2,6 +2,90 @@ import type { Project } from '@/types'
 
 export const projects: Project[] = [
   {
+    slug: 'fitmind-ai',
+    title: 'FitMind AI 训练分析系统',
+    period: '2026.04 - 2026.05',
+    positionTag: 'AI Product / Full-stack',
+    stack: [
+      'React',
+      'TypeScript',
+      'Vite',
+      'Node.js',
+      'Express',
+      'PostgreSQL',
+      'SSE',
+      'Tool Calling',
+      'Zod',
+      'JWT',
+    ],
+    oneLiner:
+      '把训练日志、确定性计算工具、Tool Calling 与流式 Assistant UI 串成一条可解释、可验证、可扩展的 AI 产品链路。',
+    links: {
+      repo: 'https://github.com/Andrew-JX/FitMind_ai.git',
+    },
+    aiNote:
+      'AI 协作：该项目把 AI 同时用作产品能力对象与研发协作工具。我主导项目定位、分层设计、工具边界、提示约束、状态流、文档体系与验收标准，代码实现阶段结合 Claude Code / Codex 做草稿生成、局部实现和自测辅助，最终由我负责架构决策、质量审查与可讲述性收口。',
+    contributions: [
+      '设计“训练日志 -> 确定性计算层 -> Tool Executor -> Provider Adapter -> SSE Stream -> Assistant UI”主链路，避免把项目做成只会闲聊的套壳聊天框。',
+      '将 fatigue、volume distribution、progress、recommendation context 等训练分析逻辑从模型中剥离为确定性工具，保证结论有真实数据依据。',
+      '组织 React 前端工作台，打通训练记录、分析面板与 Assistant 三块界面，让用户能从原始数据一路看到结构化分析与最终解释。',
+      '为流式对话实现前后端事件契约与前端状态机，覆盖 thinking、tool calling、answering、done 等关键状态。',
+      '梳理训练数据建模，包括 workouts、sets、exercises、exercise_muscles 与 contribution weight，为后续分析与扩展能力留出生长空间。',
+    ],
+    highlights: [
+      '反幻觉策略：模型不直接“猜”训练结论，而是通过 Tool Calling 消费确定性计算结果，最后只负责解释，提升回答可追溯性。',
+      '架构解耦：Provider、Tool Loop、Analytics、SSE Translation 与前端消费层分离，后续更换模型或扩展工具时不需要推翻整条链路。',
+      '数据建模把 exercise 与 muscle group 做成带 contribution weight 的多对多关系，支撑更合理的训练负荷与疲劳分析。',
+      '前端不是只展示聊天结果，而是把训练记录、结构化分析和 AI 回答做成同一工作流里的不同层，体现产品化而非 Demo 化思路。',
+    ],
+    visibility: 'public',
+  },
+  {
+    slug: 'easemove',
+    title: 'EaseMove Melbourne / MoveComfortly',
+    period: '2026.03 - 2026.05（团队项目）',
+    positionTag: 'Data Product / Full-stack',
+    stack: [
+      'React',
+      'TypeScript',
+      'Vite',
+      'Tailwind CSS',
+      'Node.js',
+      'Express',
+      'PostgreSQL',
+      'Neon',
+      'Leaflet',
+      'Mapbox GL',
+      'Open Data',
+    ],
+    oneLiner:
+      '面向墨尔本内城区步行与骑行场景的主动出行决策产品，结合开放数据、舒适度评分、地图比较与 3D 路线预览，帮助用户在高温天气下做更稳妥的移动选择。',
+    links: {
+      live: 'https://fit-5120-ease-move.vercel.app',
+      repo: 'https://github.com/Andrew-JX/FIT5120-EaseMove.git',
+    },
+    extraLinks: [
+      { label: 'Iteration 3', url: 'https://fit-5120-ease-move-iteration3.vercel.app' },
+      { label: 'Iteration 2', url: 'https://fit-5120-ease-move-iteration2.vercel.app' },
+      { label: 'Iteration 1', url: 'https://fit-5120-ease-move-iteration1.vercel.app' },
+    ],
+    contributions: [
+      '在团队项目中推进“数据产品而非导航工具”的产品边界，把首页叙事、地图体验、比较模式、路线预览和风险教育内容组织成完整使用闭环。',
+      '打通前端地图界面与后端舒适度评分接口，让用户可以按区域查看当前舒适度，并根据偏好权重实时重算结果。',
+      '围绕 precinct、street furniture、Open-Meteo fallback 与 open data source 组织后端数据来源，使地图展示不依赖单一实时接口。',
+      '参与 3D route 页面与地图细节流的串联，让主地图、区域详情和设施推荐在同一产品路径内可跳转、可解释。',
+      '按前后端分目录和部署约束维护工程结构，适配 Vercel、Render、Neon 这类分布式托管环境。',
+    ],
+    highlights: [
+      '产品定位克制：明确不把项目做成通用天气看板或 turn-by-turn 导航，而是聚焦“出发前判断体感和风险”的决策支持场景。',
+      '舒适度评分允许用户通过 temperature、humidity、activity weight 做偏好重平衡，体现了前端交互、后端计算与数据反馈的一体化设计。',
+      '地图主视图、双区域 compare、3D route 预览与 query-based detail flow 形成层次清晰的空间信息产品结构。',
+      '后端对 live API 不可用场景预留 fallback 数据路径，避免整个产品因为外部数据波动直接失效。',
+    ],
+    note: '团队项目。页面与技术描述基于当前仓库中可公开验证的产品范围整理，强调我能清楚解释的产品结构、数据链路与工程实现。',
+    visibility: 'course',
+  },
+  {
     slug: 'ruilian',
     title: 'Ruilian 训练与健康数据管理系统',
     period: '2025.12 - 2026.01',
@@ -19,7 +103,7 @@ export const projects: Project[] = [
       'Nginx',
     ],
     oneLiner:
-      '面向训练、饮食与身体数据的多端记录与同步系统，支持 Space 多人共享与权限控制，具备近实时同步能力。',
+      '面向训练、饮食与身体数据的多端记录与同步系统，支持 Space 多人共享与权限控制，并具备近实时状态同步能力。',
     links: {
       live: 'http://124.221.65.3:8080',
       repo: 'https://github.com/Andrew-JX/SharpTraining.git',
@@ -34,20 +118,10 @@ export const projects: Project[] = [
       '通过 Docker Compose 拉起前后端与 Postgres，使用 Nginx 同域反代 /api 与 /ws，降低跨域与部署复杂度。',
     ],
     highlights: [
-      '用 JSONB 快照承接复杂训练数据结构，降低早期 schema 频繁变动成本，适合快速试错与课程项目交付。',
+      '用 JSONB 快照承接复杂训练数据结构，降低早期 schema 高频变动成本，适合快速试错与课程项目交付。',
       'WebSocket 广播配合快照读写实现近实时同步，适合多端数据一致性演示与后续协作场景扩展。',
-      'Nginx 同域代理同时覆盖 HTTP API 和 WebSocket 升级链路，减少前端跨域 cookie、端口暴露和环境差异问题。',
+      'Nginx 同域代理同时覆盖 HTTP API 和 WebSocket 升级链路，减少前端跨域、cookie、端口暴露和环境差异问题。',
       'Space + 权限体系让项目从单机记录工具升级为可扩展的平台化原型。',
-    ],
-    interviewGrill: [
-      '为什么用 JSONB 快照而不是训练、饮食、身体数据完全拆表？后续怎么演进到更细粒度模型？',
-      '同步冲突策略为什么先选 LWW？如果要做更强一致性或离线合并，方案会怎么变？',
-      'JWT 如何用于 WebSocket 鉴权？连接建立后 token 过期要怎么处理？',
-      'WebSocket 广播和轮询相比分别解决了什么问题？系统负载上会带来什么成本？',
-      'Nginx 同域转发解决了哪些前端问题？/ws 升级代理需要注意哪些配置点？',
-      'Space 的 public 和登录受控权限边界怎么设计？哪些操作必须后端兜底？',
-      'Docker Compose 在本地和服务器部署里分别承担什么作用？环境变量和数据卷怎么管理？',
-      '如果后续要加审计日志、历史版本和协作回滚，现有数据模型哪里最需要先调整？',
     ],
     visibility: 'public',
   },
@@ -72,7 +146,6 @@ export const projects: Project[] = [
       '面向防晒意识与皮肤健康记录的公网可访问平台，围绕 Diary、Profile 与 UV 数据联动建立完整使用闭环。',
     links: {
       live: 'https://fit5120-tp-12-onboarding-i7v5.vercel.app/',
-      doc: 'TODO',
     },
     contributions: [
       '负责 Diary 与 Profile 模块，实现皮肤日记 CRUD、图片上传、个人中心和 UV 数据联动展示。',
@@ -86,26 +159,16 @@ export const projects: Project[] = [
       '查询层：对 Diary 列表使用分页、page size 限制与 user_id、entry_date 索引，保证记录量提升后仍可稳定查询。',
       '部署：前端部署到 Vercel，后端与 Postgres 部署到 Render，形成可对外演示的完整交付链路。',
     ],
-    interviewGrill: [
-      '跨域 cookie 为什么会丢？sameSite、secure、domain 和 withCredentials 分别起什么作用？',
-      'Render 场景下为什么经常要配置 trust proxy？不配会影响哪些 cookie 或安全判断？',
-      '为什么限流要分成全局限流和登录限流两层？两层分别拦什么流量？',
-      'XSS 清洗应该做在输入侧、输出侧还是两边都做？富文本和纯文本策略有什么差异？',
-      '缓存 TTL 为什么选择 30 分钟？如果遇到缓存击穿、雪崩或陈旧数据怎么处理？',
-      '为什么分页查询要限制 page size？无限 page size 会带来哪些数据库和接口风险？',
-      '索引为什么建在 user_id 和 entry_date？联合索引和单列索引应该怎么选？',
-      '前端路由懒加载为什么能改善首屏？哪些页面值得切，哪些页面不值得切？',
-    ],
     visibility: 'course',
   },
   {
     slug: 'real-scene-3d',
-    title: '政企 WebGIS 实景三维数据管理平台（政企项目，信息脱敏）',
+    title: '政企 WebGIS 实景三维数据管理平台',
     period: '2024.08 - 2025.01（实习）',
     positionTag: '3D / Visualization',
     stack: ['Vue3', 'TypeScript', 'Cesium', 'EarthSDK', 'SuperMap3D', 'Pinia', 'Spring Boot'],
     oneLiner:
-      '围绕三维交互与空间分析能力做组件化封装，完成多引擎兼容排障与接口联调，支撑政企场景落地。',
+      '围绕三维交互与空间分析能力做组件化封装，完成多引擎兼容排障与接口联调，支持政企场景落地。',
     links: {
       doc: 'https://blog.csdn.net/weixin_51983847/article/details/142140218?spm=1001.2014.3001.5501',
     },
@@ -119,13 +182,6 @@ export const projects: Project[] = [
       '三维工具组件化后，业务页面只消费统一能力入口，便于复用、排障和后续扩展。',
       '建立多引擎兼容排障流程，从最小复现、版本对比到适配层抽象，减少对单一 SDK 行为的硬编码依赖。',
       '在不暴露客户数据与代码的前提下，仍能完整说明职责边界、技术方案和交付结果。',
-    ],
-    interviewGrill: [
-      '三维交互工具怎么做成可复用组件？状态、事件流和浮层 UI 如何解耦？',
-      'SDK 升级后渲染异常怎么定位？怎么做最小复现和版本差异比对？',
-      '多引擎 API 差异为什么要做适配层？哪些能力应该放适配层，哪些留在业务层？',
-      '三维分析能力接入真实业务页面时，性能和交互体验通常会遇到哪些问题？',
-      '为什么组件化能减少约 40% 重复实现？这个收益是怎么体现到开发流程里的？',
     ],
     note: '不展示客户名称、业务数据和代码细节，仅描述本人职责范围内的技术方案与交付方式。',
     visibility: 'nda',
@@ -152,12 +208,6 @@ export const projects: Project[] = [
       'RESTful API 作为中间层隔离模型实现细节，让前端和推理服务可以独立演进。',
       '适合作为“从业务需求到 AI 接入”的项目叙事，能覆盖接口设计、文件上传与结果展示问题。',
     ],
-    interviewGrill: [
-      '推理服务为什么要封成接口？同步和异步调用各适合什么场景？',
-      '文件上传链路如何做大小限制、MIME 校验、存储隔离和路径安全控制？',
-      '如果模型要更新版本，怎么保证结果可回溯并支持灰度切换？',
-      'Web 与小程序共用接口时，鉴权、限流和资源访问策略有什么差异？',
-    ],
     visibility: 'public',
   },
   {
@@ -183,13 +233,6 @@ export const projects: Project[] = [
       '通过 Hilt 和 MVVM 控制模块边界，让移动端结构更接近可维护的工程项目。',
       'WorkManager 与 AlarmManager 组合使用，既覆盖延迟后台任务，也覆盖用户可感知的提醒触达。',
     ],
-    interviewGrill: [
-      'Room 表设计和 schema migration 应该怎么做？哪些字段变化会最容易踩坑？',
-      'Repository 层为什么值得保留？直接在 ViewModel 里调 DAO 有什么问题？',
-      'WorkManager 和 AlarmManager 各自解决什么问题？为什么两个组件同时存在？',
-      'Compose 状态管理如何减少不必要重组？UI state 和 domain state 怎么分层？',
-      'Hilt 在移动端项目里主要解决什么问题？如果不用 DI，代码会怎么退化？',
-    ],
     visibility: 'course',
   },
   {
@@ -211,11 +254,6 @@ export const projects: Project[] = [
     highlights: [
       '具备 live 链接，可用于快速演示基础 Web 项目交付效果。',
       '适合作为课程项目补充，不与工程化全栈项目争夺主叙事位置。',
-    ],
-    interviewGrill: [
-      'Firebase Hosting 的发布流程是什么？静态站点和前端路由分别怎么处理？',
-      '课程项目为什么也值得保留在作品集里？它主要证明哪一类基础能力？',
-      '如果这个项目要继续演进成真实产品，下一步最先补什么？',
     ],
     visibility: 'course',
   },

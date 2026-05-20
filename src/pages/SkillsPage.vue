@@ -1,108 +1,76 @@
 <script setup lang="ts">
-type SkillGroup = {
+type LabItem = {
   title: string
-  points: string[]
-  evidence: { label: string; to: string }[]
+  stage: string
+  summary: string
+  tags: string[]
 }
 
-const groups: SkillGroup[] = [
+const labItems: LabItem[] = [
   {
-    title: '核心前端',
-    points: [
-      '用 TypeScript 管数据模型和组件边界，减少页面扩展时的隐式耦合。',
-      '能在 React 和 Vue 中处理组件化、状态管理、路由、权限和复杂表单交互，不只停留在静态页面层。',
-      '做项目时优先考虑长期维护成本，强调可读性、边界清晰和持续迭代能力。',
-    ],
-    evidence: [
-      { label: 'Ruilian', to: '/projects/ruilian' },
-      { label: 'SunSafe', to: '/projects/sunsafe' },
-    ],
+    title: '语音转文字',
+    stage: 'Idea',
+    summary: '想做一个更轻量的语音转文字工具，重点看输入链路、结果整理和后续可复用性。',
+    tags: ['Speech', 'Utility', 'Workflow'],
   },
   {
-    title: '工程化',
-    points: [
-      '基于 Vite 做开发与构建，关注代码组织、构建速度和部署路径的稳定性。',
-      '性能优化路径可以落到路由懒加载、接口缓存、静态资源拆分与代理配置。',
-      '从本地构建到线上交付完整跑通，覆盖 Vercel、Render、Docker Compose + Nginx 等不同部署场景，关注构建稳定性与部署路径可重复性。',
-    ],
-    evidence: [
-      { label: 'SunSafe', to: '/projects/sunsafe' },
-      { label: 'FIT5032 Fitness', to: '/projects/fit5032-fitness' },
-    ],
+    title: '字幕播放悬浮窗',
+    stage: 'Idea',
+    summary: '偏桌面使用场景的小工具，想试试看更贴近真实使用习惯的悬浮层交互和控制方式。',
+    tags: ['Desktop UX', 'Overlay', 'Media'],
   },
   {
-    title: '全栈链路',
-    points: [
-      '能承担 Express、Postgres、JWT、WebSocket、API 设计与前后端联调的完整链路。',
-      '关注登录态、权限边界、Space 设计、代理转发和多设备同步这些更接近真实业务的问题。',
-      '会把前端体验和后端约束一起考虑，例如同域反代、分页策略、索引设计和部署环境差异。',
-    ],
-    evidence: [
-      { label: 'Ruilian', to: '/projects/ruilian' },
-      { label: '农产品识别', to: '/projects/agri-identification' },
-    ],
+    title: '自助播放歌单',
+    stage: 'Idea',
+    summary: '更偏自动化体验和状态管理，希望做一个能自己维护播放流程的小系统。',
+    tags: ['Automation', 'State', 'Media'],
   },
   {
-    title: '安全与性能',
-    points: [
-      '做过双层限流、XSS 清洗、参数化查询、CORS 与 secure cookie，知道这些能力如何落到具体接口。',
-      '会结合缓存 TTL、分页、page size 限制和数据库索引来做接口级性能优化。',
-      '关注 why 而不只是 how，包括 sameSite、trust proxy、缓存陈旧策略和查询计划影响。',
-    ],
-    evidence: [
-      { label: 'SunSafe', to: '/projects/sunsafe' },
-      { label: 'Ruilian', to: '/projects/ruilian' },
-    ],
-  },
-  {
-    title: '三维可视化',
-    points: [
-      '使用过 Cesium、EarthSDK、SuperMap3D、Three.js 和 WebGL，能解释各自适用边界。',
-      '重点能力是三维工具组件化，以及多引擎并存场景下的兼容性排障，而不是单纯搭场景。',
-      '能够把 measure、volume、analysis 这类能力抽成可复用模块，并说明接入业务页的方式。',
-    ],
-    evidence: [{ label: '政企 WebGIS', to: '/projects/real-scene-3d' }],
-  },
-  {
-    title: 'AI 协作开发',
-    points: [
-      '把 AI 工具当成研发协作放大器，而不是替代判断的黑盒，重点用在需求拆解、提示词、评审和验收。',
-      '日常使用 Cursor · Claude Code · GitHub Copilot，具备完整 AI 辅助开发工作流（需求拆解 → 编码 → 自检 → Code Review），能编写高效提示词提升开发效率。',
-      '在腾讯 AI Coding 课程中用 CodeBuddy 结对完成 Ruilian，负责产品设想、评审、部署联调与交付质量收口；最终结构、边界和交付质量由我做选择、修订和验收。',
-    ],
-    evidence: [{ label: 'Ruilian', to: '/projects/ruilian' }],
+    title: 'FitMind Agent',
+    stage: 'Exploring',
+    summary: '有可能把 FitMind 继续往 agent 方向推进，重点看任务边界、工具编排和上下文组织。',
+    tags: ['Agent', 'Tool Calling', 'Product'],
   },
 ]
 </script>
 
 <template>
   <div class="space-y-8">
-    <section>
-      <h1 class=”text-3xl font-semibold tracking-tight text-white”>Skills</h1>
+    <section class="hero-panel space-y-4">
+      <div class="section-title">Lab</div>
+      <h1 class="text-3xl font-semibold tracking-tight text-white">小工具 / 小 Agent / 快速实验</h1>
+      <p class="max-w-3xl text-sm leading-7 text-stone-300/84">
+        这里以后会放我做的一些更轻、更快、也更偏实验性的东西。它们不一定是大项目，但能比较直接地反映我最近在研究什么。
+      </p>
     </section>
 
-    <section class="grid gap-4 lg:grid-cols-2">
-      <article v-for="group in groups" :key="group.title" class="panel-card space-y-4">
-        <div class="section-title">{{ group.title }}</div>
+    <section class="grid gap-4 md:grid-cols-2">
+      <article v-for="item in labItems" :key="item.title" class="panel-card space-y-4">
+        <div class="flex items-start justify-between gap-3">
+          <div class="space-y-2">
+            <h2 class="text-xl font-semibold text-white">{{ item.title }}</h2>
+            <p class="text-sm leading-7 text-stone-300/84">{{ item.summary }}</p>
+          </div>
+          <span class="rounded-full border border-[var(--line)] bg-[var(--accent-soft)] px-3 py-1 text-xs font-medium text-[var(--accent)]">
+            {{ item.stage }}
+          </span>
+        </div>
 
-        <ul class="space-y-3 text-sm leading-7 text-slate-300">
-          <li v-for="point in group.points" :key="point" class="detail-list-item">
-            {{ point }}
-          </li>
-        </ul>
-
-        <div class="flex flex-wrap items-center gap-2 text-sm">
-          <span class="text-slate-500">Evidence:</span>
-          <RouterLink
-            v-for="item in group.evidence"
-            :key="item.to"
-            class="rounded-full border border-sky-400/20 bg-sky-400/10 px-3 py-1 text-sky-100 hover:border-sky-300/30 hover:text-white"
-            :to="item.to"
-          >
-            {{ item.label }}
-          </RouterLink>
+        <div class="flex flex-wrap gap-2">
+          <span v-for="tag in item.tags" :key="tag" class="chip">
+            {{ tag }}
+          </span>
         </div>
       </article>
+    </section>
+
+    <section class="panel-card space-y-4">
+      <div class="section-title">这个页面之后会放什么</div>
+      <ul class="space-y-3 text-sm leading-7 text-stone-300/84">
+        <li class="detail-list-item">已经做出来的轻量工具、agent demo 和一些桌面小实验。</li>
+        <li class="detail-list-item">它们现在分别处在 idea、building 还是 shipping 的哪个阶段。</li>
+        <li class="detail-list-item">以后也可以慢慢补 live 链接、截图和简短说明，做成一个持续更新的小实验区。</li>
+      </ul>
     </section>
   </div>
 </template>

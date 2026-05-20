@@ -11,6 +11,13 @@ node_modules
 dist
 dist-ssr
 *.local
+.superpowers/
+.history/
+.claude/
+.codex/
+.codebuddy/integration/lighthouse.json
+docs/superpowers/
+tmp_resume.pdf
 
 # Editor directories and files
 .vscode/*
