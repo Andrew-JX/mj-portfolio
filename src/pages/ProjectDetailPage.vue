@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { projects } from '@/data/projects'
-import type { ProjectLinkKey } from '@/types'
+import type { ProjectLinkEntry, ProjectLinkKey } from '@/types'
 
 const route = useRoute()
 const project = computed(() => projects.find((item) => item.slug === route.params.slug))
@@ -13,6 +13,19 @@ const linkLabels: Record<ProjectLinkKey, string> = {
   doc: 'Doc',
   video: 'Video',
 }
+
+const projectLinks = computed<ProjectLinkEntry[]>(() => {
+  if (!project.value) {
+    return []
+  }
+
+  const primaryLinks = Object.entries(project.value.links).map(([key, url]) => ({
+    label: linkLabels[key as ProjectLinkKey],
+    url,
+  }))
+
+  return [...primaryLinks, ...(project.value.extraLinks ?? [])]
+})
 </script>
 
 <template>
@@ -38,14 +51,14 @@ const linkLabels: Record<ProjectLinkKey, string> = {
 
       <div class="flex flex-wrap gap-2">
         <a
-          v-for="(url, key) in project.links"
-          :key="key"
+          v-for="item in projectLinks"
+          :key="`${item.label}-${item.url}`"
           class="button-secondary"
-          :href="url"
+          :href="item.url"
           target="_blank"
           rel="noreferrer"
         >
-          {{ linkLabels[key as ProjectLinkKey] }}
+          {{ item.label }}
         </a>
       </div>
     </section>
@@ -59,24 +72,24 @@ const linkLabels: Record<ProjectLinkKey, string> = {
 
     <section class="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
       <article class="panel-card space-y-4">
-        <div class="section-title">Summary</div>
+        <div class="section-title">项目概览</div>
         <p class="text-sm leading-7 text-slate-300">{{ project.oneLiner }}</p>
         <div class="space-y-2 text-sm text-slate-300">
-          <div v-for="(url, key) in project.links" :key="`${key}-summary`" class="flex flex-wrap items-center gap-2">
-            <span class="w-12 text-slate-500">{{ linkLabels[key as ProjectLinkKey] }}</span>
-            <a :href="url" target="_blank" rel="noreferrer">{{ url }}</a>
+          <div v-for="item in projectLinks" :key="`${item.label}-summary-${item.url}`" class="flex flex-wrap items-center gap-2">
+            <span class="min-w-14 text-slate-500">{{ item.label }}</span>
+            <a :href="item.url" target="_blank" rel="noreferrer">{{ item.url }}</a>
           </div>
         </div>
       </article>
 
       <article v-if="project.note" class="panel-card space-y-4">
-        <div class="section-title">Project Note</div>
+        <div class="section-title">补充说明</div>
         <p class="text-sm leading-7 text-slate-300">{{ project.note }}</p>
       </article>
     </section>
 
     <section class="panel-card space-y-4">
-      <div class="section-title">What I did</div>
+      <div class="section-title">我做了什么</div>
       <ul class="space-y-3 text-sm leading-7 text-slate-300">
         <li v-for="item in project.contributions" :key="item" class="detail-list-item">
           {{ item }}
@@ -85,7 +98,7 @@ const linkLabels: Record<ProjectLinkKey, string> = {
     </section>
 
     <section class="panel-card space-y-4">
-      <div class="section-title">Engineering highlights</div>
+      <div class="section-title">工程亮点</div>
       <ul class="space-y-3 text-sm leading-7 text-slate-300">
         <li v-for="item in project.highlights" :key="item" class="detail-list-item">
           {{ item }}
@@ -93,31 +106,19 @@ const linkLabels: Record<ProjectLinkKey, string> = {
       </ul>
     </section>
 
-    <section class="panel-card space-y-4">
-      <div class="section-title">Interview grill</div>
-      <ol class="space-y-3 text-sm leading-7 text-slate-300">
-        <li v-for="(item, index) in project.interviewGrill" :key="item" class="flex gap-3">
-          <span class="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-sky-400/20 bg-sky-400/10 text-xs text-sky-100">
-            Q{{ index + 1 }}
-          </span>
-          <span>{{ item }}</span>
-        </li>
-      </ol>
-    </section>
-
     <section v-if="project.aiNote" class="panel-card space-y-4">
-      <div class="section-title">AI collaboration</div>
+      <div class="section-title">AI 协作方式</div>
       <div class="grid gap-4 lg:grid-cols-2">
         <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
           <div class="text-sm font-semibold text-sky-200">我负责</div>
           <p class="mt-3 text-sm leading-7 text-slate-300">
-            产品设想、需求拆解、交互方案、提示词设计、验收标准、代码评审、部署与联调，以及将 AI 生成结果收敛为可上线的实现。
+            产品定位、需求拆解、架构边界、交互流程、提示约束、代码评审、联调与验收，确保 AI 参与后的结果仍然可解释、可维护、可交付。
           </p>
         </div>
         <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
           <div class="text-sm font-semibold text-sky-200">AI 负责</div>
           <p class="mt-3 text-sm leading-7 text-slate-300">
-            代码脚手架生成、重复性模块实现和部分方案草稿输出；最终结构、边界和交付质量由我做选择、修订和验收。
+            代码草稿生成、重复性模块实现、局部方案探索和文档整理辅助；最终结构、边界和上线质量由我选择、修改和收口。
           </p>
         </div>
       </div>
@@ -125,7 +126,7 @@ const linkLabels: Record<ProjectLinkKey, string> = {
     </section>
 
     <div>
-      <RouterLink class="text-sm text-slate-300 hover:text-white" to="/projects">← 返回项目列表</RouterLink>
+      <RouterLink class="text-sm text-slate-300 hover:text-white" to="/projects">返回项目列表</RouterLink>
     </div>
   </div>
 
