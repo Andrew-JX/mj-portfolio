@@ -20,10 +20,10 @@ const pageRef = ref<HTMLElement | null>(null)
 const roleIdx = ref(0)
 const displayText = ref('')
 const isDeleting = ref(false)
+const introVisible = ref(false)
 let typingTimer: ReturnType<typeof setTimeout> | undefined
 const motionCleanups: Array<() => void> = []
-
-const heroRibbons = ['React / Vue', 'AI Application', 'Interaction-first', 'Full-stack Delivery']
+const ABOUT_INTRO_SESSION_KEY = 'about-hero-intro-played'
 
 const capabilityCards: CapabilityCard[] = [
   {
@@ -83,6 +83,39 @@ const signalMetrics = [
 
 let cleanup: (() => void) | undefined
 
+function hasPlayedAboutIntro() {
+  if (typeof window === 'undefined') {
+    return true
+  }
+
+  try {
+    return window.sessionStorage.getItem(ABOUT_INTRO_SESSION_KEY) === '1'
+  } catch {
+    return true
+  }
+}
+
+function markAboutIntroPlayed() {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  try {
+    window.sessionStorage.setItem(ABOUT_INTRO_SESSION_KEY, '1')
+  } catch {
+    // Ignore storage failures and keep the page usable.
+  }
+}
+
+function isReloadNavigation() {
+  if (typeof window === 'undefined' || typeof performance === 'undefined') {
+    return false
+  }
+
+  const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
+  return navigationEntry?.type === 'reload'
+}
+
 function tick() {
   const target = roles[roleIdx.value % roles.length] ?? ''
 
@@ -106,6 +139,160 @@ function tick() {
   typingTimer = setTimeout(tick, isDeleting.value ? 48 : 92)
 }
 
+function syncIntroLineToHeroCard(root: HTMLElement) {
+  const heroCard = root.querySelector<HTMLElement>('[data-hero-card-shell]')
+  const introLineWrap = root.querySelector<HTMLElement>('[data-intro-line-wrap]')
+
+  if (!heroCard || !introLineWrap) {
+    return
+  }
+
+  const rect = heroCard.getBoundingClientRect()
+  gsap.set(introLineWrap, {
+    left: rect.left + rect.width / 2,
+    top: rect.top + rect.height / 2,
+    xPercent: -50,
+    yPercent: -50,
+  })
+}
+
+function getHeroIntroScale(root: HTMLElement) {
+  const heroCard = root.querySelector<HTMLElement>('[data-hero-card-shell]')
+  const introLineWrap = root.querySelector<HTMLElement>('[data-intro-line-wrap]')
+
+  if (!heroCard || !introLineWrap) {
+    return 0.72
+  }
+
+  const heroWidth = heroCard.getBoundingClientRect().width
+  const lineWidth = introLineWrap.getBoundingClientRect().width
+
+  if (heroWidth <= 0 || lineWidth <= 0) {
+    return 0.72
+  }
+
+  return Math.min(Math.max(lineWidth / heroWidth, 0.12), 1)
+}
+
+function setupCapabilityCarousel(root: HTMLElement) {
+  const stage = root.querySelector<HTMLElement>('[data-capability-stage]')
+  const track = root.querySelector<HTMLElement>('[data-capability-track]')
+  const cards = gsap.utils.toArray<HTMLElement>('[data-capability-card]')
+
+  if (!stage || !track || cards.length === 0) {
+    return
+  }
+
+  let angle = 0
+  let velocity = 0
+  let startX = 0
+  let startAngle = 0
+  let pointerId: number | null = null
+  let activeIndex = -1
+
+  const render = () => {
+    const radiusX = Math.max(Math.min(stage.clientWidth * 0.34, 360), 150)
+    const radiusZ = Math.max(Math.min(stage.clientWidth * 0.18, 230), 110)
+    let nextActiveIndex = 0
+    let frontDepth = -Infinity
+
+    cards.forEach((card, index) => {
+      const theta = angle + (index / cards.length) * Math.PI * 2
+      const x = Math.sin(theta) * radiusX
+      const z = Math.cos(theta) * radiusZ
+      const depth = (Math.cos(theta) + 1) / 2
+      const scale = 0.78 + depth * 0.28
+      const opacity = 0.38 + depth * 0.62
+
+      if (z > frontDepth) {
+        frontDepth = z
+        nextActiveIndex = index
+      }
+
+      gsap.set(card, {
+        xPercent: -50,
+        yPercent: -50,
+        x,
+        z,
+        rotationY: -theta * (180 / Math.PI),
+        scale,
+        opacity,
+        zIndex: Math.round(depth * 100),
+      })
+    })
+
+    if (nextActiveIndex !== activeIndex) {
+      activeIndex = nextActiveIndex
+      cards.forEach((card, index) => {
+        card.toggleAttribute('data-active', index === activeIndex)
+      })
+    }
+  }
+
+  const onPointerDown = (event: PointerEvent) => {
+    pointerId = event.pointerId
+    startX = event.clientX
+    startAngle = angle
+    velocity = 0
+    stage.setPointerCapture(pointerId)
+    stage.classList.add('capability-carousel-dragging')
+  }
+
+  const onPointerMove = (event: PointerEvent) => {
+    if (event.pointerId !== pointerId) {
+      return
+    }
+
+    const deltaX = event.clientX - startX
+    const nextAngle = startAngle + deltaX * 0.006
+    velocity = nextAngle - angle
+    angle = nextAngle
+    render()
+  }
+
+  const onPointerUp = (event: PointerEvent) => {
+    if (event.pointerId !== pointerId) {
+      return
+    }
+
+    pointerId = null
+    stage.classList.remove('capability-carousel-dragging')
+    if (stage.hasPointerCapture(event.pointerId)) {
+      stage.releasePointerCapture(event.pointerId)
+    }
+  }
+
+  const tickCarousel = () => {
+    if (pointerId !== null || Math.abs(velocity) < 0.0001) {
+      return
+    }
+
+    angle += velocity
+    velocity *= 0.92
+    render()
+  }
+
+  const onResize = () => render()
+
+  render()
+
+  stage.addEventListener('pointerdown', onPointerDown)
+  stage.addEventListener('pointermove', onPointerMove)
+  stage.addEventListener('pointerup', onPointerUp)
+  stage.addEventListener('pointercancel', onPointerUp)
+  window.addEventListener('resize', onResize)
+  gsap.ticker.add(tickCarousel)
+
+  motionCleanups.push(() => {
+    stage.removeEventListener('pointerdown', onPointerDown)
+    stage.removeEventListener('pointermove', onPointerMove)
+    stage.removeEventListener('pointerup', onPointerUp)
+    stage.removeEventListener('pointercancel', onPointerUp)
+    window.removeEventListener('resize', onResize)
+    gsap.ticker.remove(tickCarousel)
+  })
+}
+
 onMounted(async () => {
   await nextTick()
 
@@ -115,33 +302,82 @@ onMounted(async () => {
 
   const root = pageRef.value
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const shouldPlayIntro = !reducedMotion && (isReloadNavigation() || !hasPlayedAboutIntro())
+
+  introVisible.value = shouldPlayIntro
   tick()
 
   const context = gsap.context(() => {
+    syncIntroLineToHeroCard(root)
+
+    const playHeroIntro = () => {
+      const heroTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
+      heroTimeline
+        .from('[data-hero-kicker]', { y: 18, opacity: 0, duration: 0.55 })
+        .from('[data-hero-copy]', { y: 28, opacity: 0, duration: 0.7 }, '-=0.18')
+        .from('[data-hero-metric]', { y: 18, opacity: 0, duration: 0.45, stagger: 0.08 }, '-=0.36')
+        .from('[data-hero-tag]', { scale: 0.9, opacity: 0, duration: 0.5, stagger: 0.08 }, '-=0.42')
+    }
+
     if (reducedMotion) {
+      gsap.set('[data-hero-card-shell]', { clearProps: 'all' })
+      gsap.set('[data-hero-card-content]', { clearProps: 'all' })
+      gsap.set('[data-hero-title-shell]', { clearProps: 'all' })
+      gsap.set('[data-intro-overlay]', { autoAlpha: 0 })
       return
     }
 
-    const heroTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
-    heroTimeline
-      .from('[data-hero-kicker]', { y: 18, opacity: 0, duration: 0.55 })
-      .from('[data-hero-line]', { yPercent: 105, opacity: 0, duration: 0.9, stagger: 0.09 }, '-=0.15')
-      .from('[data-hero-copy]', { y: 28, opacity: 0, duration: 0.7 }, '-=0.45')
-      .from('[data-hero-metric]', { y: 18, opacity: 0, duration: 0.45, stagger: 0.08 }, '-=0.4')
-      .from('[data-hero-tag]', { scale: 0.9, opacity: 0, duration: 0.5, stagger: 0.08 }, '-=0.45')
-      .from('[data-ribbon]', { x: -24, opacity: 0, duration: 0.5, stagger: 0.06 }, '-=0.45')
+    if (shouldPlayIntro) {
+      markAboutIntroPlayed()
+      const introScale = getHeroIntroScale(root)
 
-    gsap.to('[data-ribbon]', {
-      yPercent: -18,
-      duration: 2.4,
-      ease: 'sine.inOut',
-      stagger: {
-        each: 0.12,
-        from: 'random',
-        repeat: -1,
-        yoyo: true,
-      },
-    })
+      gsap.set('[data-hero-card-shell]', {
+        opacity: 1,
+        y: 22,
+        rotateX: -89,
+        scaleX: introScale,
+        scaleY: introScale,
+        transformOrigin: '50% 50%',
+        transformPerspective: 2200,
+      })
+      gsap.set('[data-hero-card-content]', { opacity: 0 })
+      gsap.set('[data-intro-overlay]', { autoAlpha: 1 })
+      gsap.set('[data-intro-dot]', { autoAlpha: 0, scale: 0.18 })
+      gsap.set('[data-intro-line]', { scaleX: 0.02, transformOrigin: '50% 50%' })
+      gsap.set('[data-intro-line-wrap]', {
+        autoAlpha: 1,
+        rotateX: 0,
+        transformOrigin: '50% 50%',
+        transformPerspective: 2200,
+      })
+
+      gsap
+        .timeline({
+          defaults: { ease: 'power3.out' },
+          onComplete: () => {
+            introVisible.value = false
+            playHeroIntro()
+          },
+        })
+        .to('[data-intro-dot]', { autoAlpha: 1, scale: 1, duration: 0.24 })
+        .to('[data-intro-line]', { scaleX: 1, duration: 0.68, ease: 'power4.inOut' }, '-=0.02')
+        .to('[data-intro-overlay]', { autoAlpha: 0.62, duration: 0.34, ease: 'power1.out' }, '-=0.28')
+        .to('[data-intro-dot]', { autoAlpha: 0, duration: 0.14 }, '-=0.2')
+        .to('[data-intro-overlay]', { autoAlpha: 0, duration: 0.24, ease: 'power2.out' }, '+=0.02')
+        .to('[data-intro-line-wrap]', { rotateX: -89, autoAlpha: 0, duration: 0.42, ease: 'power2.in' }, '<')
+        .to(
+          '[data-hero-card-shell]',
+          { y: 0, rotateX: 0, scaleX: 1, scaleY: 1, duration: 1, ease: 'power4.out' },
+          '-=0.18',
+        )
+        .to('[data-hero-card-content]', { opacity: 1, duration: 0.34, ease: 'power2.out' }, '-=0.56')
+    } else {
+      gsap.set('[data-hero-card-shell]', { clearProps: 'all' })
+      gsap.set('[data-hero-card-content]', { clearProps: 'all' })
+      gsap.set('[data-hero-title-shell]', { clearProps: 'all' })
+      gsap.set('[data-intro-overlay]', { autoAlpha: 0 })
+      playHeroIntro()
+    }
 
     gsap.to('[data-hero-line]', {
       yPercent: -14,
@@ -192,63 +428,11 @@ onMounted(async () => {
       },
     })
 
-    const railTrack = root.querySelector<HTMLElement>('[data-rail-track]')
-    const railViewport = root.querySelector<HTMLElement>('[data-rail-viewport]')
-    const railCards = gsap.utils.toArray<HTMLElement>('[data-rail-card]')
+    const handleResize = () => syncIntroLineToHeroCard(root)
+    window.addEventListener('resize', handleResize)
+    motionCleanups.push(() => window.removeEventListener('resize', handleResize))
 
-    if (railTrack && railViewport && railCards.length > 0) {
-      const maxShift = () => Math.max(railTrack.scrollWidth - railViewport.offsetWidth, 0)
-
-      railCards.forEach((card) => {
-        const rotateXTo = gsap.quickTo(card, 'rotationX', { duration: 0.35, ease: 'power3.out' })
-        const rotateYTo = gsap.quickTo(card, 'rotationY', { duration: 0.35, ease: 'power3.out' })
-        const yTo = gsap.quickTo(card, 'y', { duration: 0.35, ease: 'power3.out' })
-
-        const handleMove = (event: PointerEvent) => {
-          const rect = card.getBoundingClientRect()
-          const px = (event.clientX - rect.left) / rect.width - 0.5
-          const py = (event.clientY - rect.top) / rect.height - 0.5
-          rotateYTo(px * 10)
-          rotateXTo(py * -8)
-          yTo(-6)
-        }
-
-        const handleLeave = () => {
-          rotateYTo(0)
-          rotateXTo(0)
-          yTo(0)
-        }
-
-        card.addEventListener('pointermove', handleMove)
-        card.addEventListener('pointerleave', handleLeave)
-        motionCleanups.push(() => {
-          card.removeEventListener('pointermove', handleMove)
-          card.removeEventListener('pointerleave', handleLeave)
-        })
-      })
-
-      gsap.to(railTrack, {
-        x: () => -maxShift(),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '[data-rail-section]',
-          start: 'top top',
-          end: () => `+=${Math.max(maxShift() + window.innerHeight * 0.55, window.innerHeight)}`,
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: ({ progress }) => {
-            railCards.forEach((card, index) => {
-              const sway = Math.sin(progress * 14 + index * 0.7) * 16
-              const tilt = Math.sin(progress * 9 + index * 0.6) * 5.8
-              const depth = 1 + Math.sin(progress * 10 + index * 0.5) * 0.03
-              gsap.set(card, { y: sway, rotation: tilt, scale: depth, transformOrigin: '50% 85%' })
-            })
-          },
-        },
-      })
-    }
+    setupCapabilityCarousel(root)
 
     const showcaseCards = gsap.utils.toArray<HTMLElement>('[data-showcase-card]')
     showcaseCards.forEach((card) => {
@@ -294,11 +478,23 @@ onUnmounted(() => {
 
 <template>
   <div ref="pageRef" class="space-y-10 lg:space-y-14">
-    <section class="hero-mast">
-      <div class="hero-ribbon-cloud" aria-hidden="true">
-        <span v-for="item in heroRibbons" :key="item" data-ribbon class="hero-ribbon">{{ item }}</span>
+    <div
+      aria-hidden="true"
+      data-intro-overlay
+      class="hero-intro-overlay"
+      :class="{ 'hero-intro-overlay-hidden': !introVisible }"
+    >
+      <div class="hero-intro-stage">
+        <div data-intro-line-wrap class="hero-intro-line-wrap">
+          <span data-intro-line class="hero-intro-line"></span>
+          <span data-intro-dot class="hero-intro-dot"></span>
+        </div>
       </div>
-      <div class="hero-grid">
+    </div>
+
+    <section data-hero-card-shell class="hero-mast">
+      <div data-hero-card-content class="hero-card-content">
+        <div class="hero-grid">
         <div class="space-y-7">
           <div data-hero-kicker class="eyebrow-pill">
             <span class="dot-live"></span>
@@ -306,10 +502,12 @@ onUnmounted(() => {
           </div>
 
           <div class="space-y-4">
-            <div class="impact-stack">
+            <div data-hero-title-shell class="hero-title-shell">
+              <div class="impact-stack">
               <div data-hero-line class="impact-line">MINYU</div>
               <div data-hero-line class="impact-line impact-line-accent">JI</div>
               <div data-hero-line class="impact-line impact-line-cn">吉敏宇</div>
+              </div>
             </div>
 
             <div data-hero-copy class="hero-body space-y-4">
@@ -358,21 +556,19 @@ onUnmounted(() => {
             </p>
           </div>
         </div>
+        </div>
       </div>
     </section>
 
-    <section data-rail-section class="section-shell overflow-hidden">
-      <div class="flex items-end justify-between gap-4">
-        <div class="space-y-3">
+    <section data-rail-section class="capability-carousel-section">
+      <div class="space-y-3">
           <div class="section-title">能力画像</div>
           <h2 class="display-subhead max-w-3xl">What I focus on right now.</h2>
-        </div>
-        <div class="hidden text-right text-sm text-stone-400 lg:block">Scroll sideways with the page.</div>
       </div>
 
-      <div data-rail-viewport class="rail-viewport">
-        <div data-rail-track class="rail-track">
-          <article v-for="card in capabilityCards" :key="card.id" data-rail-card class="rail-card">
+      <div data-capability-stage class="capability-carousel-stage">
+        <div data-capability-track class="capability-carousel-track">
+        <article v-for="card in capabilityCards" :key="card.id" data-capability-card class="capability-card">
             <div class="rail-card-top">
               <span class="index-badge">{{ card.label }}</span>
               <span class="rail-kicker">{{ card.kicker }}</span>
@@ -384,7 +580,7 @@ onUnmounted(() => {
             <div class="flex flex-wrap gap-2">
               <span v-for="bullet in card.bullets" :key="bullet" class="chip chip-citrus">{{ bullet }}</span>
             </div>
-          </article>
+        </article>
         </div>
       </div>
     </section>
