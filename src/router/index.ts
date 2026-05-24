@@ -11,7 +11,8 @@ const router = createRouter({
     { path: '/', component: AboutPage },
     { path: '/projects', component: ProjectsPage },
     { path: '/projects/:slug', component: ProjectDetailPage },
-    { path: '/skills', component: SkillsPage },
+    { path: '/lab', component: SkillsPage },
+    { path: '/skills', redirect: '/lab' },
     { path: '/resume', component: ResumePage },
   ],
   scrollBehavior() {

@@ -13,7 +13,7 @@ const pageStyle = computed(() => ({
 </script>
 
 <template>
-  <div class="min-h-screen transition-colors duration-500" :style="pageStyle">
+  <div class="site-shell min-h-screen transition-colors duration-500" :style="pageStyle">
     <div aria-hidden="true" class="atmosphere-layer">
       <div class="atmosphere-orb atmosphere-orb-a"></div>
       <div class="atmosphere-orb atmosphere-orb-b"></div>
@@ -23,7 +23,7 @@ const pageStyle = computed(() => ({
     <div aria-hidden="true" class="grain-overlay"></div>
 
     <header
-      class="sticky top-0 z-50 border-b backdrop-blur-xl transition-colors duration-500"
+      class="site-header sticky top-0 z-50 border-b backdrop-blur-xl transition-colors duration-500"
       :class="isDark ? 'border-white/8 bg-stone-950/60' : 'border-stone-900/8 bg-white/68'"
     >
       <div class="mx-auto flex max-w-[1240px] flex-col gap-4 px-5 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
@@ -37,7 +37,7 @@ const pageStyle = computed(() => ({
           </div>
         </div>
 
-        <nav class="flex flex-wrap items-center gap-2 text-sm">
+        <nav class="site-nav flex flex-wrap items-center gap-2 text-sm">
           <RouterLink class="nav-link" to="/">About</RouterLink>
           <RouterLink class="nav-link" to="/projects">Projects</RouterLink>
           <RouterLink class="nav-link" to="/lab">Lab</RouterLink>
@@ -47,11 +47,11 @@ const pageStyle = computed(() => ({
       </div>
     </header>
 
-    <main class="mx-auto max-w-[1240px] px-5 py-7 sm:px-6 sm:py-10">
+    <main class="site-main mx-auto max-w-[1240px] px-5 py-7 sm:px-6 sm:py-10">
       <RouterView />
     </main>
 
-    <footer class="border-t transition-colors duration-500" :class="isDark ? 'border-white/8' : 'border-stone-900/10'">
+    <footer class="site-footer border-t transition-colors duration-500" :class="isDark ? 'border-white/8' : 'border-stone-900/10'">
       <div
         class="mx-auto flex max-w-[1240px] flex-col gap-2 px-5 py-8 text-sm sm:px-6"
         :class="isDark ? 'text-stone-400' : 'text-stone-600'"

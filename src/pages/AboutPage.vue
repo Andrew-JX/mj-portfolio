@@ -3,7 +3,9 @@ import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import ProjectPreviewFrame from '@/components/ProjectPreviewFrame.vue'
 import { projects } from '@/data/projects'
+import { getProjectMedia } from '@/data/projectMedia'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -600,8 +602,9 @@ onUnmounted(() => {
           :key="project.slug"
           :to="`/projects/${project.slug}`"
           data-showcase-card
-          class="project-frame"
+          class="project-frame project-frame-featured"
         >
+          <ProjectPreviewFrame :media="getProjectMedia(project.slug)" compact />
           <div class="project-frame-meta">
             <span class="index-badge">{{ project.positionTag }}</span>
             <span class="project-period">{{ project.period }}</span>

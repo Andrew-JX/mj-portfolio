@@ -9,6 +9,19 @@ export type ProjectLinkEntry = {
   url: string
 }
 
+export type ProjectMediaTone = 'sunset' | 'ocean' | 'violet' | 'forest' | 'ember' | 'mono'
+
+export type ProjectMedia = {
+  slug: string
+  eyebrow: string
+  title: string
+  caption: string
+  metrics: string[]
+  tone: ProjectMediaTone
+  imageSrc?: string
+  imageAlt?: string
+}
+
 export type Project = {
   /** Stable route key used by the project detail page. */
   slug: string

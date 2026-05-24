@@ -2,7 +2,9 @@
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import ProjectPreviewFrame from '@/components/ProjectPreviewFrame.vue'
 import { projects } from '@/data/projects'
+import { getProjectMedia } from '@/data/projectMedia'
 import type { ProjectLinkEntry, ProjectLinkKey } from '@/types'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -185,6 +187,8 @@ onUnmounted(() => {
         data-project-card
         class="project-card-shell"
       >
+        <ProjectPreviewFrame :media="getProjectMedia(project.slug)" compact />
+
         <div class="space-y-4">
           <div class="project-frame-meta">
             <span class="index-badge">{{ project.positionTag }}</span>
