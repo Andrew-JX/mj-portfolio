@@ -15,8 +15,8 @@ const labItems: LabItem[] = [
   {
     title: 'ai-pm-dev',
     stage: 'Building',
-    summary: '当前正在推进的 AI 产品经理与 AI 应用开发实验区，重点沉淀需求拆解、原型验证、工具调用和解决方案表达。',
-    tags: ['AI PM', 'AI App', 'Solution'],
+    summary: '当前正在推进的 AI 产品经理与 AI 应用开发实验区，用来沉淀从问题定义、用户任务、PRD/原型到工具调用、工作流验证和解决方案表达的完整方法。',
+    tags: ['AI PM', 'PRD', 'Prototype', 'Solution'],
     repo: 'https://github.com/Andrew-JX/ai-pm-dev',
   },
   {
@@ -29,8 +29,9 @@ const labItems: LabItem[] = [
   {
     title: 'quickDate',
     stage: 'Shipping',
-    summary: '一个偏轻松、好玩的快速约会 / 日期小工具，适合放在 Lab 里展示一点产品手感、互动节奏和部署完整度。',
-    tags: ['Fun App', 'Interaction', 'Shipping'],
+    summary: '一个偏轻松、好玩的快速约会 / 日期小工具，重点展示从小想法到可访问产品的完整闭环：轻交互、明确入口、双端部署和适合分享的产品节奏。',
+    tags: ['Fun App', 'Interaction', 'Deployment'],
+    repo: 'https://github.com/Andrew-JX/quickDate',
     links: [
       { label: '国内访问', url: 'https://quickdate-77o.pages.dev/' },
       { label: 'Global', url: 'https://app-nine-chi-68.vercel.app/' },
@@ -39,7 +40,7 @@ const labItems: LabItem[] = [
   {
     title: 'AI 工作流工具',
     stage: 'Idea',
-    summary: '围绕真实工作流做轻量工具，把输入、处理、解释和输出串起来，验证 AI 能否稳定进入日常任务。',
+    summary: '围绕真实工作流继续做轻量工具，把输入、处理、解释和输出串起来，验证 AI 能否稳定进入日常任务，而不是只停留在一次性 demo。',
     tags: ['Workflow', 'Agent', 'Automation'],
   },
   {

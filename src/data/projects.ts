@@ -19,7 +19,7 @@ export const projects: Project[] = [
       'JWT',
     ],
     oneLiner:
-      '把训练日志、确定性计算工具、Tool Calling 与流式 Assistant UI 串成一条可解释、可验证、可扩展的 AI 健身分析产品链路。',
+      '面向力量训练记录与复盘场景的 AI 健身分析产品，把训练日志、确定性计算工具、Tool Calling 与流式 Assistant UI 串成一条可解释、可验证、可扩展的产品链路。',
     links: {
       live: 'https://fitmind-ai-psi.vercel.app/',
       repo: 'https://github.com/Andrew-JX/FitMind_ai.git',
@@ -32,6 +32,7 @@ export const projects: Project[] = [
     contributions: [
       '设计“训练日志 -> 确定性计算层 -> Tool Executor -> Provider Adapter -> SSE Stream -> Assistant UI”主链路，避免把项目做成只会闲聊的套壳聊天框。',
       '将 fatigue、volume distribution、progress、recommendation context 等训练分析逻辑从模型中剥离为确定性工具，保证结论有真实数据依据。',
+      '围绕“记录、分析、解释、建议”组织用户路径，让 AI 输出不是孤立回答，而是嵌入训练复盘流程里的决策辅助。',
       '组织 React 前端工作台，打通训练记录、分析面板与 Assistant 三块界面，让用户能从原始数据一路看到结构化分析与最终解释。',
       '为流式对话实现前后端事件契约与前端状态机，覆盖 thinking、tool calling、answering、done 等关键状态。',
       '梳理训练数据建模，包括 workouts、sets、exercises、exercise_muscles 与 contribution weight，为后续分析与扩展能力留出生长空间。',
@@ -63,7 +64,7 @@ export const projects: Project[] = [
       'Open Data',
     ],
     oneLiner:
-      '面向墨尔本内城区步行与骑行场景的主动出行决策产品，结合开放数据、舒适度评分、地图比较与 3D 路线预览，帮助用户在高温天气下做更稳妥的移动选择。',
+      '面向墨尔本内城区步行与骑行场景的主动出行决策产品，结合开放数据、舒适度评分、地图比较、风险教育与 3D 路线预览，帮助用户在高温天气下做更稳妥的移动选择。',
     links: {
       live: 'https://fit-5120-ease-move.vercel.app',
       repo: 'https://github.com/Andrew-JX/FIT5120-EaseMove.git',
@@ -77,6 +78,7 @@ export const projects: Project[] = [
     contributions: [
       '在团队项目中推进“数据产品而非导航工具”的产品边界，把首页叙事、地图体验、比较模式、路线预览和风险教育内容组织成完整使用闭环。',
       '打通前端地图界面与后端舒适度评分接口，让用户可以按区域查看当前舒适度，并根据偏好权重实时重算结果。',
+      '把 comfort score、precinct compare、area detail、facility recommendation 与 extreme weather risk 内容拆成清晰的信息层级，降低地图产品的理解成本。',
       '围绕 precinct、street furniture、Open-Meteo fallback 与 open data source 组织后端数据来源，使地图展示不依赖单一实时接口。',
       '参与 3D route 页面与地图细节流的串联，让主地图、区域详情和设施推荐在同一产品路径内可跳转、可解释。',
       '按前后端分目录和部署约束维护工程结构，适配 Vercel、Render、Neon 这类分布式托管环境。',
