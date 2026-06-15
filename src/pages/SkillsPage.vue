@@ -5,6 +5,10 @@ type LabItem = {
   summary: string
   tags: string[]
   repo?: string
+  links?: Array<{
+    label: string
+    url: string
+  }>
 }
 
 const labItems: LabItem[] = [
@@ -21,6 +25,16 @@ const labItems: LabItem[] = [
     summary: '面向中文文章、笔记和知识型内容的猫猫风格插图生成 Skill，用更轻的视觉资产帮助内容表达变得更亲和、更容易被记住。',
     tags: ['Skill', 'Image Prompt', 'Content UX'],
     repo: 'https://github.com/Andrew-JX/cat-note-illustrations',
+  },
+  {
+    title: 'quickDate',
+    stage: 'Shipping',
+    summary: '一个偏轻松、好玩的快速约会 / 日期小工具，适合放在 Lab 里展示一点产品手感、互动节奏和部署完整度。',
+    tags: ['Fun App', 'Interaction', 'Shipping'],
+    links: [
+      { label: '国内访问', url: 'https://quickdate-77o.pages.dev/' },
+      { label: 'Global', url: 'https://app-nine-chi-68.vercel.app/' },
+    ],
   },
   {
     title: 'AI 工作流工具',
@@ -71,8 +85,18 @@ const labItems: LabItem[] = [
           </span>
         </div>
 
-        <div v-if="item.repo" class="pt-1">
-          <a class="button-secondary" :href="item.repo" target="_blank" rel="noreferrer">GitHub</a>
+        <div v-if="item.repo || item.links?.length" class="flex flex-wrap gap-2 pt-1">
+          <a v-if="item.repo" class="button-secondary" :href="item.repo" target="_blank" rel="noreferrer">GitHub</a>
+          <a
+            v-for="link in item.links"
+            :key="`${item.title}-${link.label}`"
+            class="button-secondary"
+            :href="link.url"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {{ link.label }}
+          </a>
         </div>
       </article>
     </section>

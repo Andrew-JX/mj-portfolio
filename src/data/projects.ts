@@ -24,6 +24,9 @@ export const projects: Project[] = [
       live: 'https://fitmind-ai-psi.vercel.app/',
       repo: 'https://github.com/Andrew-JX/FitMind_ai.git',
     },
+    extraLinks: [
+      { label: '国内访问', url: 'https://fitmindai.jx15996596656.workers.dev' },
+    ],
     aiNote:
       'AI 协作：该项目把 AI 同时用作产品能力对象与研发协作工具。我主导项目定位、分层设计、工具边界、提示约束、状态流、文档体系与验收标准，代码实现阶段结合 Claude Code / Codex 做草稿生成、局部实现和自测辅助，最终由我负责架构决策、质量审查与可讲述性收口。',
     contributions: [
@@ -66,6 +69,7 @@ export const projects: Project[] = [
       repo: 'https://github.com/Andrew-JX/FIT5120-EaseMove.git',
     },
     extraLinks: [
+      { label: '国内访问', url: 'https://easemove.pages.dev' },
       { label: 'Iteration 3', url: 'https://fit-5120-ease-move-iteration3.vercel.app' },
       { label: 'Iteration 2', url: 'https://fit-5120-ease-move-iteration2.vercel.app' },
       { label: 'Iteration 1', url: 'https://fit-5120-ease-move-iteration1.vercel.app' },

@@ -42,6 +42,8 @@ const pageStyle = computed(() => ({
           <RouterLink class="nav-link" to="/projects">Projects</RouterLink>
           <RouterLink class="nav-link" to="/lab">Lab</RouterLink>
           <RouterLink class="nav-link" to="/resume">Resume</RouterLink>
+          <a class="nav-link" href="https://mj-portfolio-gray.vercel.app/#/" target="_blank" rel="noreferrer">Global</a>
+          <a class="nav-link" href="https://mj-portfolio.jx15996596656.workers.dev" target="_blank" rel="noreferrer">国内</a>
           <a class="nav-link" href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer">GitHub</a>
         </nav>
       </div>
@@ -59,6 +61,10 @@ const pageStyle = computed(() => ({
         <div class="flex items-center gap-2">
           <span class="dot-live"></span>
           <span>Portfolio / AI App / AI Full-stack / Product</span>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a href="https://mj-portfolio-gray.vercel.app/#/" target="_blank" rel="noreferrer">Global site</a>
+          <a href="https://mj-portfolio.jx15996596656.workers.dev" target="_blank" rel="noreferrer">国内访问</a>
         </div>
         <div>© {{ new Date().getFullYear() }} Minyu Ji</div>
       </div>
