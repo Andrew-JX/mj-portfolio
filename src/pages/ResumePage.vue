@@ -4,12 +4,12 @@ import { computed, ref } from 'vue'
 const resumes = [
   {
     title: 'Resume 1',
-    subtitle: 'AI 应用开发 / AI 全栈方向',
+    subtitle: 'AI 产品经理 / AI 解决方案方向',
     href: '/resume1.pdf',
   },
   {
     title: 'Resume 2',
-    subtitle: 'AI 产品经理 / AI 解决方案方向',
+    subtitle: 'AI 应用开发 / AI 全栈方向',
     href: '/resume2.pdf',
   },
 ]
@@ -45,7 +45,7 @@ const quickReads = [
       <div class="space-y-2">
         <h1 class="text-3xl font-semibold tracking-tight text-white">Resume</h1>
         <p class="max-w-3xl text-sm leading-7 text-stone-300/84">
-          这里放两份简历：一份更偏 AI 应用开发 / AI 全栈，一份更偏 AI 产品经理 / AI 解决方案。下面也整理了一层简短的项目快读。
+          这里放两份简历：Resume 1 更偏 AI 产品经理 / AI 解决方案，Resume 2 更偏 AI 应用开发 / AI 全栈。下面也整理了一层简短的项目快读。
         </p>
       </div>
 
