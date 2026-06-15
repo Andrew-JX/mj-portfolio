@@ -19,8 +19,9 @@ export const projects: Project[] = [
       'JWT',
     ],
     oneLiner:
-      '把训练日志、确定性计算工具、Tool Calling 与流式 Assistant UI 串成一条可解释、可验证、可扩展的 AI 产品链路。',
+      '把训练日志、确定性计算工具、Tool Calling 与流式 Assistant UI 串成一条可解释、可验证、可扩展的 AI 健身分析产品链路。',
     links: {
+      live: 'https://fitmind-ai-psi.vercel.app/',
       repo: 'https://github.com/Andrew-JX/FitMind_ai.git',
     },
     aiNote:

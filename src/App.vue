@@ -32,7 +32,7 @@ const pageStyle = computed(() => ({
           <div class="leading-tight">
             <div class="font-semibold tracking-[0.08em]" :class="isDark ? 'text-white' : 'text-stone-950'">Minyu Ji / 吉敏宇</div>
             <div class="text-xs tracking-[0.14em]" :class="isDark ? 'text-stone-400' : 'text-stone-500'">
-              前端开发 / AI 应用开发 / 全栈交付
+              AI 应用开发 / AI 全栈 / AI 产品
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@ const pageStyle = computed(() => ({
       >
         <div class="flex items-center gap-2">
           <span class="dot-live"></span>
-          <span>Portfolio / Frontend / AI / Full-stack</span>
+          <span>Portfolio / AI App / AI Full-stack / Product</span>
         </div>
         <div>© {{ new Date().getFullYear() }} Minyu Ji</div>
       </div>

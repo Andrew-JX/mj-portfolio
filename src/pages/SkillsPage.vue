@@ -8,22 +8,22 @@ type LabItem = {
 
 const labItems: LabItem[] = [
   {
-    title: '语音转文字',
-    stage: 'Idea',
-    summary: '想做一个更轻量的语音转文字工具，重点看输入链路、结果整理和后续可复用性。',
-    tags: ['Speech', 'Utility', 'Workflow'],
+    title: 'ai-pm-dev',
+    stage: 'Building',
+    summary: '当前正在推进的 AI 产品经理与 AI 应用开发实验区，重点沉淀需求拆解、原型验证、工具调用和解决方案表达。',
+    tags: ['AI PM', 'AI App', 'Solution'],
   },
   {
-    title: '字幕播放悬浮窗',
+    title: 'AI 工作流工具',
     stage: 'Idea',
-    summary: '偏桌面使用场景的小工具，想试试看更贴近真实使用习惯的悬浮层交互和控制方式。',
-    tags: ['Desktop UX', 'Overlay', 'Media'],
+    summary: '围绕真实工作流做轻量工具，把输入、处理、解释和输出串起来，验证 AI 能否稳定进入日常任务。',
+    tags: ['Workflow', 'Agent', 'Automation'],
   },
   {
-    title: '自助播放歌单',
+    title: '智能工作台原型',
     stage: 'Idea',
-    summary: '更偏自动化体验和状态管理，希望做一个能自己维护播放流程的小系统。',
-    tags: ['Automation', 'State', 'Media'],
+    summary: '偏复杂界面和状态管理，希望把 AI 操作过程、工具结果和用户决策放在同一个可追踪工作台里。',
+    tags: ['Workspace', 'State', 'UX'],
   },
   {
     title: 'FitMind Agent',
@@ -38,9 +38,9 @@ const labItems: LabItem[] = [
   <div class="space-y-8">
     <section class="hero-panel space-y-4">
       <div class="section-title">Lab</div>
-      <h1 class="text-3xl font-semibold tracking-tight text-white">小工具 / 小 Agent / 快速实验</h1>
+      <h1 class="text-3xl font-semibold tracking-tight text-white">AI 产品 / 小 Agent / 快速实验</h1>
       <p class="max-w-3xl text-sm leading-7 text-stone-300/84">
-        这里以后会放我做的一些更轻、更快、也更偏实验性的东西。它们不一定是大项目，但能比较直接地反映我最近在研究什么。
+        这里会放我围绕 AI 应用开发、AI 产品经理、AI 全栈和解决方案做的实验。它们不一定是大项目，但能比较直接地反映我最近在研究什么。
       </p>
     </section>
 
@@ -67,7 +67,7 @@ const labItems: LabItem[] = [
     <section class="panel-card space-y-4">
       <div class="section-title">这个页面之后会放什么</div>
       <ul class="space-y-3 text-sm leading-7 text-stone-300/84">
-        <li class="detail-list-item">已经做出来的轻量工具、agent demo 和一些桌面小实验。</li>
+        <li class="detail-list-item">已经做出来或正在推进的 AI 产品原型、agent demo 和解决方案草案。</li>
         <li class="detail-list-item">它们现在分别处在 idea、building 还是 shipping 的哪个阶段。</li>
         <li class="detail-list-item">以后也可以慢慢补 live 链接、截图和简短说明，做成一个持续更新的小实验区。</li>
       </ul>

@@ -30,43 +30,43 @@ const ABOUT_INTRO_SESSION_KEY = 'about-hero-intro-played'
 const capabilityCards: CapabilityCard[] = [
   {
     id: 'motion',
-    label: '01 / 前端与体验',
-    title: '前端与交互',
-    kicker: 'Frontend & interaction',
-    summary: '我关注的不只是页面完成度，也包括交互透明度、信息层级和长期可维护性。',
-    bullets: ['React 18 / Vue 3', '复杂页面组织', '地图 / AI / 多端体验'],
+    label: '01 / AI 应用开发',
+    title: 'AI 应用开发',
+    kicker: 'AI application engineering',
+    summary: '我关注如何把模型能力、工具调用、业务数据和前端状态组织成真实可用的产品体验。',
+    bullets: ['Tool Calling', 'SSE 流式状态', '可解释 / 可验证'],
   },
   {
     id: 'frontend',
-    label: '02 / AI 应用开发',
-    title: 'AI 应用开发',
-    kicker: 'AI application engineering',
-    summary: '我更关心如何把 AI 能力做成真实可用、可解释、可验证的产品体验，而不是只做模型接入。',
-    bullets: ['Tool Calling', 'SSE 流式状态', '边界 / 校验 / 解释性'],
+    label: '02 / AI 全栈',
+    title: 'AI 全栈交付',
+    kicker: 'AI full-stack delivery',
+    summary: '我能从前端工作台、后端接口、数据建模、认证部署一路串到 AI Provider 与工具执行层。',
+    bullets: ['React / Vue / TypeScript', 'Node.js / PostgreSQL', 'Provider / Tool Loop'],
   },
   {
     id: 'systems',
-    label: '03 / 全栈交付',
-    title: '全栈交付',
-    kicker: 'End-to-end delivery',
-    summary: '除了前端本身，我也能把接口设计、认证、数据库、缓存、联调和部署串成一条完整交付链路。',
-    bullets: ['Express / PostgreSQL', 'JWT / CORS / 限流', '从体验反推接口'],
+    label: '03 / AI 产品经理',
+    title: 'AI 产品经理视角',
+    kicker: 'AI product thinking',
+    summary: '我习惯先界定场景、用户任务、功能边界和验收标准，再把需求拆成可实现、可测试的系统链路。',
+    bullets: ['需求拆解', '交互流程', '验收标准'],
   },
   {
     id: 'delivery',
-    label: '04 / 工程化与架构',
-    title: '工程化与架构',
-    kicker: 'Architecture & engineering',
-    summary: '我习惯先想分层、状态机、事件契约、数据建模和扩展边界，再落到具体代码。',
-    bullets: ['状态流设计', 'AI 协作质量控制', '复杂系统结构化'],
+    label: '04 / AI 解决方案',
+    title: 'AI 解决方案落地',
+    kicker: 'AI solution design',
+    summary: '我会把业务问题拆成数据、工具、模型、界面和部署几层，优先做能被解释、复用和持续迭代的方案。',
+    bullets: ['方案拆解', '工具编排', '工程化落地'],
   },
 ]
 
 const roles = [
-  '前端开发工程师',
   'AI 应用开发工程师',
-  '全栈交付实践者',
-  '工程化架构设计实践者',
+  'AI 全栈开发者',
+  'AI 产品经理',
+  'AI 解决方案实践者',
 ]
 
 const featuredSlugs = ['fitmind-ai', 'easemove', 'real-scene-3d']
@@ -80,7 +80,7 @@ const featuredProjects = computed(() =>
 const signalMetrics = [
   { value: '1+', label: '年 AI 结对开发实践' },
   { value: '8+', label: '完整项目交付' },
-  { value: '3', label: '主线能力方向' },
+  { value: '4', label: 'AI 主线能力方向' },
 ]
 
 let cleanup: (() => void) | undefined
@@ -500,7 +500,7 @@ onUnmounted(() => {
         <div class="space-y-7">
           <div data-hero-kicker class="eyebrow-pill">
             <span class="dot-live"></span>
-            <span>求职方向：前端开发工程师 / AI 应用开发工程师</span>
+            <span>求职方向：AI 应用开发 / AI 全栈 / AI 产品经理 / AI 解决方案</span>
           </div>
 
           <div class="space-y-4">
@@ -517,11 +517,11 @@ onUnmounted(() => {
                 <span class="text-gradient-sky typing-cursor">{{ displayText }}</span>
               </div>
               <p class="max-w-2xl">
-                我目前的主线方向是前端开发与 AI 应用开发。相比“把模型接上去”，我更关心如何把 AI 能力做成真实可用、
-                可解释、可验证的产品体验，同时把状态流、接口边界、数据建模和部署落地这些工程问题一起处理好。
+                我目前的主线方向是 AI 应用开发、AI 全栈、AI 产品经理与 AI 解决方案。相比“把模型接上去”，
+                我更关心如何把 AI 能力做成真实可用、可解释、可验证的产品体验，并把状态流、接口边界、数据建模和部署落地一起处理好。
               </p>
               <p class="max-w-xl text-[0.95rem] text-stone-300/78">
-                我希望下一份工作仍然以前端为主，但能更靠近 AI 应用、复杂交互系统、平台工作台和需要较强工程化能力的产品团队。
+                我希望下一份工作能更靠近 AI 原生应用、智能工作台、agent 工具编排、AI 产品规划和需要强工程落地能力的解决方案团队。
               </p>
             </div>
           </div>
@@ -546,7 +546,7 @@ onUnmounted(() => {
               <div data-hero-tag class="orbital-tag">React / Vue / TypeScript</div>
               <div data-hero-tag class="orbital-tag orbital-tag-shift">Node.js / Express / PostgreSQL</div>
               <div data-hero-tag class="orbital-tag">Tool Calling / SSE Streaming</div>
-              <div data-hero-tag class="orbital-tag orbital-tag-shift">Cesium / EarthSDK / Docker / Nginx</div>
+              <div data-hero-tag class="orbital-tag orbital-tag-shift">AI Product / Agent / Solution Design</div>
             </div>
           </div>
           <div class="hero-side-caption">
@@ -631,16 +631,16 @@ onUnmounted(() => {
         <div class="section-title">我现在在做什么</div>
         <div class="space-y-3 text-sm leading-7 text-stone-300/84">
           <p>
-            现在我最想持续推进的方向，是把前端开发能力和 AI 应用能力放到一起做成长线。这也是为什么最近的项目里，
-            我会同时关注 UI、状态流、后端边界、数据来源和可解释性。
+            现在我最想持续推进的方向，是把 AI 应用开发、全栈交付和产品判断放到一起做成长线。这也是为什么最近的项目里，
+            我会同时关注 UI、状态流、后端边界、工具调用、数据来源和可解释性。
           </p>
           <p>
-            FitMind 代表了我在 AI 应用工程上的主线尝试，EaseMove、SunSafe 和实习里的 WebGIS 项目，
-            则继续补强我在复杂前端交互、空间可视化、全栈交付和工程化排障方面的经验。
+            FitMind 代表了我在 AI 应用工程和 AI 产品化上的主线尝试，EaseMove、SunSafe 和实习里的 WebGIS 项目，
+            则继续补强我在复杂交互、数据产品、全栈交付和工程化排障方面的经验。
           </p>
           <p>
-            我希望下一份工作仍然以前端为主，但能更靠近 AI 应用、复杂交互系统、平台工作台、
-            数据产品界面或需要较强工程化能力的产品团队。
+            我希望下一份工作能更靠近 AI 应用、智能工作台、agent 工具编排、AI 产品经理协作、
+            数据产品界面或需要较强工程化能力的解决方案团队。
           </p>
         </div>
       </article>
@@ -652,7 +652,7 @@ onUnmounted(() => {
           <div>GPA：3.2 / 4.0</div>
           <div>本科：南京信息工程大学 · 软件工程（专业前 10%）</div>
           <div>英语：CET-6 · 雅思 6.5</div>
-          <div>方向：前端开发 / AI 应用开发 / 全栈交付 / 工程化架构</div>
+          <div>方向：AI 应用开发 / AI 全栈 / AI 产品经理 / AI 解决方案</div>
           <div>邮箱：<span class="text-white">JX15996596656@163.com</span></div>
           <div>GitHub：<a href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer">Andrew-JX</a></div>
           <div>Gitee：<a href="https://gitee.com/ji-minyu" target="_blank" rel="noreferrer">ji-minyu</a></div>
@@ -666,11 +666,12 @@ onUnmounted(() => {
           <div class="section-title">下一步想做的小东西</div>
           <div class="space-y-3 text-sm leading-7 text-stone-300/84">
             <p>
-              除了主项目，我还想持续做一些更轻、更快、更验证想法的小工具，放进自己的 Lab 里。
-              这些东西不一定很大，但会更直接地体现我对 agent、桌面交互、自动化流程和产品手感的理解。
+              除了主项目，我还想持续做一些更轻、更快、更验证想法的小工具和 AI 产品原型，放进自己的 Lab 里。
+              这些东西不一定很大，但会更直接地体现我对 agent、工作流、自动化流程和产品手感的理解。
             </p>
             <p>
-              目前已经在考虑的方向包括：语音转文字、字幕播放悬浮窗、自助播放歌单，以及把 FitMind 继续往 agent 形态推进。
+              目前重点会围绕 <span class="text-white">ai-pm-dev</span> 这条线推进：用 AI 产品经理视角拆需求、做原型、接工具、验证工作流，
+              同时把 FitMind 继续往 agent 形态推进。
             </p>
           </div>
         </article>
@@ -678,9 +679,9 @@ onUnmounted(() => {
         <article class="panel-card panel-contrast space-y-5">
           <div class="section-title">现在的 Lab 方向</div>
           <div class="space-y-3 text-sm leading-7 text-stone-300/84">
-            <div class="detail-list-item">语音转文字：偏效率工具和轻量工作流。</div>
-            <div class="detail-list-item">字幕悬浮窗：偏桌面场景和交互细节。</div>
-            <div class="detail-list-item">自助播放歌单：偏自动化体验与状态管理。</div>
+            <div class="detail-list-item">ai-pm-dev：偏 AI 产品经理、需求拆解、原型验证与解决方案沉淀。</div>
+            <div class="detail-list-item">AI 工作流工具：偏效率工具、自动化流程和轻量 agent 体验。</div>
+            <div class="detail-list-item">智能工作台：偏复杂界面、状态管理和可解释的操作反馈。</div>
             <div class="detail-list-item">FitMind Agent 化：偏工具编排、上下文和任务边界。</div>
           </div>
           <div class="flex flex-wrap gap-3">
