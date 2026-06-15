@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+
 const resumes = [
   {
     title: 'Resume 1',
@@ -11,6 +13,12 @@ const resumes = [
     href: '/resume2.pdf',
   },
 ]
+
+const activeResumeHref = ref(resumes[0]?.href ?? '/resume1.pdf')
+
+const activeResume = computed(
+  () => resumes.find((resume) => resume.href === activeResumeHref.value) ?? resumes[0],
+)
 
 const quickReads = [
   {
@@ -61,6 +69,13 @@ const quickReads = [
           <h2 class="mt-2 text-xl font-semibold tracking-tight text-white">{{ resume.subtitle }}</h2>
         </div>
         <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="button-primary"
+            @click="activeResumeHref = resume.href"
+          >
+            Preview
+          </button>
           <a class="button-primary" :href="resume.href" download>Download</a>
           <a class="button-secondary" :href="resume.href" target="_blank" rel="noreferrer">Open PDF</a>
         </div>
@@ -81,7 +96,24 @@ const quickReads = [
     </section>
 
     <div class="resume-preview-shell">
-      <object data="/resume1.pdf" type="application/pdf" class="h-[78vh] w-full">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/8 px-4 py-3">
+        <div class="text-sm font-semibold text-white">
+          Preview: {{ activeResume?.title }} · {{ activeResume?.subtitle }}
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="resume in resumes"
+            :key="`preview-${resume.href}`"
+            type="button"
+            class="chip-button"
+            :class="resume.href === activeResumeHref ? 'chip-button-active' : ''"
+            @click="activeResumeHref = resume.href"
+          >
+            {{ resume.title }}
+          </button>
+        </div>
+      </div>
+      <object :data="activeResume?.href" type="application/pdf" class="h-[78vh] w-full">
         <div class="p-6 text-sm text-stone-300/84">
           浏览器不支持预览 PDF。请点击上方按钮下载，或确认简历文件已经放在 <code>public/resume1.pdf</code> 与 <code>public/resume2.pdf</code>。
         </div>

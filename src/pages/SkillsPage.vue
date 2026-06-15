@@ -4,6 +4,7 @@ type LabItem = {
   stage: string
   summary: string
   tags: string[]
+  repo?: string
 }
 
 const labItems: LabItem[] = [
@@ -12,6 +13,14 @@ const labItems: LabItem[] = [
     stage: 'Building',
     summary: '当前正在推进的 AI 产品经理与 AI 应用开发实验区，重点沉淀需求拆解、原型验证、工具调用和解决方案表达。',
     tags: ['AI PM', 'AI App', 'Solution'],
+    repo: 'https://github.com/Andrew-JX/ai-pm-dev',
+  },
+  {
+    title: 'cat-note-illustrations',
+    stage: 'Shipping',
+    summary: '面向中文文章、笔记和知识型内容的猫猫风格插图生成 Skill，用更轻的视觉资产帮助内容表达变得更亲和、更容易被记住。',
+    tags: ['Skill', 'Image Prompt', 'Content UX'],
+    repo: 'https://github.com/Andrew-JX/cat-note-illustrations',
   },
   {
     title: 'AI 工作流工具',
@@ -60,6 +69,10 @@ const labItems: LabItem[] = [
           <span v-for="tag in item.tags" :key="tag" class="chip">
             {{ tag }}
           </span>
+        </div>
+
+        <div v-if="item.repo" class="pt-1">
+          <a class="button-secondary" :href="item.repo" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </article>
     </section>
