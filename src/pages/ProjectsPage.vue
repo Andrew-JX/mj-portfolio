@@ -54,6 +54,10 @@ const categories: ProjectCategory[] = [
   },
 ]
 
+function getActiveCategory() {
+  return categories.find((category) => category.label === selectedCategory.value) ?? categories[0]!
+}
+
 const filtered = computed(() => {
   const keyword = q.value.trim().toLowerCase()
 
@@ -72,8 +76,7 @@ const filtered = computed(() => {
         .toLowerCase()
         .includes(keyword)
 
-    const activeCategory = categories.find((category) => category.label === selectedCategory.value) ?? categories[0]
-    const matchesCategory = activeCategory.matches(project)
+    const matchesCategory = getActiveCategory().matches(project)
 
     return matchesKeyword && matchesCategory
   })
