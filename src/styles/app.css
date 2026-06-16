@@ -974,6 +974,313 @@ select {
   min-height: 3.15rem;
 }
 
+.project-preview-visual {
+  min-height: 8.5rem;
+}
+
+.project-preview-visual-fitmind-ai {
+  transform: rotate(4deg);
+}
+
+.project-preview-visual-easemove {
+  transform: rotate(-3deg);
+}
+
+.project-preview-visual-real-scene-3d {
+  transform: rotate(3deg) perspective(900px) rotateX(4deg);
+}
+
+.project-visual-row,
+.project-visual-score,
+.project-visual-coords,
+.project-visual-confidence,
+.project-visual-reminder {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 247, 238, 0.9);
+}
+
+.project-visual-row {
+  padding: 0.55rem 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.project-visual-pulse {
+  height: 0.55rem;
+  width: 0.55rem;
+  border-radius: 999px;
+  background: #fef3c7;
+  box-shadow: 0 0 0 0.38rem rgba(254, 243, 199, 0.1);
+}
+
+.project-visual-bars {
+  display: grid;
+  min-height: 4.2rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
+  gap: 0.42rem;
+  border-radius: 0.95rem;
+  background: rgba(0, 0, 0, 0.14);
+  padding: 0.65rem;
+}
+
+.project-visual-bars span {
+  height: var(--bar-height);
+  min-height: 1.2rem;
+  border-radius: 999px 999px 0.3rem 0.3rem;
+  background: linear-gradient(180deg, rgba(255, 247, 237, 0.92), rgba(251, 146, 60, 0.42));
+}
+
+.project-visual-chat,
+.project-visual-records,
+.project-visual-diary {
+  display: grid;
+  gap: 0.38rem;
+}
+
+.project-visual-chat span,
+.project-visual-records span,
+.project-visual-diary span {
+  display: block;
+  height: 0.48rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.project-visual-chat span:nth-child(1),
+.project-visual-diary span:nth-child(1) {
+  width: 72%;
+}
+
+.project-visual-chat span:nth-child(2),
+.project-visual-diary span:nth-child(2) {
+  width: 92%;
+}
+
+.project-visual-chat span:nth-child(3),
+.project-visual-diary span:nth-child(3) {
+  width: 56%;
+}
+
+.project-visual-map {
+  position: relative;
+  min-height: 5.9rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    rgba(1, 22, 39, 0.26);
+  background-size: 1.45rem 1.45rem;
+}
+
+.project-visual-route {
+  position: absolute;
+  left: 18%;
+  top: 48%;
+  height: 0.28rem;
+  width: 68%;
+  border-radius: 999px;
+  background: #cffafe;
+  box-shadow: 0 0 18px rgba(207, 250, 254, 0.58);
+  transform: rotate(-19deg);
+}
+
+.project-visual-pin {
+  position: absolute;
+  height: 0.8rem;
+  width: 0.8rem;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.82);
+  background: #06b6d4;
+}
+
+.project-visual-pin-a {
+  left: 18%;
+  top: 58%;
+}
+
+.project-visual-pin-b {
+  right: 14%;
+  top: 28%;
+}
+
+.project-visual-score,
+.project-visual-confidence {
+  padding: 0.55rem 0.7rem;
+}
+
+.project-visual-score span,
+.project-visual-confidence span,
+.project-visual-coords span {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 247, 237, 0.72);
+}
+
+.project-visual-score strong,
+.project-visual-confidence strong,
+.project-visual-uv strong {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.project-visual-terrain {
+  position: relative;
+  min-height: 6.4rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  background:
+    linear-gradient(135deg, transparent 0 34%, rgba(255, 255, 255, 0.14) 35% 36%, transparent 37%),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 0.9rem),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0 1px, transparent 1px 1rem),
+    rgba(20, 10, 35, 0.2);
+  transform: skewY(-5deg);
+}
+
+.project-visual-measure-line {
+  position: absolute;
+  left: 19%;
+  top: 46%;
+  height: 0.18rem;
+  width: 58%;
+  border-radius: 999px;
+  background: #f5d0fe;
+  transform: rotate(20deg);
+}
+
+.project-visual-measure-dot {
+  position: absolute;
+  height: 0.7rem;
+  width: 0.7rem;
+  border-radius: 999px;
+  background: #fef3c7;
+}
+
+.project-visual-measure-a {
+  left: 18%;
+  top: 37%;
+}
+
+.project-visual-measure-b {
+  right: 19%;
+  top: 58%;
+}
+
+.project-visual-coords {
+  gap: 0.55rem;
+  justify-content: flex-start;
+  padding: 0.55rem 0.65rem;
+}
+
+.project-visual-sync {
+  position: relative;
+  display: grid;
+  min-height: 5.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.project-visual-sync::before {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 50%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.project-visual-sync span {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.project-visual-records span:nth-child(1) {
+  width: 86%;
+}
+
+.project-visual-records span:nth-child(2) {
+  width: 64%;
+}
+
+.project-visual-records span:nth-child(3) {
+  width: 78%;
+}
+
+.project-visual-uv {
+  display: grid;
+  min-height: 5.8rem;
+  place-items: center;
+  border-radius: 1rem;
+  background: radial-gradient(circle at 50% 48%, rgba(254, 240, 138, 0.35), transparent 48%), rgba(255, 255, 255, 0.08);
+  color: #fff7ed;
+}
+
+.project-visual-uv span {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+}
+
+.project-visual-scan {
+  display: grid;
+  min-height: 6rem;
+  place-items: center;
+  border-radius: 1rem;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+    rgba(255, 255, 255, 0.07);
+  background-size: 1.2rem 1.2rem;
+}
+
+.project-visual-scan span {
+  display: block;
+  height: 3.4rem;
+  width: 3.4rem;
+  border-radius: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.52);
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.project-visual-phone {
+  display: grid;
+  min-height: 6.4rem;
+  gap: 0.45rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.18);
+  padding: 0.85rem;
+}
+
+.project-visual-phone span {
+  display: block;
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.project-visual-reminder {
+  margin-top: 0.2rem;
+  justify-content: center;
+  padding: 0.45rem 0.7rem;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.05rem;
+}
+
 .project-preview-content {
   inset: auto 1rem 1rem 1rem;
   z-index: 2;
