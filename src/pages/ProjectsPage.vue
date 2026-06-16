@@ -9,11 +9,50 @@ import type { ProjectLinkEntry, ProjectLinkKey } from '@/types'
 
 gsap.registerPlugin(ScrollTrigger)
 
+type ProjectItem = (typeof projects)[number]
+type ProjectCategory = {
+  label: string
+  matches: (project: ProjectItem) => boolean
+}
+
 const pageRef = ref<HTMLElement | null>(null)
 const q = ref('')
-const selectedTag = ref('All')
+const selectedCategory = ref('All')
 
-const availableTags = computed(() => ['All', ...new Set(projects.flatMap((project) => project.stack))])
+const categories: ProjectCategory[] = [
+  {
+    label: 'All',
+    matches: (_project) => true,
+  },
+  {
+    label: 'AI / Agent',
+    matches: (project) =>
+      project.stack.some((tech) => ['Tool Calling', 'PyTorch', 'ResNet-18'].includes(tech)) ||
+      project.positionTag.includes('AI'),
+  },
+  {
+    label: 'AI Product',
+    matches: (project) =>
+      project.slug === 'fitmind-ai' || project.positionTag.includes('Data Product'),
+  },
+  {
+    label: 'Full-stack',
+    matches: (project) =>
+      project.positionTag.includes('Full-stack') ||
+      project.stack.some((tech) => ['Node.js', 'Express', 'PostgreSQL', 'Spring Boot'].includes(tech)),
+  },
+  {
+    label: 'Data / GIS',
+    matches: (project) =>
+      project.stack.some((tech) => ['Leaflet', 'Mapbox GL', 'Cesium', 'EarthSDK', 'SuperMap3D', 'Open Data'].includes(tech)),
+  },
+  {
+    label: 'Mobile / Course',
+    matches: (project) =>
+      project.stack.some((tech) => ['Kotlin', 'Jetpack Compose', 'Firebase Hosting'].includes(tech)) ||
+      project.visibility === 'course',
+  },
+]
 
 const filtered = computed(() => {
   const keyword = q.value.trim().toLowerCase()
@@ -33,9 +72,10 @@ const filtered = computed(() => {
         .toLowerCase()
         .includes(keyword)
 
-    const matchesTag = selectedTag.value === 'All' || project.stack.includes(selectedTag.value)
+    const activeCategory = categories.find((category) => category.label === selectedCategory.value) ?? categories[0]
+    const matchesCategory = activeCategory.matches(project)
 
-    return matchesKeyword && matchesTag
+    return matchesKeyword && matchesCategory
   })
 })
 
@@ -144,7 +184,7 @@ onUnmounted(() => {
         <div class="panel-card panel-citrus space-y-4">
           <div class="section-title">说明</div>
           <p class="text-sm leading-7 text-stone-300/82">
-            有些项目偏 AI 应用，有些偏复杂前端、地图可视化或者全栈交付，可以按技术栈和关键词筛选着看。
+            有些项目偏 AI 应用，有些偏复杂前端、地图可视化或者全栈交付，可以按项目类型和关键词筛选着看。
           </p>
         </div>
       </div>
@@ -157,23 +197,23 @@ onUnmounted(() => {
           <input
             v-model="q"
             aria-label="Search projects"
-            placeholder="Search title, stack, keyword..."
+            placeholder="Search title, category, keyword..."
             class="showcase-input"
           />
         </label>
 
         <div class="min-w-0 space-y-2 xl:pl-2">
-          <div class="text-xs font-medium uppercase tracking-[0.24em] text-stone-500">Stack Filter</div>
+          <div class="text-xs font-medium uppercase tracking-[0.24em] text-stone-500">Category Filter</div>
           <div class="flex flex-wrap items-start gap-2">
             <button
-              v-for="tag in availableTags"
-              :key="tag"
+              v-for="category in categories"
+              :key="category.label"
               type="button"
               class="chip-button"
-              :class="tag === selectedTag ? 'chip-button-active' : ''"
-              @click="selectedTag = tag"
+              :class="category.label === selectedCategory ? 'chip-button-active' : ''"
+              @click="selectedCategory = category.label"
             >
-              {{ tag }}
+              {{ category.label }}
             </button>
           </div>
         </div>

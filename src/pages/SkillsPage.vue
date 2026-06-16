@@ -54,18 +54,6 @@ const labItems: LabItem[] = [
     ],
   },
   {
-    title: 'AI 工作流工具',
-    stage: 'Idea',
-    summary: '围绕真实工作流继续做轻量工具，把输入、处理、解释和输出串起来，验证 AI 能否稳定进入日常任务，而不是只停留在一次性 demo。',
-    tags: ['Workflow', 'Agent', 'Automation'],
-  },
-  {
-    title: '智能工作台原型',
-    stage: 'Idea',
-    summary: '偏复杂界面和状态管理，希望把 AI 操作过程、工具结果和用户决策放在同一个可追踪工作台里。',
-    tags: ['Workspace', 'State', 'UX'],
-  },
-  {
     title: 'FitMind Agent',
     stage: 'Exploring',
     summary: '有可能把 FitMind 继续往 agent 方向推进，重点看任务边界、工具编排和上下文组织。',
