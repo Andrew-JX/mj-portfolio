@@ -228,7 +228,7 @@ onUnmounted(() => {
         v-for="project in filtered"
         :key="project.slug"
         data-project-card
-        class="project-card-shell"
+        class="project-card-shell border-glow-card"
       >
         <ProjectPreviewFrame :media="getProjectMedia(project.slug)" compact />
 

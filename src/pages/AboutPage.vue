@@ -83,10 +83,10 @@ const signalMetrics = [
   { value: '4', label: 'AI 主线能力方向' },
 ]
 
-const lanyardLinks = [
-  { label: 'GitHub', url: 'https://github.com/Andrew-JX/' },
-  { label: 'Portfolio CN', url: 'https://mj-portfolio.jx15996596656.workers.dev' },
-  { label: 'Portfolio Global', url: 'https://mj-portfolio-gray.vercel.app/#/' },
+const pressureLines = [
+  { text: 'MINYU', accent: false, cn: false },
+  { text: 'JI', accent: true, cn: false },
+  { text: '吉敏宇', accent: false, cn: true },
 ]
 
 let cleanup: (() => void) | undefined
@@ -145,6 +145,53 @@ function tick() {
   }
 
   typingTimer = setTimeout(tick, isDeleting.value ? 48 : 92)
+}
+
+function handlePressureMove(event: PointerEvent) {
+  if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return
+  }
+
+  const root = event.currentTarget as HTMLElement | null
+
+  if (!root) {
+    return
+  }
+
+  const chars = Array.from(root.querySelectorAll<HTMLElement>('[data-pressure-char]'))
+
+  chars.forEach((char) => {
+    const rect = char.getBoundingClientRect()
+    const centerX = rect.left + rect.width / 2
+    const centerY = rect.top + rect.height / 2
+    const dx = event.clientX - centerX
+    const dy = event.clientY - centerY
+    const distance = Math.hypot(dx, dy)
+    const strength = Math.max(0, 1 - distance / 260)
+    const squeeze = 1 - strength * 0.2
+    const stretch = 1 + strength * 0.34
+    const lift = -strength * 14
+
+    char.style.setProperty('--pressure-scale-x', squeeze.toFixed(3))
+    char.style.setProperty('--pressure-scale-y', stretch.toFixed(3))
+    char.style.setProperty('--pressure-y', `${lift.toFixed(2)}px`)
+    char.style.setProperty('--pressure-shadow', strength.toFixed(3))
+  })
+}
+
+function resetPressure(event: PointerEvent) {
+  const root = event.currentTarget as HTMLElement | null
+
+  if (!root) {
+    return
+  }
+
+  root.querySelectorAll<HTMLElement>('[data-pressure-char]').forEach((char) => {
+    char.style.removeProperty('--pressure-scale-x')
+    char.style.removeProperty('--pressure-scale-y')
+    char.style.removeProperty('--pressure-y')
+    char.style.removeProperty('--pressure-shadow')
+  })
 }
 
 function syncIntroLineToHeroCard(root: HTMLElement) {
@@ -510,11 +557,30 @@ onUnmounted(() => {
           </div>
 
           <div class="space-y-4">
-            <div data-hero-title-shell class="hero-title-shell">
-              <div class="impact-stack">
-              <div data-hero-line class="impact-line">MINYU</div>
-              <div data-hero-line class="impact-line impact-line-accent">JI</div>
-              <div data-hero-line class="impact-line impact-line-cn">吉敏宇</div>
+            <div
+              data-hero-title-shell
+              class="hero-title-shell"
+              @pointermove="handlePressureMove"
+              @pointerleave="resetPressure"
+            >
+              <div class="impact-stack pressure-title">
+              <div
+                v-for="line in pressureLines"
+                :key="line.text"
+                data-hero-line
+                class="impact-line pressure-word"
+                :class="{ 'impact-line-accent': line.accent, 'impact-line-cn': line.cn }"
+              >
+                <span
+                  v-for="(char, index) in Array.from(line.text)"
+                  :key="`${line.text}-${index}`"
+                  data-pressure-char
+                  class="pressure-char"
+                  :style="{ '--pressure-index': index }"
+                >
+                  {{ char }}
+                </span>
+              </div>
               </div>
             </div>
 
@@ -538,7 +604,7 @@ onUnmounted(() => {
           </div>
 
           <div class="grid gap-3 sm:grid-cols-3">
-            <article v-for="item in signalMetrics" :key="item.label" data-hero-metric class="metric-card">
+            <article v-for="item in signalMetrics" :key="item.label" data-hero-metric class="metric-card border-glow-card">
               <div class="metric-value">{{ item.value }}</div>
               <div class="metric-label">{{ item.label }}</div>
             </article>
@@ -546,7 +612,7 @@ onUnmounted(() => {
         </div>
 
         <div data-hero-side class="hero-side">
-          <div class="hero-side-panel">
+          <div class="hero-side-panel border-glow-card">
             <div class="section-title text-stone-500">Core Stack</div>
             <div class="space-y-4">
               <div data-hero-tag class="orbital-tag">React / Vue / TypeScript</div>
@@ -555,7 +621,7 @@ onUnmounted(() => {
               <div data-hero-tag class="orbital-tag orbital-tag-shift">AI Product / Agent / Solution Design</div>
             </div>
           </div>
-          <div class="hero-side-caption">
+          <div class="hero-side-caption border-glow-card">
             <span class="index-badge">Monash University</span>
             <p>
               Master of IT（2025.03 - 2026.10）
@@ -566,57 +632,6 @@ onUnmounted(() => {
         </div>
         </div>
       </div>
-    </section>
-
-    <section class="lanyard-section" aria-label="Personal lanyard card">
-      <div class="lanyard-rig" aria-hidden="true">
-        <span class="lanyard-strap lanyard-strap-left"></span>
-        <span class="lanyard-strap lanyard-strap-right"></span>
-        <span class="lanyard-ring"></span>
-      </div>
-
-      <article class="lanyard-card">
-        <div class="lanyard-card-glow" aria-hidden="true"></div>
-        <div class="lanyard-card-top">
-          <div>
-            <div class="section-title">Personal Card</div>
-            <h2 class="lanyard-name">Minyu Ji / 吉敏宇</h2>
-          </div>
-          <div class="lanyard-avatar" aria-hidden="true">MJ</div>
-        </div>
-
-        <div class="lanyard-role-grid">
-          <div class="lanyard-role-item">
-            <span>Focus</span>
-            <strong>AI App / AI PM / Full-stack</strong>
-          </div>
-          <div class="lanyard-role-item">
-            <span>Current</span>
-            <strong>Monash MIT · Melbourne</strong>
-          </div>
-          <div class="lanyard-role-item">
-            <span>Signal</span>
-            <strong>Product-minded AI builder</strong>
-          </div>
-        </div>
-
-        <p class="lanyard-summary">
-          I turn AI ideas into usable product workflows: define scope, wire full-stack systems,
-          keep the model grounded with tools, and polish the interface until the work can be explained.
-        </p>
-
-        <div class="lanyard-links">
-          <a
-            v-for="link in lanyardLinks"
-            :key="link.url"
-            :href="link.url"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {{ link.label }}
-          </a>
-        </div>
-      </article>
     </section>
 
     <section data-rail-section class="capability-carousel-section">
@@ -659,7 +674,7 @@ onUnmounted(() => {
           :key="project.slug"
           :to="`/projects/${project.slug}`"
           data-showcase-card
-          class="project-frame project-frame-featured"
+          class="project-frame project-frame-featured border-glow-card"
         >
           <ProjectPreviewFrame :media="getProjectMedia(project.slug)" compact />
           <div class="project-frame-meta">
