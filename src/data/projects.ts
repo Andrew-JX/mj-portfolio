@@ -46,6 +46,34 @@ export const projects: Project[] = [
     visibility: 'public',
   },
   {
+    slug: 'ai-pm-dev',
+    title: 'AI PM Dev Agent',
+    period: '2026.06 - Present',
+    positionTag: 'AI Product / Workflow',
+    stack: ['TypeScript', 'Node.js', 'CLI', 'Agent Workflow', 'PRD', 'Codex', 'v0', 'Figma'],
+    oneLiner:
+      '面向 AI 辅助产品开发的本地 Idea-to-Build workflow CLI，通过项目操作层、PM 访谈、PRD / scope / acceptance tests 和质量门禁，把一次性 AI 对话沉淀成可交接、可复用、可验证的开发资产。',
+    links: {
+      repo: 'https://github.com/Andrew-JX/ai-pm-dev',
+    },
+    aiNote:
+      'AI 协作：这个项目本身就是围绕 AI 协作方式的产品化探索。我把真实 AI coding 中的上下文漂移、任务跳步、不砍需求、验收缺失等痛点抽象成 workflow kernel，并通过 CLI、Skill、文档契约和质量门禁落到可运行工具里。',
+    contributions: [
+      '设计 Idea -> PRD -> Operating Layer -> Build Handoff 的本地工作流，把模糊想法转成下游 AI 工具能直接读取的项目资产。',
+      '通过 AGENTS.md + docs 为每个项目安装协作操作层，让 Codex、Claude Code、v0、Figma 打开项目后知道边界、上下文和需要维护的文档。',
+      '实现交互式 PM 访谈与 scope 约束，强制明确 must-have、非目标、单一指标和 acceptance tests，避免需求在 AI 协作中越做越散。',
+      '把 product-spec、design-brief、dev-plan、build、bug-fix、review、release 等环节拆成带维护契约的 Skill，而不是只做松散 prompt 模板。',
+      '提供 prd check --strict、doctor、handoff prompt 和意图-实现对账思路，让工具不仅能生成文档，也能作为质量门禁进入开发流程。',
+    ],
+    highlights: [
+      '定位克制：不是 Dify / Coze 替代品，也不是通用多 Agent 平台，而是更底层的 AI 产品开发 workflow kernel。',
+      '核心价值不是“多生成几页文档”，而是逼出并保存产品判断、优先级、边界、风险和验收标准。',
+      '主入口从“生成交接 prompt”重构为“给项目安装操作层”，体现了在真实使用反馈下推翻旧设计并重建定位的能力。',
+      '适合作为 AI 产品经理、AI 全栈和 AI 解决方案能力的交叉项目，能同时讲清产品问题、工程抽象和协作流程。',
+    ],
+    visibility: 'public',
+  },
+  {
     slug: 'easemove',
     title: 'EaseMove Melbourne / MoveComfortly',
     period: '2026.03 - 2026.05（团队项目）',

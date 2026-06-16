@@ -713,6 +713,132 @@ select {
   }
 }
 
+.lab-card-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .lab-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.lab-tilt-card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --glow-x: 50%;
+  --glow-y: 0%;
+  position: relative;
+  min-height: 24rem;
+  overflow: hidden;
+  border-radius: 1.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.025)),
+    radial-gradient(circle at 80% 12%, rgba(251, 146, 60, 0.16), transparent 30%),
+    var(--bg-elevated);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(0);
+  transform-style: preserve-3d;
+  transition: transform 0.22s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  padding: 1.1rem;
+}
+
+.lab-tilt-card:hover {
+  border-color: rgba(251, 146, 60, 0.28);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+}
+
+.lab-tilt-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--glow-x) var(--glow-y), rgba(255, 255, 255, 0.24), transparent 24rem);
+  opacity: 0;
+  transition: opacity 0.24s ease;
+  pointer-events: none;
+}
+
+.lab-tilt-card:hover .lab-tilt-glow {
+  opacity: 1;
+}
+
+.lab-tilt-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 78%);
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.lab-card-top,
+.lab-tilt-card .chip,
+.lab-tilt-card .detail-list-item,
+.lab-tilt-card .button-secondary {
+  position: relative;
+  z-index: 1;
+  transform: translateZ(32px);
+}
+
+.lab-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.9rem;
+}
+
+.lab-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.35rem, 3vw, 2.05rem);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: #fff7ed;
+}
+
+.lab-card-summary {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: rgba(231, 229, 228, 0.84);
+}
+
+.lab-stage-pill {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  border: 1px solid rgba(251, 146, 60, 0.26);
+  background: rgba(251, 146, 60, 0.1);
+  padding: 0.35rem 0.72rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transform: translateZ(44px);
+}
+
+[data-theme="light"] .lab-tilt-card {
+  border-color: rgba(166, 117, 70, 0.16);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 244, 230, 0.78)),
+    radial-gradient(circle at 80% 12%, rgba(251, 146, 60, 0.13), transparent 30%);
+}
+
+[data-theme="light"] .lab-card-title {
+  color: #1c1917;
+}
+
+[data-theme="light"] .lab-card-summary {
+  color: rgba(68, 64, 60, 0.84);
+}
+
 .rail-card-top {
   display: flex;
   flex-wrap: wrap;
@@ -1067,6 +1193,78 @@ select {
 .project-visual-chat span:nth-child(3),
 .project-visual-diary span:nth-child(3) {
   width: 56%;
+}
+
+.project-visual-workflow {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.project-visual-workflow::before {
+  content: "";
+  position: absolute;
+  left: 13%;
+  right: 13%;
+  top: 50%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.project-visual-workflow span {
+  position: relative;
+  display: grid;
+  min-height: 3.3rem;
+  place-items: center;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 247, 237, 0.88);
+}
+
+.project-visual-checklist {
+  display: grid;
+  gap: 0.38rem;
+  border-radius: 0.95rem;
+  background: rgba(0, 0, 0, 0.14);
+  padding: 0.7rem;
+}
+
+.project-visual-checklist span {
+  display: block;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.1));
+}
+
+.project-visual-checklist span:nth-child(1) {
+  width: 92%;
+}
+
+.project-visual-checklist span:nth-child(2) {
+  width: 74%;
+}
+
+.project-visual-checklist span:nth-child(3) {
+  width: 82%;
+}
+
+.project-visual-gate {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.48rem 0.7rem;
+  text-align: center;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 247, 237, 0.88);
 }
 
 .project-visual-map {
@@ -1551,7 +1749,9 @@ select {
   .button-secondary:hover,
   .nav-link:hover,
   .orbital-tag:hover,
-  .magnetic-link:hover {
+  .magnetic-link:hover,
+  .lab-tilt-card,
+  .lab-tilt-card:hover {
     transform: none;
   }
 

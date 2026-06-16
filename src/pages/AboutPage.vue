@@ -69,7 +69,7 @@ const roles = [
   'AI 解决方案实践者',
 ]
 
-const featuredSlugs = ['fitmind-ai', 'easemove', 'real-scene-3d']
+const featuredSlugs = ['fitmind-ai', 'easemove', 'ai-pm-dev']
 
 const featuredProjects = computed(() =>
   featuredSlugs
@@ -635,8 +635,8 @@ onUnmounted(() => {
             我会同时关注 UI、状态流、后端边界、工具调用、数据来源和可解释性。
           </p>
           <p>
-            FitMind 代表了我在 AI 应用工程和 AI 产品化上的主线尝试，EaseMove、SunSafe 和实习里的 WebGIS 项目，
-            则继续补强我在复杂交互、数据产品、全栈交付和工程化排障方面的经验。
+            FitMind 代表了我在 AI 应用工程和 AI 产品化上的主线尝试，ai-pm-dev 代表了我对 AI 产品经理 workflow 的抽象，
+            EaseMove 则继续补强我在复杂交互、数据产品、全栈交付和工程化排障方面的经验。
           </p>
           <p>
             我希望下一份工作能更靠近 AI 应用、智能工作台、agent 工具编排、AI 产品经理协作、
@@ -680,8 +680,8 @@ onUnmounted(() => {
           <div class="section-title">现在的 Lab 方向</div>
           <div class="space-y-3 text-sm leading-7 text-stone-300/84">
             <div class="detail-list-item">ai-pm-dev：偏 AI 产品经理、需求拆解、原型验证与解决方案沉淀。</div>
-            <div class="detail-list-item">AI 工作流工具：偏效率工具、自动化流程和轻量 agent 体验。</div>
-            <div class="detail-list-item">智能工作台：偏复杂界面、状态管理和可解释的操作反馈。</div>
+            <div class="detail-list-item">cat-note-illustrations：偏内容配图、Skill 封装和统一视觉表达。</div>
+            <div class="detail-list-item">quickDate：偏轻交互、分享闭环和双端部署。</div>
             <div class="detail-list-item">FitMind Agent 化：偏工具编排、上下文和任务边界。</div>
           </div>
           <div class="flex flex-wrap gap-3">

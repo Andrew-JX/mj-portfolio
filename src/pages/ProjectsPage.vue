@@ -33,7 +33,7 @@ const categories: ProjectCategory[] = [
   {
     label: 'AI Product',
     matches: (project) =>
-      project.slug === 'fitmind-ai' || project.positionTag.includes('Data Product'),
+      ['fitmind-ai', 'ai-pm-dev'].includes(project.slug) || project.positionTag.includes('Data Product'),
   },
   {
     label: 'Full-stack',

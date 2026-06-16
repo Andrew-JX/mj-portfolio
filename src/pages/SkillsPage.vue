@@ -60,6 +60,38 @@ const labItems: LabItem[] = [
     tags: ['Agent', 'Tool Calling', 'Product'],
   },
 ]
+
+function handleLabCardMove(event: PointerEvent) {
+  const card = event.currentTarget as HTMLElement | null
+
+  if (!card || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return
+  }
+
+  const rect = card.getBoundingClientRect()
+  const x = (event.clientX - rect.left) / rect.width
+  const y = (event.clientY - rect.top) / rect.height
+  const rotateX = (0.5 - y) * 11
+  const rotateY = (x - 0.5) * 13
+
+  card.style.setProperty('--tilt-x', `${rotateX.toFixed(2)}deg`)
+  card.style.setProperty('--tilt-y', `${rotateY.toFixed(2)}deg`)
+  card.style.setProperty('--glow-x', `${(x * 100).toFixed(1)}%`)
+  card.style.setProperty('--glow-y', `${(y * 100).toFixed(1)}%`)
+}
+
+function resetLabCardTilt(event: PointerEvent) {
+  const card = event.currentTarget as HTMLElement | null
+
+  if (!card) {
+    return
+  }
+
+  card.style.setProperty('--tilt-x', '0deg')
+  card.style.setProperty('--tilt-y', '0deg')
+  card.style.setProperty('--glow-x', '50%')
+  card.style.setProperty('--glow-y', '0%')
+}
 </script>
 
 <template>
@@ -72,14 +104,22 @@ const labItems: LabItem[] = [
       </p>
     </section>
 
-    <section class="grid gap-4 md:grid-cols-2">
-      <article v-for="item in labItems" :key="item.title" class="panel-card space-y-4">
-        <div class="flex items-start justify-between gap-3">
+    <section class="lab-card-grid">
+      <article
+        v-for="item in labItems"
+        :key="item.title"
+        class="lab-tilt-card"
+        @pointermove="handleLabCardMove"
+        @pointerleave="resetLabCardTilt"
+      >
+        <span aria-hidden="true" class="lab-tilt-glow"></span>
+
+        <div class="lab-card-top">
           <div class="space-y-2">
-            <h2 class="text-xl font-semibold text-white">{{ item.title }}</h2>
-            <p class="text-sm leading-7 text-stone-300/84">{{ item.summary }}</p>
+            <h2 class="lab-card-title">{{ item.title }}</h2>
+            <p class="lab-card-summary">{{ item.summary }}</p>
           </div>
-          <span class="rounded-full border border-[var(--line)] bg-[var(--accent-soft)] px-3 py-1 text-xs font-medium text-[var(--accent)]">
+          <span class="lab-stage-pill">
             {{ item.stage }}
           </span>
         </div>

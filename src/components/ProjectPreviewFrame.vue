@@ -57,6 +57,20 @@ const visualClass = computed(() => `project-preview-visual-${props.media.slug}`)
             </div>
           </template>
 
+          <template v-else-if="media.slug === 'ai-pm-dev'">
+            <div class="project-visual-workflow">
+              <span>Idea</span>
+              <span>PRD</span>
+              <span>Build</span>
+            </div>
+            <div class="project-visual-checklist">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="project-visual-gate">strict gate</div>
+          </template>
+
           <template v-else-if="media.slug === 'easemove'">
             <div class="project-visual-map">
               <span class="project-visual-route"></span>

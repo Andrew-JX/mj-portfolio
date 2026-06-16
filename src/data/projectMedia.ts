@@ -9,6 +9,14 @@ export const projectMediaMap: Record<string, ProjectMedia> = {
     metrics: ['SSE', 'Tool loop', 'Analytics'],
     tone: 'ember',
   },
+  'ai-pm-dev': {
+    slug: 'ai-pm-dev',
+    eyebrow: 'AI product workflow',
+    title: 'Idea to build',
+    caption: 'PRD, scope, handoff, and quality gates shaped into a reusable AI collaboration layer.',
+    metrics: ['PRD', 'Scope', 'Handoff'],
+    tone: 'violet',
+  },
   easemove: {
     slug: 'easemove',
     eyebrow: 'Mobility data product',
