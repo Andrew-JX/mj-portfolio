@@ -4,6 +4,7 @@ type LabItem = {
   stage: string
   summary: string
   tags: string[]
+  bullets?: string[]
   repo?: string
   links?: Array<{
     label: string
@@ -17,6 +18,11 @@ const labItems: LabItem[] = [
     stage: 'Building',
     summary: '当前正在推进的 AI 产品经理与 AI 应用开发实验区，用来沉淀从问题定义、用户任务、PRD/原型到工具调用、工作流验证和解决方案表达的完整方法。',
     tags: ['AI PM', 'PRD', 'Prototype', 'Solution'],
+    bullets: [
+      '定位为本地 Idea-to-Build workflow CLI，不是通用聊天 Agent。',
+      '通过 AGENTS.md + docs 给 Codex、Claude Code、v0、Figma 安装可读取的协作操作层。',
+      '用交互式 PM 访谈、scope、acceptance tests 和 prd check --strict 逼出优先级、非目标和验收标准。',
+    ],
     repo: 'https://github.com/Andrew-JX/ai-pm-dev',
   },
   {
@@ -24,6 +30,11 @@ const labItems: LabItem[] = [
     stage: 'Shipping',
     summary: '面向中文文章、笔记和知识型内容的猫猫风格插图生成 Skill，用更轻的视觉资产帮助内容表达变得更亲和、更容易被记住。',
     tags: ['Skill', 'Image Prompt', 'Content UX'],
+    bullets: [
+      '把文章中的关键判断、流程、结构或隐喻转成适合正文使用的 16:9 配图。',
+      '固定猫猫 IP Specimen 0，保持白底、粗黑轮廓、手账贴纸风的一致视觉识别。',
+      '包含 Skill、角色设定、prompt 模板、QA 清单、示例 prompt、示例图片和贡献说明。',
+    ],
     repo: 'https://github.com/Andrew-JX/cat-note-illustrations',
   },
   {
@@ -31,6 +42,11 @@ const labItems: LabItem[] = [
     stage: 'Shipping',
     summary: '一个偏轻松、好玩的快速约会 / 日期小工具，重点展示从小想法到可访问产品的完整闭环：轻交互、明确入口、双端部署和适合分享的产品节奏。',
     tags: ['Fun App', 'Interaction', 'Deployment'],
+    bullets: [
+      '发送者配置专属邀请链接，对方完成 No 躲闪、时间、吃什么、活动和地点选择。',
+      '纯静态 H5，无后端；身份和结果通过 URL 参数传递，完成邀请、回传、结果页和日历卡片闭环。',
+      '国内 Cloudflare 与海外 Vercel 双部署，更适合真实分享场景。',
+    ],
     repo: 'https://github.com/Andrew-JX/quickDate',
     links: [
       { label: '国内访问', url: 'https://quickdate-77o.pages.dev/' },
@@ -85,6 +101,12 @@ const labItems: LabItem[] = [
             {{ tag }}
           </span>
         </div>
+
+        <ul v-if="item.bullets?.length" class="space-y-2 text-sm leading-7 text-stone-300/84">
+          <li v-for="bullet in item.bullets" :key="bullet" class="detail-list-item">
+            {{ bullet }}
+          </li>
+        </ul>
 
         <div v-if="item.repo || item.links?.length" class="flex flex-wrap gap-2 pt-1">
           <a v-if="item.repo" class="button-secondary" :href="item.repo" target="_blank" rel="noreferrer">GitHub</a>
