@@ -244,6 +244,7 @@ function setupCapabilityCarousel(root: HTMLElement) {
   let startAngle = 0
   let pointerId: number | null = null
   let activeIndex = -1
+  const autoSpeed = 0.0018
 
   const render = () => {
     const radiusX = Math.max(Math.min(stage.clientWidth * 0.34, 360), 150)
@@ -318,12 +319,17 @@ function setupCapabilityCarousel(root: HTMLElement) {
   }
 
   const tickCarousel = () => {
-    if (pointerId !== null || Math.abs(velocity) < 0.0001) {
+    if (pointerId !== null) {
       return
     }
 
-    angle += velocity
-    velocity *= 0.92
+    const hasMomentum = Math.abs(velocity) >= 0.0001
+    angle += hasMomentum ? velocity : autoSpeed
+
+    if (hasMomentum) {
+      velocity *= 0.92
+    }
+
     render()
   }
 
