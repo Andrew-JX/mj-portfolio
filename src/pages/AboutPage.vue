@@ -83,6 +83,12 @@ const signalMetrics = [
   { value: '4', label: 'AI 主线能力方向' },
 ]
 
+const lanyardLinks = [
+  { label: 'GitHub', url: 'https://github.com/Andrew-JX/' },
+  { label: 'Portfolio CN', url: 'https://mj-portfolio.jx15996596656.workers.dev' },
+  { label: 'Portfolio Global', url: 'https://mj-portfolio-gray.vercel.app/#/' },
+]
+
 let cleanup: (() => void) | undefined
 
 function hasPlayedAboutIntro() {
@@ -560,6 +566,57 @@ onUnmounted(() => {
         </div>
         </div>
       </div>
+    </section>
+
+    <section class="lanyard-section" aria-label="Personal lanyard card">
+      <div class="lanyard-rig" aria-hidden="true">
+        <span class="lanyard-strap lanyard-strap-left"></span>
+        <span class="lanyard-strap lanyard-strap-right"></span>
+        <span class="lanyard-ring"></span>
+      </div>
+
+      <article class="lanyard-card">
+        <div class="lanyard-card-glow" aria-hidden="true"></div>
+        <div class="lanyard-card-top">
+          <div>
+            <div class="section-title">Personal Card</div>
+            <h2 class="lanyard-name">Minyu Ji / 吉敏宇</h2>
+          </div>
+          <div class="lanyard-avatar" aria-hidden="true">MJ</div>
+        </div>
+
+        <div class="lanyard-role-grid">
+          <div class="lanyard-role-item">
+            <span>Focus</span>
+            <strong>AI App / AI PM / Full-stack</strong>
+          </div>
+          <div class="lanyard-role-item">
+            <span>Current</span>
+            <strong>Monash MIT · Melbourne</strong>
+          </div>
+          <div class="lanyard-role-item">
+            <span>Signal</span>
+            <strong>Product-minded AI builder</strong>
+          </div>
+        </div>
+
+        <p class="lanyard-summary">
+          I turn AI ideas into usable product workflows: define scope, wire full-stack systems,
+          keep the model grounded with tools, and polish the interface until the work can be explained.
+        </p>
+
+        <div class="lanyard-links">
+          <a
+            v-for="link in lanyardLinks"
+            :key="link.url"
+            :href="link.url"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {{ link.label }}
+          </a>
+        </div>
+      </article>
     </section>
 
     <section data-rail-section class="capability-carousel-section">
