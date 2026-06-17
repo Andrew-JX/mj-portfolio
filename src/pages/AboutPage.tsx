@@ -427,6 +427,8 @@ export default function AboutPage() {
         playHeroIntro()
       }
 
+      const canUseNarrativeMotion = window.matchMedia('(min-width: 768px)').matches
+
       if (!reducedMotion) {
         gsap.to('[data-hero-line]', {
           yPercent: -14,
@@ -441,34 +443,36 @@ export default function AboutPage() {
           ease: 'none',
           scrollTrigger: { trigger: '.hero-mast', start: 'top top', end: 'bottom top', scrub: 1.2 },
         })
-        gsap.utils.toArray<HTMLElement>('[data-scroll-float]').forEach((title) => {
-          gsap.from(title.querySelectorAll('[data-scroll-float-char]'), {
-            opacity: 0,
-            yPercent: 120,
-            rotateX: -72,
-            rotateZ: () => gsap.utils.random(-8, 8),
-            transformOrigin: '50% 100%',
-            duration: 0.95,
-            ease: 'back.out(1.7)',
-            stagger: 0.025,
-            scrollTrigger: { trigger: title, start: 'top 82%', end: 'bottom 44%', scrub: 0.55 },
+        if (canUseNarrativeMotion) {
+          gsap.utils.toArray<HTMLElement>('[data-scroll-float]').forEach((title) => {
+            gsap.from(title.querySelectorAll('[data-scroll-float-char]'), {
+              opacity: 0,
+              yPercent: 120,
+              rotateX: -72,
+              rotateZ: () => gsap.utils.random(-8, 8),
+              transformOrigin: '50% 100%',
+              duration: 0.95,
+              ease: 'back.out(1.7)',
+              stagger: 0.025,
+              scrollTrigger: { trigger: title, start: 'top 82%', end: 'bottom 44%', scrub: 0.55 },
+            })
           })
-        })
 
-        gsap.utils.toArray<HTMLElement>('[data-scroll-reveal]').forEach((paragraph) => {
-          gsap.fromTo(
-            paragraph.querySelectorAll('[data-scroll-reveal-word]'),
-            { opacity: 0.18, y: 18, filter: 'blur(8px)' },
-            {
-              opacity: 1,
-              y: 0,
-              filter: 'blur(0px)',
-              ease: 'none',
-              stagger: 0.018,
-              scrollTrigger: { trigger: paragraph, start: 'top 92%', end: 'top 56%', scrub: 0.45 },
-            },
-          )
-        })
+          gsap.utils.toArray<HTMLElement>('[data-scroll-reveal]').forEach((paragraph) => {
+            gsap.fromTo(
+              paragraph.querySelectorAll('[data-scroll-reveal-word]'),
+              { opacity: 0.18, y: 18, filter: 'blur(8px)' },
+              {
+                opacity: 1,
+                y: 0,
+                filter: 'blur(0px)',
+                ease: 'none',
+                stagger: 0.018,
+                scrollTrigger: { trigger: paragraph, start: 'top 92%', end: 'top 56%', scrub: 0.45 },
+              },
+            )
+          })
+        }
       }
 
       const handleResize = () => syncIntroLineToHeroCard(root)
