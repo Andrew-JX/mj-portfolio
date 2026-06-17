@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import ProjectPreviewFrame from '@/components/ProjectPreviewFrame'
+import TargetCursor from '@/components/TargetCursor'
 import { projects } from '@/data/projects'
 import { getProjectMedia } from '@/data/projectMedia'
 import type { ProjectLinkEntry, ProjectLinkKey } from '@/types'
@@ -146,6 +147,8 @@ export default function ProjectsPage() {
 
   return (
     <div ref={pageRef} className="space-y-8 lg:space-y-10">
+      <TargetCursor />
+
       <section className="section-shell space-y-4">
         <div className="section-title">Projects</div>
         <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr] xl:items-end">
@@ -184,6 +187,7 @@ export default function ProjectsPage() {
                 <button
                   key={category.label}
                   type="button"
+                  data-target-cursor
                   className={`chip-button ${category.label === selectedCategory ? 'chip-button-active' : ''}`}
                   onClick={() => setSelectedCategory(category.label)}
                 >
@@ -218,11 +222,18 @@ export default function ProjectsPage() {
 
             <div className="mt-auto flex flex-wrap gap-2 pt-3">
               {getProjectLinks(project).map((item) => (
-                <a key={`${project.slug}-${item.label}-${item.url}`} className="button-secondary" href={item.url} target="_blank" rel="noreferrer">
+                <a
+                  key={`${project.slug}-${item.label}-${item.url}`}
+                  data-target-cursor
+                  className="button-secondary"
+                  href={item.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   {item.label}
                 </a>
               ))}
-              <Link className="button-primary" to={`/projects/${project.slug}`}>Details</Link>
+              <Link data-target-cursor className="button-primary" to={`/projects/${project.slug}`}>Details</Link>
             </div>
           </article>
         ))}

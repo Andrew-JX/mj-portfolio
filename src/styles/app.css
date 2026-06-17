@@ -328,9 +328,9 @@ select {
   gap: 0.02em;
   overflow: hidden;
   font-family: 'Syne', sans-serif;
-  font-size: clamp(3.3rem, 9vw, 8.8rem);
+  font-size: clamp(2.25rem, 6.5vw, 6.2rem);
   font-weight: 850;
-  line-height: 0.88;
+  line-height: 0.96;
   letter-spacing: 0;
   color: var(--text);
 }
@@ -366,6 +366,74 @@ select {
 
 [data-theme="light"] .scroll-reveal-text {
   color: rgba(68, 64, 60, 0.82);
+}
+
+.target-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  transition:
+    width 0.22s ease,
+    height 0.22s ease,
+    opacity 0.18s ease,
+    transform 0.12s ease;
+  will-change: transform, width, height, opacity;
+}
+
+.target-cursor-visible {
+  opacity: 0.38;
+}
+
+.target-cursor-active {
+  opacity: 1;
+}
+
+.target-cursor-corner {
+  position: absolute;
+  width: 0.78rem;
+  height: 0.78rem;
+  border-color: rgba(251, 146, 60, 0.98);
+  filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.45));
+}
+
+.target-cursor-corner-tl {
+  left: 0;
+  top: 0;
+  border-left: 2px solid;
+  border-top: 2px solid;
+}
+
+.target-cursor-corner-tr {
+  right: 0;
+  top: 0;
+  border-right: 2px solid;
+  border-top: 2px solid;
+}
+
+.target-cursor-corner-br {
+  right: 0;
+  bottom: 0;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+}
+
+.target-cursor-corner-bl {
+  left: 0;
+  bottom: 0;
+  border-left: 2px solid;
+  border-bottom: 2px solid;
+}
+
+[data-target-cursor] {
+  cursor: none;
+}
+
+[data-theme="light"] .target-cursor {
+  mix-blend-mode: multiply;
 }
 
 .eyebrow-pill {
