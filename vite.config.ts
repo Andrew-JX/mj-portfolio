@@ -10,6 +10,7 @@ const base = process.env.DEPLOY_TARGET === 'gitee' ? '/mj-portfolio/' : '/'
 
 export default defineConfig({
   base,
+  assetsInclude: ['**/*.glb'],
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

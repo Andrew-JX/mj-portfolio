@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Lanyard from '@/components/Lanyard'
 import ProjectPreviewFrame from '@/components/ProjectPreviewFrame'
 import { projects } from '@/data/projects'
 import { getProjectMedia } from '@/data/projectMedia'
@@ -19,6 +20,7 @@ type CapabilityCard = {
 }
 
 const ABOUT_INTRO_SESSION_KEY = 'about-hero-intro-played'
+const publicAsset = (path: string) => `${import.meta.env.BASE_URL}${path}`
 
 const capabilityCards: CapabilityCard[] = [
   {
@@ -474,6 +476,16 @@ export default function AboutPage() {
       </div>
 
       <section data-hero-card-shell className="hero-mast">
+        <div className="hero-lanyard-layer">
+          <Lanyard
+            position={[0, 0, 24]}
+            gravity={[0, -40, 0]}
+            frontImage={publicAsset('lanyard-card-front.svg')}
+            backImage={publicAsset('lanyard-card-back.svg')}
+            imageFit="cover"
+          />
+        </div>
+
         <div data-hero-card-content className="hero-card-content">
           <div className="hero-grid">
             <div className="space-y-7">
@@ -542,7 +554,22 @@ export default function AboutPage() {
               </div>
               <div className="hero-side-caption border-glow-card">
                 <span className="index-badge">Monash University</span>
-                <p>Master of IT（2025.03 - 2026.10）<br />GPA 3.2 / 4.0</p>
+                <div className="hero-info-list">
+                  <div><span className="hero-info-label">教育</span>Master of IT（2025.03 - 2026.10）</div>
+                  <div><span className="hero-info-label">GPA</span>3.2 / 4.0</div>
+                  <div><span className="hero-info-label">本科</span>南京信息工程大学 · 软件工程（专业前 10%）</div>
+                  <div><span className="hero-info-label">英语</span>CET-6 · 雅思 6.5</div>
+                  <div><span className="hero-info-label">方向</span>AI 应用开发 / AI 全栈 / AI 产品经理 / AI 解决方案</div>
+                  <div><span className="hero-info-label">邮箱</span><span className="text-white">JX15996596656@163.com</span></div>
+                  <div>
+                    <span className="hero-info-label">GitHub</span>
+                    <a href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer">Andrew-JX</a>
+                  </div>
+                  <div>
+                    <span className="hero-info-label">Gitee</span>
+                    <a href="https://gitee.com/ji-minyu" target="_blank" rel="noreferrer">ji-minyu</a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -606,7 +633,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section data-focus-grid className="grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
+      <section data-focus-grid className="grid gap-4">
         <article data-focus-card className="panel-card panel-citrus space-y-4">
           <div className="section-title">我现在在做什么</div>
           <div className="space-y-3 text-sm leading-7 text-stone-300/84">
@@ -616,19 +643,6 @@ export default function AboutPage() {
           </div>
         </article>
 
-        <article data-focus-card className="panel-card panel-contrast space-y-4">
-          <div className="section-title">基本信息</div>
-          <div className="space-y-2 text-sm leading-7 text-stone-300/84">
-            <div>教育：Monash University · Master of IT（2025.03 - 2026.10）</div>
-            <div>GPA：3.2 / 4.0</div>
-            <div>本科：南京信息工程大学 · 软件工程（专业前 10%）</div>
-            <div>英语：CET-6 · 雅思 6.5</div>
-            <div>方向：AI 应用开发 / AI 全栈 / AI 产品经理 / AI 解决方案</div>
-            <div>邮箱：<span className="text-white">JX15996596656@163.com</span></div>
-            <div>GitHub：<a href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer">Andrew-JX</a></div>
-            <div>Gitee：<a href="https://gitee.com/ji-minyu" target="_blank" rel="noreferrer">ji-minyu</a></div>
-          </div>
-        </article>
       </section>
 
       <section className="section-shell">
