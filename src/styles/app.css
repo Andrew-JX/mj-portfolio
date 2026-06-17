@@ -303,11 +303,10 @@ select {
   border-radius: 2.75rem;
   border: 1px solid rgba(251, 146, 60, 0.14);
   background:
-    radial-gradient(circle at 18% 18%, rgba(251, 146, 60, 0.24), transparent 28%),
-    radial-gradient(circle at 82% 12%, rgba(56, 189, 248, 0.1), transparent 25%),
-    radial-gradient(circle at 60% 92%, rgba(250, 204, 21, 0.12), transparent 32%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 38%),
-    rgba(18, 13, 10, 0.86);
+    radial-gradient(circle at 15% 15%, rgba(251, 146, 60, 0.18), transparent 24%),
+    radial-gradient(circle at 84% 20%, rgba(255, 255, 255, 0.05), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 35%),
+    rgba(20, 14, 11, 0.86);
   padding: 1.4rem;
   box-shadow: var(--shadow-strong);
   transform-style: preserve-3d;
@@ -315,15 +314,73 @@ select {
   will-change: transform, opacity;
 }
 
-.hero-mast::after {
+.about-start-page {
+  position: relative;
+  z-index: 2;
+  width: 100vw;
+  min-height: calc(100svh - 6rem);
+  margin: -1.75rem calc(50% - 50vw) 2.5rem;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(251, 146, 60, 0.22), transparent 26%),
+    radial-gradient(circle at 82% 16%, rgba(56, 189, 248, 0.12), transparent 26%),
+    radial-gradient(circle at 46% 90%, rgba(250, 204, 21, 0.12), transparent 32%),
+    linear-gradient(180deg, rgba(17, 13, 11, 0.38) 0%, rgba(17, 13, 11, 0.76) 100%),
+    #0f0b09;
+  isolation: isolate;
+}
+
+.about-start-page::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(90deg, rgba(12, 9, 8, 0.82) 0%, rgba(12, 9, 8, 0.58) 44%, rgba(12, 9, 8, 0.34) 100%),
-    radial-gradient(circle at 48% 42%, transparent 0 22%, rgba(0, 0, 0, 0.24) 78%);
+    linear-gradient(90deg, rgba(13, 10, 9, 0.82), rgba(13, 10, 9, 0.38) 46%, rgba(13, 10, 9, 0.68)),
+    radial-gradient(circle at 50% 45%, transparent 0 20%, rgba(0, 0, 0, 0.22) 72%);
   pointer-events: none;
+}
+
+.about-start-page .ballpit-background {
+  inset: -12% -6% -8%;
+  opacity: 0.78;
+}
+
+.about-start-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: calc(100svh - 6rem);
+  width: min(1120px, calc(100% - 2.5rem));
+  margin: 0 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1.35rem;
+  padding: 5rem 0;
+}
+
+.about-start-title {
+  display: grid;
+  gap: 0;
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(4.2rem, 14vw, 12rem);
+  font-weight: 850;
+  line-height: 0.8;
+  letter-spacing: 0;
+  color: var(--text);
+  text-shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
+}
+
+.about-start-title span:last-child {
+  color: var(--accent);
+}
+
+.about-start-content p {
+  max-width: 39rem;
+  color: rgba(231, 229, 228, 0.82);
+  font-size: clamp(1rem, 1.7vw, 1.35rem);
+  line-height: 1.7;
 }
 
 .hero-card-content {
@@ -336,9 +393,9 @@ select {
 
 .ballpit-background {
   position: absolute;
-  inset: -8% -6% -4%;
+  inset: 0;
   z-index: 0;
-  opacity: 0.7;
+  opacity: 0.74;
   pointer-events: none;
   filter: saturate(1.08) contrast(1.02);
 }
@@ -381,17 +438,25 @@ select {
 
 [data-theme="light"] .hero-mast {
   background:
-    radial-gradient(circle at 15% 15%, rgba(251, 146, 60, 0.2), transparent 26%),
-    radial-gradient(circle at 84% 16%, rgba(56, 189, 248, 0.12), transparent 28%),
-    radial-gradient(circle at 52% 92%, rgba(250, 204, 21, 0.16), transparent 32%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.82), transparent 36%),
-    rgba(255, 246, 234, 0.88);
+    radial-gradient(circle at 15% 15%, rgba(251, 146, 60, 0.18), transparent 24%),
+    radial-gradient(circle at 84% 20%, rgba(255, 255, 255, 0.55), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.8), transparent 35%),
+    rgba(255, 248, 240, 0.85);
 }
 
-[data-theme="light"] .hero-mast::after {
+[data-theme="light"] .about-start-page {
   background:
-    linear-gradient(90deg, rgba(255, 248, 240, 0.88) 0%, rgba(255, 248, 240, 0.62) 48%, rgba(255, 248, 240, 0.28) 100%),
-    radial-gradient(circle at 48% 42%, transparent 0 24%, rgba(255, 255, 255, 0.2) 78%);
+    radial-gradient(circle at 18% 12%, rgba(251, 146, 60, 0.2), transparent 26%),
+    radial-gradient(circle at 82% 16%, rgba(56, 189, 248, 0.12), transparent 26%),
+    radial-gradient(circle at 46% 90%, rgba(250, 204, 21, 0.16), transparent 32%),
+    linear-gradient(180deg, rgba(255, 248, 240, 0.34) 0%, rgba(255, 248, 240, 0.82) 100%),
+    #fff8f0;
+}
+
+[data-theme="light"] .about-start-page::after {
+  background:
+    linear-gradient(90deg, rgba(255, 248, 240, 0.9), rgba(255, 248, 240, 0.38) 48%, rgba(255, 248, 240, 0.72)),
+    radial-gradient(circle at 50% 45%, transparent 0 20%, rgba(255, 255, 255, 0.28) 72%);
 }
 
 [data-theme="light"] .ballpit-background {
@@ -405,17 +470,20 @@ select {
 }
 
 @media (max-width: 767px) {
-  .ballpit-background {
-    inset: -10% -34% 10% -18%;
-    opacity: 0.38;
+  .about-start-page {
+    min-height: calc(100svh - 5rem);
+    margin-top: -1.25rem;
   }
 
-  .hero-mast::after {
-    background: linear-gradient(180deg, rgba(12, 9, 8, 0.82), rgba(12, 9, 8, 0.5));
+  .about-start-content {
+    min-height: calc(100svh - 5rem);
+    width: min(100% - 2rem, 1120px);
+    padding: 4.5rem 0;
   }
 
-  [data-theme="light"] .hero-mast::after {
-    background: linear-gradient(180deg, rgba(255, 248, 240, 0.9), rgba(255, 248, 240, 0.62));
+  .about-start-page .ballpit-background {
+    inset: -8% -44% -8% -34%;
+    opacity: 0.46;
   }
 }
 

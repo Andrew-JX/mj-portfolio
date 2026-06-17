@@ -476,9 +476,29 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <section data-hero-card-shell className="hero-mast">
-        <BallpitBackground />
+      <section className="about-start-page" aria-label="Portfolio start">
+        <BallpitBackground count={58} />
+        <div className="about-start-content">
+          <div className="eyebrow-pill">
+            <span className="dot-live" />
+            <span>AI Application / Full-stack / Product</span>
+          </div>
+          <div className="about-start-title">
+            <span>MINYU</span>
+            <span>JI</span>
+          </div>
+          <p>Building practical AI products with thoughtful interfaces, reliable systems, and product judgment.</p>
+          <button
+            className="button-primary"
+            type="button"
+            onClick={() => document.getElementById('about-core')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          >
+            Start
+          </button>
+        </div>
+      </section>
 
+      <section id="about-core" data-hero-card-shell className="hero-mast">
         <div className="hero-lanyard-layer">
           <Lanyard
             position={[0, 0, 24]}
