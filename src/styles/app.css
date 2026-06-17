@@ -1138,6 +1138,93 @@ select {
   gap: 1rem;
 }
 
+.lab-entry-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #000;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.38s ease, visibility 0.38s ease;
+}
+
+.lab-entry-overlay-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.lab-entry-noise {
+  position: absolute;
+  inset: -20%;
+  opacity: 0.2;
+  background-image:
+    repeating-radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.16) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgba(251, 146, 60, 0.08) 0 1px, transparent 1px 12px);
+  animation: lab-noise-drift 0.32s steps(2) infinite;
+}
+
+.lab-entry-text-wrap {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-width: min(90vw, 42rem);
+  min-height: 12rem;
+}
+
+.fuzzy-text,
+.joke-text {
+  font-family: 'Syne', sans-serif;
+  font-weight: 850;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.fuzzy-text {
+  position: relative;
+  color: rgba(255, 247, 237, 0.92);
+  font-size: clamp(5rem, 18vw, 13rem);
+  filter: blur(1.4px);
+  text-shadow:
+    0 0 12px rgba(251, 146, 60, 0.48),
+    0 0 34px rgba(251, 146, 60, 0.24),
+    3px 0 0 rgba(56, 189, 248, 0.36),
+    -3px 0 0 rgba(249, 115, 22, 0.42);
+  animation: fuzzy-text-shake 0.12s steps(2) infinite;
+}
+
+.fuzzy-text::before,
+.fuzzy-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0.56;
+  mix-blend-mode: screen;
+}
+
+.fuzzy-text::before {
+  color: rgba(56, 189, 248, 0.68);
+  transform: translate(-0.055em, -0.02em);
+  clip-path: inset(0 0 48% 0);
+}
+
+.fuzzy-text::after {
+  color: rgba(251, 146, 60, 0.68);
+  transform: translate(0.055em, 0.02em);
+  clip-path: inset(44% 0 0 0);
+}
+
+.joke-text {
+  color: #fff7ed;
+  font-size: clamp(2.6rem, 8vw, 6.6rem);
+  text-shadow: 0 0 28px rgba(251, 146, 60, 0.34);
+  animation: joke-text-pop 0.5s ease both;
+}
+
 @media (min-width: 768px) {
   .lab-card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2132,6 +2219,40 @@ select {
 @keyframes cursor-blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+@keyframes lab-noise-drift {
+  0% { transform: translate3d(-2%, -1%, 0); }
+  50% { transform: translate3d(1%, 2%, 0); }
+  100% { transform: translate3d(2%, -2%, 0); }
+}
+
+@keyframes fuzzy-text-shake {
+  0% {
+    transform: translate3d(-1px, 0, 0) skewX(-1.5deg);
+    filter: blur(1px);
+  }
+  50% {
+    transform: translate3d(1px, -1px, 0) skewX(1.2deg);
+    filter: blur(2.4px);
+  }
+  100% {
+    transform: translate3d(0, 1px, 0) skewX(-0.6deg);
+    filter: blur(1.4px);
+  }
+}
+
+@keyframes joke-text-pop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 [data-theme="light"] .text-white { color: #1e130f; }

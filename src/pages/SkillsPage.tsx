@@ -1,4 +1,5 @@
 import type { PointerEvent as ReactPointerEvent } from 'react'
+import { useEffect, useState } from 'react'
 
 type LabItem = {
   title: string
@@ -81,8 +82,31 @@ function resetLabCardTilt(event: ReactPointerEvent<HTMLElement>) {
 }
 
 export default function SkillsPage() {
+  const [introPhase, setIntroPhase] = useState<'fuzzy' | 'joke' | 'done'>('fuzzy')
+
+  useEffect(() => {
+    const jokeTimer = window.setTimeout(() => setIntroPhase('joke'), 1500)
+    const doneTimer = window.setTimeout(() => setIntroPhase('done'), 2500)
+
+    return () => {
+      window.clearTimeout(jokeTimer)
+      window.clearTimeout(doneTimer)
+    }
+  }, [])
+
   return (
     <div className="space-y-8">
+      <div aria-hidden={introPhase === 'done'} className={`lab-entry-overlay ${introPhase === 'done' ? 'lab-entry-overlay-hidden' : ''}`}>
+        <div className="lab-entry-noise" />
+        <div className="lab-entry-text-wrap">
+          {introPhase === 'fuzzy' ? (
+            <div className="fuzzy-text" data-text="LAB">LAB</div>
+          ) : (
+            <div className="joke-text">it&apos;s a joke</div>
+          )}
+        </div>
+      </div>
+
       <section className="hero-panel space-y-4">
         <div className="section-title">Lab</div>
         <h1 className="text-3xl font-semibold tracking-tight text-white">AI 产品 / 小 Agent / 快速实验</h1>
