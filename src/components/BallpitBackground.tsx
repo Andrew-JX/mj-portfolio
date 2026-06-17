@@ -46,12 +46,18 @@ function BallpitScene({ count }: Required<BallpitBackgroundProps>) {
   const ballBodies = useRef<Array<RapierRigidBody | null>>([])
   const pointer = useRef(new THREE.Vector2(999, 999))
   const { viewport } = useThree()
+  const bounds = useMemo(() => {
+    const halfWidth = Math.max(7.8, viewport.width / 2 + 1.4)
+    const halfHeight = Math.max(5.6, viewport.height / 2 + 1.1)
+
+    return { halfWidth, halfHeight }
+  }, [viewport.height, viewport.width])
 
   const balls = useMemo<BallSeed[]>(() => {
     return Array.from({ length: count }, (_, id) => {
       const radius = 0.28 + Math.random() * 0.42
-      const x = (Math.random() - 0.5) * 10.5
-      const y = 0.4 + Math.random() * 5.8
+      const x = (Math.random() - 0.5) * Math.min(12, bounds.halfWidth * 1.35)
+      const y = -1.4 + Math.random() * Math.min(7, bounds.halfHeight * 1.2)
       const z = (Math.random() - 0.5) * 0.45
       const color = COLORS[id % COLORS.length]
 
@@ -64,7 +70,7 @@ function BallpitScene({ count }: Required<BallpitBackgroundProps>) {
         metalness: color === '#38bdf8' ? 0.35 : 0.18,
       }
     })
-  }, [count])
+  }, [bounds.halfHeight, bounds.halfWidth, count])
 
   useEffect(() => {
     const updatePointer = (event: PointerEvent) => {
@@ -84,17 +90,20 @@ function BallpitScene({ count }: Required<BallpitBackgroundProps>) {
     }
   }, [viewport.height, viewport.width])
 
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
+  useFrame(() => {
     cursor.current?.setNextKinematicTranslation({
       x: pointer.current.x,
       y: pointer.current.y,
       z: 0,
     })
 
-    const wind = Math.sin(t * 0.55) * 0.18
     for (const body of ballBodies.current) {
-      body?.addForce({ x: wind, y: 0, z: 0 }, true)
+      if (!body) continue
+      const translation = body.translation()
+      const centerPull = -translation.x * 0.045
+      const floorLift = translation.y < -bounds.halfHeight + 2 ? 0.18 : 0
+
+      body.addForce({ x: centerPull, y: floorLift, z: -translation.z * 0.12 }, true)
     }
   })
 
@@ -105,10 +114,12 @@ function BallpitScene({ count }: Required<BallpitBackgroundProps>) {
       </RigidBody>
 
       <RigidBody type="fixed" colliders={false}>
-        <CuboidCollider args={[7.8, 0.5, 1.4]} position={[0, -3.45, 0]} />
-        <CuboidCollider args={[0.5, 5.4, 1.4]} position={[-7.4, 0.3, 0]} />
-        <CuboidCollider args={[0.5, 5.4, 1.4]} position={[7.4, 0.3, 0]} />
-        <CuboidCollider args={[7.8, 0.5, 1.4]} position={[0, 5.7, 0]} />
+        <CuboidCollider args={[bounds.halfWidth + 0.8, 0.65, 1.8]} position={[0, -bounds.halfHeight, 0]} />
+        <CuboidCollider args={[0.65, bounds.halfHeight + 0.8, 1.8]} position={[-bounds.halfWidth, 0, 0]} />
+        <CuboidCollider args={[0.65, bounds.halfHeight + 0.8, 1.8]} position={[bounds.halfWidth, 0, 0]} />
+        <CuboidCollider args={[bounds.halfWidth + 0.8, 0.65, 1.8]} position={[0, bounds.halfHeight, 0]} />
+        <CuboidCollider args={[bounds.halfWidth + 0.8, bounds.halfHeight + 0.8, 0.2]} position={[0, 0, -1.1]} />
+        <CuboidCollider args={[bounds.halfWidth + 0.8, bounds.halfHeight + 0.8, 0.2]} position={[0, 0, 1.1]} />
       </RigidBody>
 
       {balls.map((ball, index) => (
