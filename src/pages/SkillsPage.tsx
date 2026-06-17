@@ -100,7 +100,7 @@ export default function SkillsPage() {
         <div className="lab-entry-noise" />
         <div className="lab-entry-text-wrap">
           {introPhase === 'fuzzy' ? (
-            <div className="fuzzy-text" data-text="LAB">LAB</div>
+            <div className="fuzzy-text" data-text="404 Not found">404 Not found</div>
           ) : (
             <div className="joke-text">it&apos;s a joke</div>
           )}

@@ -1140,7 +1140,13 @@ select {
 
 .lab-entry-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  width: 100dvw;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
   z-index: 120;
   display: grid;
   place-items: center;
@@ -1187,7 +1193,7 @@ select {
 .fuzzy-text {
   position: relative;
   color: rgba(255, 247, 237, 0.92);
-  font-size: clamp(5rem, 18vw, 13rem);
+  font-size: clamp(3.2rem, 11vw, 10rem);
   filter: blur(1.4px);
   text-shadow:
     0 0 12px rgba(251, 146, 60, 0.48),
