@@ -32,7 +32,7 @@ export default function BallpitBackground({ count = 34 }: BallpitBackgroundProps
         <ambientLight intensity={1.2} />
         <directionalLight position={[-5, 6, 8]} intensity={2.4} color="#fff7ed" />
         <directionalLight position={[6, -3, 5]} intensity={0.95} color="#38bdf8" />
-        <Physics gravity={[0, -18, 0]} timeStep={1 / 60}>
+        <Physics gravity={[0, -7.5, 0]} timeStep={1 / 60}>
           <BallpitScene count={count} />
         </Physics>
         <Environment preset="city" blur={0.8} />
@@ -97,20 +97,12 @@ function BallpitScene({ count }: Required<BallpitBackgroundProps>) {
       z: 0,
     })
 
-    for (const body of ballBodies.current) {
-      if (!body) continue
-      const translation = body.translation()
-      const centerPull = -translation.x * 0.045
-      const floorLift = translation.y < -bounds.halfHeight + 2 ? 0.18 : 0
-
-      body.addForce({ x: centerPull, y: floorLift, z: -translation.z * 0.12 }, true)
-    }
   })
 
   return (
     <>
       <RigidBody ref={cursor} type="kinematicPosition" colliders={false}>
-        <BallCollider args={[1.15]} />
+        <BallCollider args={[0.82]} />
       </RigidBody>
 
       <RigidBody type="fixed" colliders={false}>
@@ -130,10 +122,10 @@ function BallpitScene({ count }: Required<BallpitBackgroundProps>) {
           }}
           position={ball.position}
           colliders={false}
-          restitution={0.78}
-          friction={0.18}
-          linearDamping={0.28}
-          angularDamping={0.34}
+          restitution={0.34}
+          friction={0.82}
+          linearDamping={2.2}
+          angularDamping={1.8}
         >
           <BallCollider args={[ball.radius]} />
           <mesh castShadow receiveShadow>

@@ -566,15 +566,7 @@ export default function AboutPage() {
             </div>
 
             <div data-hero-side className="hero-side">
-              <div className="hero-side-panel border-glow-card">
-                <div className="section-title text-stone-500">Core Stack</div>
-                <div className="space-y-4">
-                  <div data-hero-tag className="orbital-tag">React / Vue / TypeScript</div>
-                  <div data-hero-tag className="orbital-tag orbital-tag-shift">Node.js / Express / PostgreSQL</div>
-                  <div data-hero-tag className="orbital-tag">Tool Calling / SSE Streaming</div>
-                  <div data-hero-tag className="orbital-tag orbital-tag-shift">AI Product / Agent / Solution Design</div>
-                </div>
-              </div>
+              <div className="hero-lanyard-spacer" aria-hidden="true" />
               <div className="hero-side-caption border-glow-card">
                 <span className="index-badge">Monash University</span>
                 <div className="hero-info-list">

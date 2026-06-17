@@ -407,11 +407,11 @@ select {
 
 .hero-lanyard-layer {
   position: absolute;
-  top: -5.8rem;
-  right: -1.8rem;
+  top: -4.8rem;
+  right: -0.8rem;
   z-index: 4;
-  width: min(42rem, 52%);
-  height: clamp(31rem, 66vh, 46rem);
+  width: min(43rem, 54%);
+  height: clamp(34rem, 70vh, 48rem);
   overflow: visible;
   pointer-events: auto;
 }
@@ -621,19 +621,15 @@ select {
   display: grid;
   gap: 1rem;
   align-content: start;
+  min-height: 35rem;
+}
+
+.hero-lanyard-spacer {
+  min-height: clamp(22rem, 48vh, 31rem);
 }
 
 .hero-side-panel {
   border-radius: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent),
-    rgba(255, 255, 255, 0.04);
-  padding: 1.25rem;
-}
-
-[data-theme="light"] .hero-side-panel {
-  background: rgba(255, 255, 255, 0.62);
 }
 
 .hero-side-caption {
@@ -748,7 +744,6 @@ select {
 }
 
 .metric-card.border-glow-card::before,
-.hero-side-panel.border-glow-card::before,
 .hero-side-caption.border-glow-card::before {
   opacity: 0.46;
 }
