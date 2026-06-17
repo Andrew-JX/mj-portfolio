@@ -45,8 +45,6 @@ export default function App() {
               <NavLink className="nav-link" to="/projects">Projects</NavLink>
               <NavLink className="nav-link" to="/lab">Lab</NavLink>
               <NavLink className="nav-link" to="/resume">Resume</NavLink>
-              <a className="nav-link" href="https://mj-portfolio-gray.vercel.app/#/" target="_blank" rel="noreferrer">Global</a>
-              <a className="nav-link" href="https://mj-portfolio.jx15996596656.workers.dev" target="_blank" rel="noreferrer">国内</a>
               <a className="nav-link" href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer">GitHub</a>
             </nav>
           </div>
@@ -67,8 +65,8 @@ export default function App() {
               <span>Portfolio / AI App / AI Full-stack / Product</span>
             </div>
             <div className="flex flex-wrap gap-3">
-              <a href="https://mj-portfolio-gray.vercel.app/#/" target="_blank" rel="noreferrer">Global site</a>
-              <a href="https://mj-portfolio.jx15996596656.workers.dev" target="_blank" rel="noreferrer">国内访问</a>
+              <a href="https://mj-portfolio-gray.vercel.app/#/" target="_blank" rel="noreferrer">Mirror · Vercel</a>
+              <a href="https://mj-portfolio.jx15996596656.workers.dev" target="_blank" rel="noreferrer">Mirror · Cloudflare</a>
             </div>
             <div>© {new Date().getFullYear()} Minyu Ji</div>
           </div>
