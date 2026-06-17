@@ -90,6 +90,9 @@ const pressureLines = [
 ]
 
 let cleanup: (() => void) | undefined
+let pressurePointerActive = false
+let pressurePointerX = 0
+let pressurePointerY = 0
 
 function hasPlayedAboutIntro() {
   if (typeof window === 'undefined') {
@@ -152,45 +155,65 @@ function handlePressureMove(event: PointerEvent) {
     return
   }
 
-  const root = event.currentTarget as HTMLElement | null
+  pressurePointerActive = true
+  pressurePointerX = event.clientX
+  pressurePointerY = event.clientY
+}
 
-  if (!root) {
+function resetPressure() {
+  pressurePointerActive = false
+}
+
+function setupPressureTitle(root: HTMLElement) {
+  if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     return
   }
 
   const chars = Array.from(root.querySelectorAll<HTMLElement>('[data-pressure-char]'))
 
-  chars.forEach((char) => {
-    const rect = char.getBoundingClientRect()
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
-    const dx = event.clientX - centerX
-    const dy = event.clientY - centerY
-    const distance = Math.hypot(dx, dy)
-    const strength = Math.max(0, 1 - distance / 260)
-    const squeeze = 1 - strength * 0.2
-    const stretch = 1 + strength * 0.34
-    const lift = -strength * 14
-
-    char.style.setProperty('--pressure-scale-x', squeeze.toFixed(3))
-    char.style.setProperty('--pressure-scale-y', stretch.toFixed(3))
-    char.style.setProperty('--pressure-y', `${lift.toFixed(2)}px`)
-    char.style.setProperty('--pressure-shadow', strength.toFixed(3))
-  })
-}
-
-function resetPressure(event: PointerEvent) {
-  const root = event.currentTarget as HTMLElement | null
-
-  if (!root) {
+  if (chars.length === 0) {
     return
   }
 
-  root.querySelectorAll<HTMLElement>('[data-pressure-char]').forEach((char) => {
-    char.style.removeProperty('--pressure-scale-x')
-    char.style.removeProperty('--pressure-scale-y')
-    char.style.removeProperty('--pressure-y')
-    char.style.removeProperty('--pressure-shadow')
+  const startedAt = performance.now()
+
+  const tickPressureTitle = () => {
+    const elapsed = performance.now() - startedAt
+    const waveSpeed = pressurePointerActive ? 0.007 : 0.0016
+    const waveAmp = pressurePointerActive ? 0.16 : 0.06
+
+    chars.forEach((char, index) => {
+      const wave = (Math.sin(elapsed * waveSpeed + index * 0.78) + 1) / 2
+      let strength = wave * waveAmp
+
+      if (pressurePointerActive) {
+        const rect = char.getBoundingClientRect()
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+        const distance = Math.hypot(pressurePointerX - centerX, pressurePointerY - centerY)
+        strength += Math.max(0, 1 - distance / 260) * 0.82
+      }
+
+      const squeeze = 1 - strength * 0.2
+      const stretch = 1 + strength * 0.34
+      const lift = -strength * 14
+
+      char.style.setProperty('--pressure-scale-x', squeeze.toFixed(3))
+      char.style.setProperty('--pressure-scale-y', stretch.toFixed(3))
+      char.style.setProperty('--pressure-y', `${lift.toFixed(2)}px`)
+      char.style.setProperty('--pressure-shadow', strength.toFixed(3))
+    })
+  }
+
+  gsap.ticker.add(tickPressureTitle)
+  motionCleanups.push(() => {
+    gsap.ticker.remove(tickPressureTitle)
+    chars.forEach((char) => {
+      char.style.removeProperty('--pressure-scale-x')
+      char.style.removeProperty('--pressure-scale-y')
+      char.style.removeProperty('--pressure-y')
+      char.style.removeProperty('--pressure-shadow')
+    })
   })
 }
 
@@ -493,6 +516,7 @@ onMounted(async () => {
     window.addEventListener('resize', handleResize)
     motionCleanups.push(() => window.removeEventListener('resize', handleResize))
 
+    setupPressureTitle(root)
     setupCapabilityCarousel(root)
 
     const showcaseCards = gsap.utils.toArray<HTMLElement>('[data-showcase-card]')
