@@ -342,7 +342,7 @@ select {
 }
 
 .about-start-page .ballpit-background {
-  inset: -12% -6% -8%;
+  inset: 0;
   opacity: 0.78;
 }
 
@@ -482,8 +482,8 @@ select {
   }
 
   .about-start-page .ballpit-background {
-    inset: -8% -44% -8% -34%;
-    opacity: 0.46;
+    inset: 0;
+    opacity: 0.5;
   }
 }
 
