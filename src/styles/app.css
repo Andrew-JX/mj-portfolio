@@ -303,15 +303,27 @@ select {
   border-radius: 2.75rem;
   border: 1px solid rgba(251, 146, 60, 0.14);
   background:
-    radial-gradient(circle at 15% 15%, rgba(251, 146, 60, 0.18), transparent 24%),
-    radial-gradient(circle at 84% 20%, rgba(255, 255, 255, 0.05), transparent 30%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 35%),
-    rgba(20, 14, 11, 0.86);
+    radial-gradient(circle at 18% 18%, rgba(251, 146, 60, 0.24), transparent 28%),
+    radial-gradient(circle at 82% 12%, rgba(56, 189, 248, 0.1), transparent 25%),
+    radial-gradient(circle at 60% 92%, rgba(250, 204, 21, 0.12), transparent 32%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 38%),
+    rgba(18, 13, 10, 0.86);
   padding: 1.4rem;
   box-shadow: var(--shadow-strong);
   transform-style: preserve-3d;
   backface-visibility: hidden;
   will-change: transform, opacity;
+}
+
+.hero-mast::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(12, 9, 8, 0.82) 0%, rgba(12, 9, 8, 0.58) 44%, rgba(12, 9, 8, 0.34) 100%),
+    radial-gradient(circle at 48% 42%, transparent 0 22%, rgba(0, 0, 0, 0.24) 78%);
+  pointer-events: none;
 }
 
 .hero-card-content {
@@ -320,6 +332,20 @@ select {
   transform: translateZ(0);
   backface-visibility: hidden;
   will-change: opacity;
+}
+
+.ballpit-background {
+  position: absolute;
+  inset: -8% -6% -4%;
+  z-index: 0;
+  opacity: 0.7;
+  pointer-events: none;
+  filter: saturate(1.08) contrast(1.02);
+}
+
+.ballpit-background canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .hero-lanyard-layer {
@@ -355,15 +381,41 @@ select {
 
 [data-theme="light"] .hero-mast {
   background:
-    radial-gradient(circle at 15% 15%, rgba(251, 146, 60, 0.18), transparent 24%),
-    radial-gradient(circle at 84% 20%, rgba(255, 255, 255, 0.55), transparent 30%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.8), transparent 35%),
-    rgba(255, 248, 240, 0.85);
+    radial-gradient(circle at 15% 15%, rgba(251, 146, 60, 0.2), transparent 26%),
+    radial-gradient(circle at 84% 16%, rgba(56, 189, 248, 0.12), transparent 28%),
+    radial-gradient(circle at 52% 92%, rgba(250, 204, 21, 0.16), transparent 32%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.82), transparent 36%),
+    rgba(255, 246, 234, 0.88);
+}
+
+[data-theme="light"] .hero-mast::after {
+  background:
+    linear-gradient(90deg, rgba(255, 248, 240, 0.88) 0%, rgba(255, 248, 240, 0.62) 48%, rgba(255, 248, 240, 0.28) 100%),
+    radial-gradient(circle at 48% 42%, transparent 0 24%, rgba(255, 255, 255, 0.2) 78%);
+}
+
+[data-theme="light"] .ballpit-background {
+  opacity: 0.58;
 }
 
 @media (min-width: 640px) {
   .hero-mast {
     padding: 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .ballpit-background {
+    inset: -10% -34% 10% -18%;
+    opacity: 0.38;
+  }
+
+  .hero-mast::after {
+    background: linear-gradient(180deg, rgba(12, 9, 8, 0.82), rgba(12, 9, 8, 0.5));
+  }
+
+  [data-theme="light"] .hero-mast::after {
+    background: linear-gradient(180deg, rgba(255, 248, 240, 0.9), rgba(255, 248, 240, 0.62));
   }
 }
 

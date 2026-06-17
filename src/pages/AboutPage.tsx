@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import BallpitBackground from '@/components/BallpitBackground'
 import Lanyard from '@/components/Lanyard'
 import ProjectPreviewFrame from '@/components/ProjectPreviewFrame'
 import { projects } from '@/data/projects'
@@ -476,6 +477,8 @@ export default function AboutPage() {
       </div>
 
       <section data-hero-card-shell className="hero-mast">
+        <BallpitBackground />
+
         <div className="hero-lanyard-layer">
           <Lanyard
             position={[0, 0, 24]}
