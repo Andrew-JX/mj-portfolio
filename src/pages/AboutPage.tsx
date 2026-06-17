@@ -1,13 +1,10 @@
 import type { PointerEvent as ReactPointerEvent } from 'react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import BallpitBackground from '@/components/BallpitBackground'
 import Lanyard from '@/components/Lanyard'
-import ProjectPreviewFrame from '@/components/ProjectPreviewFrame'
-import { projects } from '@/data/projects'
-import { getProjectMedia } from '@/data/projectMedia'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -59,12 +56,41 @@ const capabilityCards: CapabilityCard[] = [
 ]
 
 const roles = ['AI 应用开发工程师', 'AI 全栈开发者', 'AI 产品经理', 'AI 解决方案实践者']
-const featuredSlugs = ['fitmind-ai', 'easemove', 'ai-pm-dev']
 const signalMetrics = [
   { value: '1+', label: '年 AI 结对开发实践' },
   { value: '8+', label: '完整项目交付' },
   { value: '4', label: 'AI 主线能力方向' },
 ]
+const narrativeSections = [
+  {
+    kicker: 'Current focus',
+    title: '我现在在做什么',
+    paragraphs: [
+      '现在我最想持续推进的方向，是把 AI 应用开发、全栈交付和产品判断放到一起做成长线。这也是为什么最近的项目里，我会同时关注 UI、状态流、后端边界、工具调用、数据来源和可解释性。',
+      'FitMind 代表了我在 AI 应用工程和 AI 产品化上的主线尝试，ai-pm-dev 代表了我对 AI 产品经理 workflow 的抽象，EaseMove 则继续补强我在复杂交互、数据产品、全栈交付和工程化排障方面的经验。',
+      '我希望下一份工作能更靠近 AI 应用、智能工作台、agent 工具编排、AI 产品经理协作、数据产品界面或需要较强工程化能力的解决方案团队。',
+    ],
+  },
+  {
+    kicker: 'Next experiments',
+    title: '下一步想做的小东西',
+    paragraphs: [
+      '除了主项目，我还想持续做一些更轻、更快、更验证想法的小工具和 AI 产品原型，放进自己的 Lab 里。它们不一定很大，但会更直接地体现我对 agent、工作流、自动化流程和产品手感的理解。',
+      '目前重点会围绕 ai-pm-dev 这条线推进：用 AI 产品经理视角拆需求、做原型、接工具、验证工作流，同时把 FitMind 继续往 agent 形态推进。',
+    ],
+  },
+  {
+    kicker: 'Lab direction',
+    title: '现在的 Lab 方向',
+    paragraphs: [
+      'ai-pm-dev：偏 AI 产品经理、需求拆解、原型验证与解决方案沉淀。',
+      'cat-note-illustrations：偏内容配图、Skill 封装和统一视觉表达。',
+      'quickDate：偏轻交互、分享闭环和双端部署。',
+      'FitMind Agent 化：偏工具编排、上下文和任务边界。',
+    ],
+  },
+]
+
 const pressureLines = [
   { text: 'MINYU', accent: false, cn: false },
   { text: 'JI', accent: true, cn: false },
@@ -121,20 +147,36 @@ function getHeroIntroScale(root: HTMLElement) {
   return Math.min(Math.max(lineWidth / heroWidth, 0.12), 1)
 }
 
+function ScrollFloatTitle({ children }: { children: string }) {
+  return (
+    <h2 data-scroll-float className="scroll-float-title" aria-label={children}>
+      {Array.from(children).map((char, index) => (
+        <span key={`${children}-${index}`} data-scroll-float-char aria-hidden="true">
+          {char === ' ' ? '\u00a0' : char}
+        </span>
+      ))}
+    </h2>
+  )
+}
+
+function ScrollRevealText({ children }: { children: string }) {
+  return (
+    <p data-scroll-reveal className="scroll-reveal-text">
+      {children.split(/(\s+)/).map((part, index) => (
+        <span key={`${part}-${index}`} data-scroll-reveal-word>
+          {part}
+        </span>
+      ))}
+    </p>
+  )
+}
+
 export default function AboutPage() {
   const pageRef = useRef<HTMLDivElement | null>(null)
   const [displayText, setDisplayText] = useState('')
   const [introVisible, setIntroVisible] = useState(false)
   const typingStateRef = useRef({ roleIdx: 0, displayText: '', isDeleting: false })
   const pressurePointerRef = useRef({ active: false, x: 0, y: 0 })
-
-  const featuredProjects = useMemo(
-    () =>
-      featuredSlugs
-        .map((slug) => projects.find((project) => project.slug === slug))
-        .filter((project): project is NonNullable<typeof project> => Boolean(project)),
-    [],
-  )
 
   useEffect(() => {
     let typingTimer: ReturnType<typeof setTimeout> | undefined
@@ -399,21 +441,33 @@ export default function AboutPage() {
           ease: 'none',
           scrollTrigger: { trigger: '.hero-mast', start: 'top top', end: 'bottom top', scrub: 1.2 },
         })
-        gsap.from('[data-showcase-card]', {
-          opacity: 0,
-          y: 42,
-          duration: 0.9,
-          stagger: 0.12,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: '[data-showcase-grid]', start: 'top 78%' },
+        gsap.utils.toArray<HTMLElement>('[data-scroll-float]').forEach((title) => {
+          gsap.from(title.querySelectorAll('[data-scroll-float-char]'), {
+            opacity: 0,
+            yPercent: 120,
+            rotateX: -72,
+            rotateZ: () => gsap.utils.random(-8, 8),
+            transformOrigin: '50% 100%',
+            duration: 0.95,
+            ease: 'back.out(1.7)',
+            stagger: 0.025,
+            scrollTrigger: { trigger: title, start: 'top 82%', end: 'bottom 44%', scrub: 0.55 },
+          })
         })
-        gsap.from('[data-focus-card]', {
-          opacity: 0,
-          y: 40,
-          duration: 0.8,
-          stagger: 0.14,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: '[data-focus-grid]', start: 'top 76%' },
+
+        gsap.utils.toArray<HTMLElement>('[data-scroll-reveal]').forEach((paragraph) => {
+          gsap.fromTo(
+            paragraph.querySelectorAll('[data-scroll-reveal-word]'),
+            { opacity: 0.18, y: 18, filter: 'blur(8px)' },
+            {
+              opacity: 1,
+              y: 0,
+              filter: 'blur(0px)',
+              ease: 'none',
+              stagger: 0.018,
+              scrollTrigger: { trigger: paragraph, start: 'top 88%', end: 'bottom 58%', scrub: 0.8 },
+            },
+          )
         })
       }
 
@@ -424,30 +478,6 @@ export default function AboutPage() {
       setupPressureTitle()
       setupCapabilityCarousel()
 
-      gsap.utils.toArray<HTMLElement>('[data-showcase-card]').forEach((card) => {
-        const xTo = gsap.quickTo(card, 'x', { duration: 0.28, ease: 'power3.out' })
-        const yTo = gsap.quickTo(card, 'y', { duration: 0.28, ease: 'power3.out' })
-        const rotateTo = gsap.quickTo(card, 'rotation', { duration: 0.28, ease: 'power3.out' })
-        const handleMove = (event: PointerEvent) => {
-          const rect = card.getBoundingClientRect()
-          const px = (event.clientX - rect.left) / rect.width - 0.5
-          const py = (event.clientY - rect.top) / rect.height - 0.5
-          xTo(px * 10)
-          yTo(py * 10 - 6)
-          rotateTo(px * 2.2)
-        }
-        const handleLeave = () => {
-          xTo(0)
-          yTo(0)
-          rotateTo(0)
-        }
-        card.addEventListener('pointermove', handleMove)
-        card.addEventListener('pointerleave', handleLeave)
-        motionCleanups.push(() => {
-          card.removeEventListener('pointermove', handleMove)
-          card.removeEventListener('pointerleave', handleLeave)
-        })
-      })
     }, root)
 
     return () => {
@@ -618,71 +648,21 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section-shell space-y-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-3">
-            <div className="section-title">重点项目</div>
-            <h2 className="display-subhead max-w-3xl">A few recent projects.</h2>
-          </div>
-          <Link className="magnetic-link" to="/projects">查看完整项目列表</Link>
-        </div>
-
-        <div data-showcase-grid className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
-          {featuredProjects.map((project) => (
-            <Link key={project.slug} to={`/projects/${project.slug}`} data-showcase-card className="project-frame project-frame-featured border-glow-card">
-              <ProjectPreviewFrame media={getProjectMedia(project.slug)} compact />
-              <div className="project-frame-meta">
-                <span className="index-badge">{project.positionTag}</span>
-                <span className="project-period">{project.period}</span>
-              </div>
-              <div className="space-y-3">
-                <h3 className="project-frame-title">{project.title}</h3>
-                <p className="project-frame-copy">{project.oneLiner}</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {project.stack.slice(0, 4).map((tech) => <span key={`${project.slug}-${tech}`} className="chip">{tech}</span>)}
-              </div>
-              <div className="project-frame-footer"><span>Case study</span><span className="project-arrow">→</span></div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section data-focus-grid className="grid gap-4">
-        <article data-focus-card className="panel-card panel-citrus space-y-4">
-          <div className="section-title">我现在在做什么</div>
-          <div className="space-y-3 text-sm leading-7 text-stone-300/84">
-            <p>现在我最想持续推进的方向，是把 AI 应用开发、全栈交付和产品判断放到一起做成长线。这也是为什么最近的项目里，我会同时关注 UI、状态流、后端边界、工具调用、数据来源和可解释性。</p>
-            <p>FitMind 代表了我在 AI 应用工程和 AI 产品化上的主线尝试，ai-pm-dev 代表了我对 AI 产品经理 workflow 的抽象，EaseMove 则继续补强我在复杂交互、数据产品、全栈交付和工程化排障方面的经验。</p>
-            <p>我希望下一份工作能更靠近 AI 应用、智能工作台、agent 工具编排、AI 产品经理协作、数据产品界面或需要较强工程化能力的解决方案团队。</p>
-          </div>
-        </article>
-
-      </section>
-
-      <section className="section-shell">
-        <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-          <article className="panel-card panel-citrus space-y-4">
-            <div className="section-title">下一步想做的小东西</div>
-            <div className="space-y-3 text-sm leading-7 text-stone-300/84">
-              <p>除了主项目，我还想持续做一些更轻、更快、更验证想法的小工具和 AI 产品原型，放进自己的 Lab 里。它们不一定很大，但会更直接地体现我对 agent、工作流、自动化流程和产品手感的理解。</p>
-              <p>目前重点会围绕 <span className="text-white">ai-pm-dev</span> 这条线推进：用 AI 产品经理视角拆需求、做原型、接工具、验证工作流，同时把 FitMind 继续往 agent 形态推进。</p>
+      <section className="narrative-section" aria-label="About narrative">
+        {narrativeSections.map((section) => (
+          <article key={section.title} className="narrative-block">
+            <div className="narrative-kicker">{section.kicker}</div>
+            <ScrollFloatTitle>{section.title}</ScrollFloatTitle>
+            <div className="narrative-copy">
+              {section.paragraphs.map((paragraph) => (
+                <ScrollRevealText key={paragraph}>{paragraph}</ScrollRevealText>
+              ))}
             </div>
           </article>
-
-          <article className="panel-card panel-contrast space-y-5">
-            <div className="section-title">现在的 Lab 方向</div>
-            <div className="space-y-3 text-sm leading-7 text-stone-300/84">
-              <div className="detail-list-item">ai-pm-dev：偏 AI 产品经理、需求拆解、原型验证与解决方案沉淀。</div>
-              <div className="detail-list-item">cat-note-illustrations：偏内容配图、Skill 封装和统一视觉表达。</div>
-              <div className="detail-list-item">quickDate：偏轻交互、分享闭环和双端部署。</div>
-              <div className="detail-list-item">FitMind Agent 化：偏工具编排、上下文和任务边界。</div>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Link className="button-primary" to="/lab">进入 Lab</Link>
-              <a className="button-secondary" href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer">GitHub</a>
-            </div>
-          </article>
+        ))}
+        <div className="narrative-actions">
+          <Link className="button-primary" to="/lab">进入 Lab</Link>
+          <Link className="button-secondary" to="/projects">查看项目列表</Link>
         </div>
       </section>
     </div>
