@@ -40,7 +40,7 @@ export default function App() {
               </div>
             </div>
 
-            <nav className="site-nav flex flex-wrap items-center gap-2 text-sm">
+            <nav className="site-nav flex flex-nowrap items-center gap-2 text-sm">
               <NavLink className="nav-link" to="/">About</NavLink>
               <NavLink className="nav-link" to="/projects">Projects</NavLink>
               <NavLink className="nav-link" to="/lab">Lab</NavLink>

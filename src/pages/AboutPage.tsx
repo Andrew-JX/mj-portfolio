@@ -465,7 +465,7 @@ export default function AboutPage() {
               filter: 'blur(0px)',
               ease: 'none',
               stagger: 0.018,
-              scrollTrigger: { trigger: paragraph, start: 'top 88%', end: 'bottom 58%', scrub: 0.8 },
+              scrollTrigger: { trigger: paragraph, start: 'top 92%', end: 'top 56%', scrub: 0.45 },
             },
           )
         })
@@ -529,16 +529,6 @@ export default function AboutPage() {
       </section>
 
       <section id="about-core" data-hero-card-shell className="hero-mast">
-        <div className="hero-lanyard-layer">
-          <Lanyard
-            position={[0, 0, 24]}
-            gravity={[0, -40, 0]}
-            frontImage={publicAsset('lanyard-card-front.svg')}
-            backImage={publicAsset('lanyard-card-back.svg')}
-            imageFit="cover"
-          />
-        </div>
-
         <div data-hero-card-content className="hero-card-content">
           <div className="hero-grid">
             <div className="space-y-7">
@@ -596,6 +586,15 @@ export default function AboutPage() {
             </div>
 
             <div data-hero-side className="hero-side">
+              <div className="hero-lanyard-layer">
+                <Lanyard
+                  position={[0, 0, 24]}
+                  gravity={[0, -40, 0]}
+                  frontImage={publicAsset('lanyard-card-front.svg')}
+                  backImage={publicAsset('lanyard-card-back.svg')}
+                  imageFit="cover"
+                />
+              </div>
               <div className="hero-lanyard-spacer" aria-hidden="true" />
               <div className="hero-side-caption border-glow-card">
                 <span className="index-badge">Monash University</span>
