@@ -1,17 +1,21 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'node:url'
 
+// Gitee Pages serves project pages under a subpath (`/<repo>/`), so the build
+// targeting Gitee needs a matching base. Vercel/Cloudflare serve at root (`/`).
+// Switch via DEPLOY_TARGET=gitee at build time; default stays `/`.
+const base = process.env.DEPLOY_TARGET === 'gitee' ? '/mj-portfolio/' : '/'
+
 export default defineConfig({
-  plugins: [vue(), tailwindcss()],
+  base,
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-
-  // 允许 CloudStudio / 反向代理域名访问（避免 Vite 返回 403 host not allowed）
   server: {
     allowedHosts: true,
   },

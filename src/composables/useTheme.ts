@@ -1,14 +1,38 @@
-import { ref, watch } from 'vue'
+import { useSyncExternalStore } from 'react'
 
-const isDark = ref(true)
+let isDark = true
+const listeners = new Set<() => void>()
 
-watch(isDark, (dark) => {
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
-}, { immediate: true })
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener)
+  return () => listeners.delete(listener)
+}
+
+function getSnapshot() {
+  return isDark
+}
+
+function emit() {
+  listeners.forEach((listener) => listener())
+}
+
+if (typeof document !== 'undefined') {
+  applyTheme()
+}
 
 export function useTheme() {
+  const dark = useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
+
   return {
-    isDark,
-    toggle: () => { isDark.value = !isDark.value },
+    isDark: dark,
+    toggle: () => {
+      isDark = !isDark
+      applyTheme()
+      emit()
+    },
   }
 }

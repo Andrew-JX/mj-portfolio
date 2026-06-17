@@ -6,39 +6,26 @@ export const projects: Project[] = [
     title: 'FitMind AI 训练分析系统',
     period: '2026.04 - 2026.05',
     positionTag: 'AI Product / Full-stack',
-    stack: [
-      'React',
-      'TypeScript',
-      'Vite',
-      'Node.js',
-      'Express',
-      'PostgreSQL',
-      'SSE',
-      'Tool Calling',
-      'Zod',
-      'JWT',
-    ],
+    stack: ['React', 'TypeScript', 'Vite', 'Node.js', 'Express', 'PostgreSQL', 'SSE', 'Tool Calling', 'Zod', 'JWT'],
     oneLiner:
       '面向力量训练记录与复盘场景的 AI 健身分析产品，把训练日志、确定性计算工具、Tool Calling 与流式 Assistant UI 串成一条可解释、可验证、可扩展的产品链路。',
     links: {
       live: 'https://fitmind-ai-psi.vercel.app/',
       repo: 'https://github.com/Andrew-JX/FitMind_ai.git',
     },
-    extraLinks: [
-      { label: '国内访问', url: 'https://fitmindai.jx15996596656.workers.dev' },
-    ],
+    extraLinks: [{ label: '国内访问', url: 'https://fitmindai.jx15996596656.workers.dev' }],
     aiNote:
-      'AI 协作：该项目把 AI 同时用作产品能力对象与研发协作工具。我主导项目定位、分层设计、工具边界、提示约束、状态流、文档体系与验收标准，代码实现阶段结合 Claude Code / Codex 做草稿生成、局部实现和自测辅助，最终由我负责架构决策、质量审查与可讲述性收口。',
+      '该项目把 AI 同时用作产品能力对象与研发协作工具。我主导项目定位、分层设计、工具边界、提示约束、状态流、文档体系与验收标准，代码实现阶段结合 Claude Code / Codex 做草稿生成、局部实现和自测辅助，最终由我负责架构决策、质量审查与可讲述性收口。',
     contributions: [
-      '设计“训练日志 -> 确定性计算层 -> Tool Executor -> Provider Adapter -> SSE Stream -> Assistant UI”主链路，避免把项目做成只会闲聊的套壳聊天框。',
+      '设计“训练日志 -> 确定性计算层 -> Tool Executor -> Provider Adapter -> SSE Stream -> Assistant UI”主链路，避免把项目做成只会闲聊的聊天框。',
       '将 fatigue、volume distribution、progress、recommendation context 等训练分析逻辑从模型中剥离为确定性工具，保证结论有真实数据依据。',
-      '围绕“记录、分析、解释、建议”组织用户路径，让 AI 输出不是孤立回答，而是嵌入训练复盘流程里的决策辅助。',
+      '围绕“记录、分析、解释、建议”组织用户路径，让 AI 输出嵌入训练复盘流程，而不是孤立回答。',
       '组织 React 前端工作台，打通训练记录、分析面板与 Assistant 三块界面，让用户能从原始数据一路看到结构化分析与最终解释。',
       '为流式对话实现前后端事件契约与前端状态机，覆盖 thinking、tool calling、answering、done 等关键状态。',
-      '梳理训练数据建模，包括 workouts、sets、exercises、exercise_muscles 与 contribution weight，为后续分析与扩展能力留出生长空间。',
+      '梳理训练数据建模，包括 workouts、sets、exercises、exercise_muscles 与 contribution weight，为后续分析与扩展留出生长空间。',
     ],
     highlights: [
-      '反幻觉策略：模型不直接“猜”训练结论，而是通过 Tool Calling 消费确定性计算结果，最后只负责解释，提升回答可追溯性。',
+      '反幻觉策略：模型不直接猜训练结论，而是通过 Tool Calling 消费确定性计算结果，最后只负责解释，提升回答可追溯性。',
       '架构解耦：Provider、Tool Loop、Analytics、SSE Translation 与前端消费层分离，后续更换模型或扩展工具时不需要推翻整条链路。',
       '数据建模把 exercise 与 muscle group 做成带 contribution weight 的多对多关系，支撑更合理的训练负荷与疲劳分析。',
       '前端不是只展示聊天结果，而是把训练记录、结构化分析和 AI 回答做成同一工作流里的不同层，体现产品化而非 Demo 化思路。',
@@ -53,20 +40,18 @@ export const projects: Project[] = [
     stack: ['TypeScript', 'Node.js', 'CLI', 'Agent Workflow', 'PRD', 'Codex', 'v0', 'Figma'],
     oneLiner:
       '面向 AI 辅助产品开发的本地 Idea-to-Build workflow CLI，通过项目操作层、PM 访谈、PRD / scope / acceptance tests 和质量门禁，把一次性 AI 对话沉淀成可交接、可复用、可验证的开发资产。',
-    links: {
-      repo: 'https://github.com/Andrew-JX/ai-pm-dev',
-    },
+    links: { repo: 'https://github.com/Andrew-JX/ai-pm-dev' },
     aiNote:
-      'AI 协作：这个项目本身就是围绕 AI 协作方式的产品化探索。我把真实 AI coding 中的上下文漂移、任务跳步、不砍需求、验收缺失等痛点抽象成 workflow kernel，并通过 CLI、Skill、文档契约和质量门禁落到可运行工具里。',
+      '这个项目本身就是围绕 AI 协作方式的产品化探索。我把真实 AI coding 中的上下文漂移、任务跳步、不砍需求、验收缺失等痛点抽象成 workflow kernel，并通过 CLI、Skill、文档契约和质量门禁落到可运行工具里。',
     contributions: [
       '设计 Idea -> PRD -> Operating Layer -> Build Handoff 的本地工作流，把模糊想法转成下游 AI 工具能直接读取的项目资产。',
       '通过 AGENTS.md + docs 为每个项目安装协作操作层，让 Codex、Claude Code、v0、Figma 打开项目后知道边界、上下文和需要维护的文档。',
       '实现交互式 PM 访谈与 scope 约束，强制明确 must-have、非目标、单一指标和 acceptance tests，避免需求在 AI 协作中越做越散。',
       '把 product-spec、design-brief、dev-plan、build、bug-fix、review、release 等环节拆成带维护契约的 Skill，而不是只做松散 prompt 模板。',
-      '提供 prd check --strict、doctor、handoff prompt 和意图-实现对账思路，让工具不仅能生成文档，也能作为质量门禁进入开发流程。',
+      '提供 prd check --strict、doctor、handoff prompt 和意图实现对账思路，让工具不仅能生成文档，也能作为质量门禁进入开发流程。',
     ],
     highlights: [
-      '定位克制：不是 Dify / Coze 替代品，也不是通用多 Agent 平台，而是更底层的 AI 产品开发 workflow kernel。',
+      '定位克制：不是 Dify / Coze 替代品，也不是通用大 Agent 平台，而是更底层的 AI 产品开发 workflow kernel。',
       '核心价值不是“多生成几页文档”，而是逼出并保存产品判断、优先级、边界、风险和验收标准。',
       '主入口从“生成交接 prompt”重构为“给项目安装操作层”，体现了在真实使用反馈下推翻旧设计并重建定位的能力。',
       '适合作为 AI 产品经理、AI 全栈和 AI 解决方案能力的交叉项目，能同时讲清产品问题、工程抽象和协作流程。',
@@ -78,19 +63,7 @@ export const projects: Project[] = [
     title: 'EaseMove Melbourne / MoveComfortly',
     period: '2026.03 - 2026.05（团队项目）',
     positionTag: 'Data Product / Full-stack',
-    stack: [
-      'React',
-      'TypeScript',
-      'Vite',
-      'Tailwind CSS',
-      'Node.js',
-      'Express',
-      'PostgreSQL',
-      'Neon',
-      'Leaflet',
-      'Mapbox GL',
-      'Open Data',
-    ],
+    stack: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'PostgreSQL', 'Neon', 'Leaflet', 'Mapbox GL', 'Open Data'],
     oneLiner:
       '面向墨尔本内城区步行与骑行场景的主动出行决策产品，结合开放数据、舒适度评分、地图比较、风险教育与 3D 路线预览，帮助用户在高温天气下做更稳妥的移动选择。',
     links: {
@@ -107,19 +80,18 @@ export const projects: Project[] = [
       '在团队项目中推进“数据产品而非导航工具”的产品边界，把首页叙事、地图体验、比较模式、路线预览和风险教育内容组织成完整使用闭环。',
       '打通前端地图界面与后端舒适度评分接口，让用户可以按区域查看当前舒适度，并根据偏好权重实时重算结果。',
       '把 comfort score、precinct compare、area detail、facility recommendation 与 extreme weather risk 内容拆成清晰的信息层级，降低地图产品的理解成本。',
-      '参与 2D Leaflet 主地图与独立 3D Route 页面之间的职责划分，避免强行替换原主图导致 marker、area layer、hover 与 popup 行为互相冲突。',
+      '参与 2D Leaflet 主地图与独立 3D Route 页面之间的职责划分，避免强行替换原主图导致 marker、area layer、hover 与 popup 行为冲突。',
       '围绕 precinct、street furniture、Open-Meteo fallback 与 open data source 组织后端数据来源，使地图展示不依赖单一实时接口。',
-      '参与 3D route 页面与地图细节流的串联，让主地图、区域详情和设施推荐在同一产品路径内可跳转、可解释。',
       '按前后端分目录和部署约束维护工程结构，适配 Vercel、Render、Neon 这类分布式托管环境。',
     ],
     highlights: [
-      '产品定位克制：明确不把项目做成通用天气看板或 turn-by-turn 导航，而是聚焦“出发前判断体感和风险”的决策支持场景。',
-      '舒适度评分允许用户通过 temperature、humidity、activity weight 做偏好重平衡，体现了前端交互、后端计算与数据反馈的一体化设计。',
+      '产品定位克制：明确不做通用天气看板或 turn-by-turn 导航，而是聚焦“出发前判断体感和风险”的决策支持场景。',
+      '舒适度评分允许用户通过 temperature、humidity、activity weight 做偏好重平衡，体现前端交互、后端计算与数据反馈的一体化设计。',
       '地图主视图、双区域 compare、3D route 预览与 query-based detail flow 形成层次清晰的空间信息产品结构。',
       '后端对 live API 不可用场景预留 fallback 数据路径，避免整个产品因为外部数据波动直接失效。',
       '3D Route 采用独立页面渐进验证，后期围绕 Mapbox Standard、Australia 范围校验、Quick Guide、Area Detail 深链跳转和 activity density surface overlay 做产品化增强。',
     ],
-    note: '团队项目。页面与技术描述基于当前仓库中可公开验证的产品范围整理，强调我能清楚解释的产品结构、数据链路与工程实现。',
+    note: '团队项目。页面与技术描述基于当前仓库中可公开验证的产品范围整理，强调我能清晰解释的产品结构、数据链路与工程实现。',
     visibility: 'course',
   },
   {
@@ -127,18 +99,7 @@ export const projects: Project[] = [
     title: 'Ruilian 训练与健康数据管理系统',
     period: '2025.12 - 2026.01',
     positionTag: 'Full-stack / Engineering',
-    stack: [
-      'React',
-      'TypeScript',
-      'Vite',
-      'Node.js',
-      'Express',
-      'PostgreSQL(JSONB)',
-      'WebSocket',
-      'JWT',
-      'Docker Compose',
-      'Nginx',
-    ],
+    stack: ['React', 'TypeScript', 'Vite', 'Node.js', 'Express', 'PostgreSQL(JSONB)', 'WebSocket', 'JWT', 'Docker Compose', 'Nginx'],
     oneLiner:
       '面向训练、饮食与身体数据的多端记录与同步系统，支持 Space 多人共享与权限控制，并具备近实时状态同步能力。',
     links: {
@@ -146,7 +107,7 @@ export const projects: Project[] = [
       repo: 'https://github.com/Andrew-JX/SharpTraining.git',
     },
     aiNote:
-      'AI 协作：该项目在腾讯 AI Coding 课程中使用 CodeBuddy 进行结对开发；我负责产品设想、需求拆解、提示词设计、交互与验收标准、代码评审、部署与联调，代码脚手架与主体实现由 CodeBuddy 辅助生成并持续迭代。',
+      '该项目在腾讯 AI Coding 课程中使用 CodeBuddy 进行结对开发；我负责产品设想、需求拆解、提示词设计、交互与验收标准、代码评审、部署与联调，代码脚手架与主体实现由 CodeBuddy 辅助生成并持续迭代。',
     contributions: [
       '定义训练、饮食、身体数据的一体化模型，统一记录、回看和趋势分析链路，避免功能各自为政。',
       '设计本地持久化 + 云端快照 + WebSocket 广播的同步方案，让多设备状态可以近实时可见。',
@@ -157,7 +118,7 @@ export const projects: Project[] = [
     highlights: [
       '用 JSONB 快照承接复杂训练数据结构，降低早期 schema 高频变动成本，适合快速试错与课程项目交付。',
       'WebSocket 广播配合快照读写实现近实时同步，适合多端数据一致性演示与后续协作场景扩展。',
-      'Nginx 同域代理同时覆盖 HTTP API 和 WebSocket 升级链路，减少前端跨域、cookie、端口暴露和环境差异问题。',
+      'Nginx 同域代理同时覆盖 HTTP API 和 WebSocket 升级链路，减少跨域、cookie、端口暴露和环境差异问题。',
       'Space + 权限体系让项目从单机记录工具升级为可扩展的平台化原型。',
     ],
     visibility: 'public',
@@ -167,23 +128,10 @@ export const projects: Project[] = [
     title: 'SunSafe 防晒健康平台',
     period: '2026.03 - 2026.04（课程项目）',
     positionTag: 'Full-stack / Web',
-    stack: [
-      'Vue3',
-      'TypeScript',
-      'Pinia',
-      'Vue Router',
-      'Express',
-      'PostgreSQL',
-      'Cloudinary',
-      'Vercel',
-      'Render',
-      'Open Data',
-    ],
+    stack: ['Vue3', 'TypeScript', 'Pinia', 'Vue Router', 'Express', 'PostgreSQL', 'Cloudinary', 'Vercel', 'Render', 'Open Data'],
     oneLiner:
       '面向防晒意识与皮肤健康记录的公网可访问平台，围绕 Diary、Profile 与 UV 数据联动建立完整使用闭环。',
-    links: {
-      live: 'https://fit5120-tp-12-onboarding-i7v5.vercel.app/',
-    },
+    links: { live: 'https://fit5120-tp-12-onboarding-i7v5.vercel.app/' },
     contributions: [
       '负责 Diary 与 Profile 模块，实现皮肤日记 CRUD、图片上传、个人中心和 UV 数据联动展示。',
       '将媒体资源托管到 Cloudinary，减少后端静态文件压力，并让图片上传链路适配公网部署场景。',
@@ -206,12 +154,10 @@ export const projects: Project[] = [
     stack: ['Vue3', 'TypeScript', 'Cesium', 'EarthSDK', 'SuperMap3D', 'Pinia', 'Spring Boot'],
     oneLiner:
       '围绕三维交互与空间分析能力做组件化封装，完成多引擎兼容排障与接口联调，支持政企场景落地。',
-    links: {
-      doc: 'https://blog.csdn.net/weixin_51983847/article/details/142140218?spm=1001.2014.3001.5501',
-    },
+    links: { doc: 'https://blog.csdn.net/weixin_51983847/article/details/142140218?spm=1001.2014.3001.5501' },
     contributions: [
       '实现地形测量、体积计算、角度分析等三维交互能力，并接入实际业务页面。',
-      '抽离 measure、volume、analysis 组件，降低三维能力与业务页面耦合，重复实现量减少约 40%。',
+      '抽离 measure、volume、analysis 组件，降低三维能力与业务页面耦合，重复实现减少约 40%。',
       '为三维测量组件设计 activate、deactivate、clear 等稳定接口，让业务页面只消费能力入口，不直接依赖内部事件监听和几何绘制细节。',
       '排查 Cesium、EarthSDK、SuperMap3D 并存场景下的渲染异常、版本差异与 API 不兼容问题，完成适配方案。',
       '参与 Spring Boot 接口联调与问题定位，梳理三维数据加载和渲染链路的异常排查思路。',
@@ -219,7 +165,7 @@ export const projects: Project[] = [
     highlights: [
       '三维工具组件化后，业务页面只消费统一能力入口，便于复用、排障和后续扩展。',
       '建立多引擎兼容排障流程，从最小复现、版本对比到适配层抽象，减少对单一 SDK 行为的硬编码依赖。',
-      '围绕 WebGL 上下文、Shader 编译、坐标转换和事件清理建立排障口径，能解释从页面交互到 GPU 渲染异常的定位过程。',
+      '围绕 WebGL 上下文、shader 编译、坐标转换和事件清理建立排障路径，能解释从页面交互到 GPU 渲染异常的定位过程。',
       '在不暴露客户数据与代码的前提下，仍能完整说明职责边界、技术方案和交付结果。',
     ],
     note: '不展示客户名称、业务数据和代码细节，仅描述本人职责范围内的技术方案与交付方式。',
@@ -233,9 +179,7 @@ export const projects: Project[] = [
     stack: ['Vue', 'Spring Boot', 'PyTorch', 'ResNet-18', 'RESTful API', 'WeChat Mini Program'],
     oneLiner:
       '围绕“上传即识别 + 溯源查询”建立识别闭环，将图像推理能力真正接入 Web 与小程序业务流程。',
-    links: {
-      repo: 'https://github.com/Andrew-JX/Design-and-implementation-of-an-automatic-agricultural-product-identification-system-.git',
-    },
+    links: { repo: 'https://github.com/Andrew-JX/Design-and-implementation-of-an-automatic-agricultural-product-identification-system-.git' },
     contributions: [
       '采用前后端分离方案，使用 Vue 完成图片上传、识别结果展示与用户操作流程。',
       '使用 Spring Boot 提供识别、查询和用户相关 API，串起前端展示与后端推理链路。',
