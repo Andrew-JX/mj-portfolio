@@ -2396,12 +2396,44 @@ select {
 }
 
 [data-theme="light"] .text-white { color: #1e130f; }
+[data-theme="light"] .text-stone-300 { color: rgba(52, 28, 16, 0.9); }
 [data-theme="light"] .text-stone-200\/86 { color: rgba(45, 27, 17, 0.9); }
 [data-theme="light"] .text-stone-300\/78 { color: rgba(52, 28, 16, 0.9); }
 [data-theme="light"] .text-stone-300\/82 { color: rgba(52, 28, 16, 0.92); }
 [data-theme="light"] .text-stone-300\/84 { color: rgba(52, 28, 16, 0.94); }
 [data-theme="light"] .text-stone-400 { color: #724a33; }
 [data-theme="light"] .text-stone-500 { color: #8d6045; }
+
+[data-theme="light"] .about-start-content p,
+[data-theme="light"] .hero-body,
+[data-theme="light"] .rail-summary,
+[data-theme="light"] .project-frame-copy,
+[data-theme="light"] .detail-list-item {
+  color: var(--text-soft);
+}
+
+[data-theme="light"] .hero-info-list,
+[data-theme="light"] .hero-side-caption,
+[data-theme="light"] .metric-label,
+[data-theme="light"] .project-period,
+[data-theme="light"] .project-frame-footer,
+[data-theme="light"] .showcase-input::placeholder {
+  color: var(--muted);
+}
+
+[data-theme="light"] .project-frame-footer {
+  border-top-color: var(--line);
+}
+
+[data-theme="light"] .button-primary {
+  color: #fff7ed;
+}
+
+[data-theme="light"] .button-secondary {
+  background: rgba(255, 255, 255, 0.58);
+  color: var(--text);
+}
+
 [data-theme="light"] .resume-quick-card {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.82), transparent),
