@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Environment } from '@react-three/drei'
 import { BallCollider, CuboidCollider, Physics, RigidBody } from '@react-three/rapier'
@@ -23,21 +23,41 @@ type BallSeed = {
 const COLORS = ['#fb923c', '#f59e0b', '#facc15', '#fed7aa', '#78716c', '#38bdf8']
 
 export default function BallpitBackground({ count = 34 }: BallpitBackgroundProps) {
+  const [effectiveCount, setEffectiveCount] = useState(() => {
+    if (typeof window === 'undefined') return Math.min(count, 34)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return Math.min(count, 14)
+    return Math.min(count, window.innerWidth < 768 ? 22 : 36)
+  })
+
+  useEffect(() => {
+    const syncCount = () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        setEffectiveCount(Math.min(count, 14))
+        return
+      }
+      setEffectiveCount(Math.min(count, window.innerWidth < 768 ? 22 : 36))
+    }
+
+    syncCount()
+    window.addEventListener('resize', syncCount)
+    return () => window.removeEventListener('resize', syncCount)
+  }, [count])
+
   return (
     <div aria-hidden="true" className="ballpit-background">
       <Canvas
         orthographic
         camera={{ position: [0, 0, 14], zoom: 54 }}
-        dpr={[1, 1.6]}
-        gl={{ alpha: true, antialias: true }}
+        dpr={[1, 1.25]}
+        gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
       >
         <ambientLight intensity={1.2} />
         <directionalLight position={[-5, 6, 8]} intensity={2.4} color="#fff7ed" />
         <directionalLight position={[6, -3, 5]} intensity={0.95} color="#38bdf8" />
-        <Physics gravity={[0, -9.5, 0]} timeStep={1 / 60}>
-          <BallpitScene count={count} />
+        <Physics gravity={[0, -9.5, 0]} timeStep={1 / 45}>
+          <BallpitScene count={effectiveCount} />
         </Physics>
-        <Environment preset="city" blur={0.8} />
+        {effectiveCount > 24 ? <Environment preset="city" blur={0.8} /> : null}
       </Canvas>
     </div>
   )
@@ -167,7 +187,7 @@ function BallpitScene({ count }: Required<BallpitBackgroundProps>) {
         >
           <BallCollider args={[ball.radius]} />
           <mesh castShadow receiveShadow>
-            <sphereGeometry args={[ball.radius, 32, 24]} />
+            <sphereGeometry args={[ball.radius, 20, 14]} />
             <meshStandardMaterial
               color={ball.color}
               roughness={ball.roughness}
