@@ -574,11 +574,11 @@ select {
 
 .hero-lanyard-layer {
   position: absolute;
-  top: -4.8rem;
-  right: -0.8rem;
+  top: -6.5rem;
+  right: -6rem;
   z-index: 4;
-  width: min(43rem, 54%);
-  height: clamp(34rem, 70vh, 48rem);
+  width: min(56rem, 72vw);
+  height: clamp(38rem, 78vh, 54rem);
   overflow: visible;
   pointer-events: auto;
   touch-action: none;
@@ -2426,7 +2426,18 @@ select {
 }
 
 [data-theme="light"] .button-primary {
+  border-color: rgba(194, 65, 12, 0.36);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.28), transparent 42%),
+    linear-gradient(135deg, #fb923c 0%, #ea580c 52%, #c2410c 100%);
   color: #fff7ed;
+  box-shadow: 0 12px 28px rgba(194, 65, 12, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  text-shadow: 0 1px 1px rgba(67, 20, 7, 0.28);
+}
+
+[data-theme="light"] .button-primary:hover {
+  border-color: rgba(154, 52, 18, 0.44);
+  box-shadow: 0 16px 34px rgba(194, 65, 12, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
 
 [data-theme="light"] .button-secondary {
