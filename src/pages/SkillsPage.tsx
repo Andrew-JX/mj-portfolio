@@ -53,6 +53,21 @@ const labItems: LabItem[] = [
     ],
   },
   {
+    title: 'PureIP',
+    stage: 'Shipping',
+    summary: '一个用来快速确认当前访问出口、IP 环境和部署可达性的小工具，适合排查代理、地区访问、CDN 或线上服务连通性。',
+    tags: ['Network Tool', 'IP Check', 'Render', 'Utility'],
+    bullets: [
+      '访问页面即可快速查看当前网络出口信息，降低临时排查 IP 与访问环境时的沟通成本。',
+      '保持单一用途和轻量交互，把“我现在从哪里访问”这个小问题做成可分享、可复用的网页入口。',
+      '通过 Render 在线部署和 GitHub 开源仓库形成完整闭环，方便后续继续补充检测项或部署镜像。',
+    ],
+    repo: 'https://github.com/Andrew-JX/testPureIP',
+    links: [
+      { label: 'Live', url: 'https://pureip.onrender.com/' },
+    ],
+  },
+  {
     title: 'FitMind Agent',
     stage: 'Exploring',
     summary: '有可能把 FitMind 继续往 agent 方向推进，重点看任务边界、工具编排和上下文组织。',
