@@ -86,7 +86,7 @@ const narrativeSections = [
       'ai-pm-dev：偏 AI 产品经理、需求拆解、原型验证与解决方案沉淀。',
       'cat-note-illustrations：偏内容配图、Skill 封装和统一视觉表达。',
       'quickDate：偏轻交互、分享闭环和双端部署。',
-      'FitMind Agent 化：偏工具编排、上下文和任务边界。',
+      'PureIP：场景化 IP 与网络体检站，覆盖出口 / 指定 IP 评估、风险与 DNSBL、多指标测速和地区探针。',
     ],
   },
 ]

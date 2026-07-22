@@ -55,12 +55,12 @@ const labItems: LabItem[] = [
   {
     title: 'PureIP',
     stage: 'Shipping',
-    summary: '一个用来快速确认当前访问出口、IP 环境和部署可达性的小工具，适合排查代理、地区访问、CDN 或线上服务连通性。',
-    tags: ['Network Tool', 'IP Check', 'Render', 'Utility'],
+    summary: '一个可自托管的场景化 IP 与网络体检站：既能完整实测当前出口，也能预评估指定公网 IPv4 / IPv6，并按 AI 工具、上网、账号、看剧和游戏五类用途给出结论。',
+    tags: ['IP Intelligence', 'Speed Test', 'Risk & DNSBL', 'Render'],
     bullets: [
-      '访问页面即可快速查看当前网络出口信息，降低临时排查 IP 与访问环境时的沟通成本。',
-      '保持单一用途和轻量交互，把“我现在从哪里访问”这个小问题做成可分享、可复用的网页入口。',
-      '通过 Render 在线部署和 GitHub 开源仓库形成完整闭环，方便后续继续补充检测项或部署镜像。',
+      '“当前网络检测”和“手动输入 IP”共用多源地理、ASN、代理 / 机房、滥用风险、DNSBL 与浏览器环境证据，并明确区分完整实测、IP 侧预评估和可信度。',
+      '集成 Cloudflare 公网测速，覆盖下载、上传、空闲与负载延迟、抖动和 Bufferbloat；结合 Oregon、Singapore、Frankfurt 地区探针，为 AI、4K、游戏和视频会议给出体验建议。',
+      '检测结果不落库，最近 10 次测速仅保存在浏览器本地；项目已通过 Render 上线并在 GitHub 开源，支持环境变量配置数据源和自托管部署。',
     ],
     repo: 'https://github.com/Andrew-JX/testPureIP',
     links: [
