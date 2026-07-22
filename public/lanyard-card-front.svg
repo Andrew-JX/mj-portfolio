@@ -1,47 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="900" viewBox="0 0 640 900" role="img" aria-label="Minyu Ji portfolio lanyard card front">
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="900" viewBox="0 0 640 900" role="img" aria-label="Minyu Ji personal portfolio badge">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#2a1710"/>
-      <stop offset="0.42" stop-color="#0f0f12"/>
-      <stop offset="1" stop-color="#111827"/>
+      <stop offset="0" stop-color="#151518"/>
+      <stop offset="0.56" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#172033"/>
     </linearGradient>
-    <radialGradient id="glowA" cx="18%" cy="16%" r="62%">
-      <stop offset="0" stop-color="#fb923c" stop-opacity="0.72"/>
-      <stop offset="0.46" stop-color="#fb923c" stop-opacity="0.18"/>
+    <radialGradient id="warmGlow" cx="12%" cy="12%" r="78%">
+      <stop offset="0" stop-color="#fb923c" stop-opacity="0.34"/>
+      <stop offset="0.46" stop-color="#fb923c" stop-opacity="0.08"/>
       <stop offset="1" stop-color="#fb923c" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glowB" cx="84%" cy="74%" r="56%">
-      <stop offset="0" stop-color="#38bdf8" stop-opacity="0.34"/>
+    <radialGradient id="coolGlow" cx="92%" cy="82%" r="62%">
+      <stop offset="0" stop-color="#38bdf8" stop-opacity="0.18"/>
       <stop offset="1" stop-color="#38bdf8" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#facc15"/>
-      <stop offset="0.46" stop-color="#fb923c"/>
-      <stop offset="1" stop-color="#f97316"/>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fb923c"/>
+      <stop offset="0.58" stop-color="#facc15"/>
+      <stop offset="1" stop-color="#38bdf8"/>
     </linearGradient>
-    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.32"/>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#000000" flood-opacity="0.38"/>
     </filter>
   </defs>
+
   <rect width="640" height="900" rx="52" fill="url(#bg)"/>
-  <rect width="640" height="900" rx="52" fill="url(#glowA)"/>
-  <rect width="640" height="900" rx="52" fill="url(#glowB)"/>
-  <rect x="26" y="26" width="588" height="848" rx="42" fill="none" stroke="#fb923c" stroke-opacity="0.38" stroke-width="3"/>
-  <rect x="52" y="60" width="536" height="780" rx="34" fill="#ffffff" fill-opacity="0.045" stroke="#ffffff" stroke-opacity="0.09"/>
-  <circle cx="320" cy="62" r="22" fill="#09090b" stroke="#fb923c" stroke-opacity="0.38" stroke-width="3"/>
-  <rect x="130" y="128" width="380" height="44" rx="22" fill="#fb923c" fill-opacity="0.14" stroke="#fb923c" stroke-opacity="0.26"/>
-  <text x="320" y="158" text-anchor="middle" fill="#fed7aa" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="4">MJ PORTFOLIO</text>
-  <g filter="url(#softShadow)">
-    <rect x="122" y="218" width="396" height="260" rx="38" fill="#111111" fill-opacity="0.66" stroke="#ffffff" stroke-opacity="0.08"/>
-    <text x="320" y="330" text-anchor="middle" fill="url(#mark)" font-family="Syne, Inter, Arial, sans-serif" font-size="116" font-weight="800">MJ</text>
-    <text x="320" y="390" text-anchor="middle" fill="#fff7ed" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="2">MINYU JI</text>
-    <text x="320" y="434" text-anchor="middle" fill="#fed7aa" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">吉敏宇</text>
+  <rect width="640" height="900" rx="52" fill="url(#warmGlow)"/>
+  <rect width="640" height="900" rx="52" fill="url(#coolGlow)"/>
+  <rect x="25" y="25" width="590" height="850" rx="42" fill="none" stroke="#ffffff" stroke-opacity="0.13" stroke-width="3"/>
+  <rect x="45" y="45" width="550" height="810" rx="34" fill="#ffffff" fill-opacity="0.025" stroke="#ffffff" stroke-opacity="0.05"/>
+  <circle cx="320" cy="61" r="21" fill="#08090b" stroke="#ffffff" stroke-opacity="0.2" stroke-width="3"/>
+
+  <text x="68" y="125" fill="#fff7ed" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="800" letter-spacing="3">MJ / PERSONAL ID</text>
+  <text x="570" y="125" text-anchor="end" fill="#a8a29e" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="2">ID · 026</text>
+  <rect x="68" y="151" width="504" height="7" rx="3.5" fill="url(#accent)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="68" y="208" width="204" height="284" rx="30" fill="#07090d" stroke="#ffffff" stroke-opacity="0.2" stroke-width="3"/>
+    <rect x="76" y="216" width="188" height="268" rx="24" fill="#d6d3d1"/>
   </g>
-  <text x="82" y="556" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="760">AI Application Developer</text>
-  <text x="82" y="596" fill="#d6d3d1" font-family="Inter, Arial, sans-serif" font-size="24">Full-stack / AI PM / Solutions</text>
-  <line x1="82" y1="636" x2="558" y2="636" stroke="#fb923c" stroke-opacity="0.28" stroke-width="2"/>
-  <text x="82" y="694" fill="#fed7aa" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">MONASH UNIVERSITY</text>
-  <text x="82" y="732" fill="#fafaf9" font-family="Inter, Arial, sans-serif" font-size="24">Master of IT · 2025.03 - 2026.10</text>
-  <text x="82" y="782" fill="#a8a29e" font-family="Inter, Arial, sans-serif" font-size="20">github.com/Andrew-JX</text>
-  <text x="82" y="816" fill="#a8a29e" font-family="Inter, Arial, sans-serif" font-size="20">JX15996596656@163.com</text>
+
+  <text x="306" y="225" fill="#a8a29e" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="3">NAME</text>
+  <text x="306" y="278" fill="#fff7ed" font-family="Syne, Inter, Arial, sans-serif" font-size="44" font-weight="850">MINYU JI</text>
+  <text x="306" y="322" fill="#fb923c" font-family="Inter, Arial, sans-serif" font-size="29" font-weight="800">吉敏宇</text>
+
+  <text x="306" y="374" fill="#a8a29e" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="3">FOCUS</text>
+  <text x="306" y="414" fill="#fafaf9" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="750">AI 应用开发 · AI 全栈</text>
+  <text x="306" y="450" fill="#d6d3d1" font-family="Inter, Arial, sans-serif" font-size="20">AI 产品 · AI 解决方案</text>
+
+  <line x1="68" y1="546" x2="572" y2="546" stroke="#ffffff" stroke-opacity="0.12" stroke-width="2"/>
+
+  <text x="68" y="596" fill="#fb923c" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="800" letter-spacing="3">EDUCATION</text>
+  <text x="68" y="638" fill="#fff7ed" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="760">Monash University · Master of IT</text>
+  <text x="68" y="674" fill="#a8a29e" font-family="Inter, Arial, sans-serif" font-size="20">2025.03 — 2026.10</text>
+
+  <text x="68" y="730" fill="#fb923c" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="800" letter-spacing="3">CONTACT</text>
+  <text x="68" y="770" fill="#fafaf9" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="700">github.com/Andrew-JX</text>
+  <text x="68" y="808" fill="#d6d3d1" font-family="Inter, Arial, sans-serif" font-size="20">minyuj207@gmail.com</text>
+
+  <rect x="476" y="735" width="96" height="72" rx="18" fill="#ffffff" fill-opacity="0.055" stroke="#ffffff" stroke-opacity="0.1"/>
+  <path d="M495 756h18v18h-18zM519 756h10v10h-10zM535 756h18v18h-18zM495 780h10v10h-10zM511 774h18v18h-18zM535 780h18v10h-18z" fill="#fb923c" fill-opacity="0.86"/>
+  <text x="572" y="838" text-anchor="end" fill="#78716c" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2">PORTFOLIO ACCESS</text>
 </svg>

@@ -67,12 +67,6 @@ const labItems: LabItem[] = [
       { label: 'Live', url: 'https://pureip.onrender.com/' },
     ],
   },
-  {
-    title: 'FitMind Agent',
-    stage: 'Exploring',
-    summary: '有可能把 FitMind 继续往 agent 方向推进，重点看任务边界、工具编排和上下文组织。',
-    tags: ['Agent', 'Tool Calling', 'Product'],
-  },
 ]
 
 function handleLabCardMove(event: ReactPointerEvent<HTMLElement>) {
@@ -97,37 +91,25 @@ function resetLabCardTilt(event: ReactPointerEvent<HTMLElement>) {
 }
 
 export default function SkillsPage() {
-  const [introPhase, setIntroPhase] = useState<'fuzzy' | 'joke' | 'done'>('fuzzy')
+  const [showIntro, setShowIntro] = useState(true)
 
   useEffect(() => {
-    const jokeTimer = window.setTimeout(() => setIntroPhase('joke'), 1500)
-    const doneTimer = window.setTimeout(() => setIntroPhase('done'), 2500)
-
-    return () => {
-      window.clearTimeout(jokeTimer)
-      window.clearTimeout(doneTimer)
-    }
+    const doneTimer = window.setTimeout(() => setShowIntro(false), 1500)
+    return () => window.clearTimeout(doneTimer)
   }, [])
 
   return (
     <div className="space-y-8">
-      <div aria-hidden={introPhase === 'done'} className={`lab-entry-overlay ${introPhase === 'done' ? 'lab-entry-overlay-hidden' : ''}`}>
+      <div aria-hidden={!showIntro} className={`lab-entry-overlay ${showIntro ? '' : 'lab-entry-overlay-hidden'}`}>
         <div className="lab-entry-noise" />
         <div className="lab-entry-text-wrap">
-          {introPhase === 'fuzzy' ? (
-            <div className="fuzzy-text" data-text="404 Not found">404 Not found</div>
-          ) : (
-            <div className="joke-text">it&apos;s a joke</div>
-          )}
+          <div className="fuzzy-text" data-text="404 Not found">404 Not found</div>
         </div>
       </div>
 
       <section className="hero-panel space-y-4">
         <div className="section-title">Lab</div>
-        <h1 className="text-3xl font-semibold tracking-tight text-white">AI 产品 / 小 Agent / 快速实验</h1>
-        <p className="max-w-3xl text-sm leading-7 text-stone-300/84">
-          这里会放我围绕 AI 应用开发、AI 产品经理、AI 全栈和解决方案做的实验。它们不一定是大项目，但能比较直接地反映我最近在研究什么。
-        </p>
+        <h1 className="text-3xl font-semibold tracking-tight text-white">AI 小工具 / 快速实验</h1>
       </section>
 
       <section className="lab-card-grid">

@@ -40,7 +40,7 @@ const capabilityCards: CapabilityCard[] = [
   {
     id: 'systems',
     label: '03 / AI 产品经理',
-    title: 'AI 产品经理视角',
+    title: 'AI 产品视角',
     kicker: 'AI product thinking',
     summary: '我习惯先界定场景、用户任务、功能边界和验收标准，再把需求拆成可实现、可测试的系统链路。',
     bullets: ['需求拆解', '交互流程', '验收标准'],
@@ -57,7 +57,7 @@ const capabilityCards: CapabilityCard[] = [
 
 const roles = ['AI 应用开发工程师', 'AI 全栈开发者', 'AI 产品经理', 'AI 解决方案实践者']
 const signalMetrics = [
-  { value: '1+', label: '年 AI 结对开发实践' },
+  { value: '2年+', label: 'AI 结对开发实践' },
   { value: '8+', label: '完整项目交付' },
   { value: '4', label: 'AI 主线能力方向' },
 ]
@@ -66,9 +66,8 @@ const narrativeSections = [
     kicker: 'Current focus',
     title: '我现在在做什么',
     paragraphs: [
-      '现在我最想持续推进的方向，是把 AI 应用开发、全栈交付和产品判断放到一起做成长线。这也是为什么最近的项目里，我会同时关注 UI、状态流、后端边界、工具调用、数据来源和可解释性。',
-      'FitMind 代表了我在 AI 应用工程和 AI 产品化上的主线尝试，ai-pm-dev 代表了我对 AI 产品经理 workflow 的抽象，EaseMove 则继续补强我在复杂交互、数据产品、全栈交付和工程化排障方面的经验。',
-      '我希望下一份工作能更靠近 AI 应用、智能工作台、agent 工具编排、AI 产品经理协作、数据产品界面或需要较强工程化能力的解决方案团队。',
+      '目前聚焦 AI 应用开发、AI 全栈和 AI 产品，正在把模型能力接入真实的产品与工作流。',
+      '近期主要推进 FitMind、ai-pm-dev 和 EaseMove，关注 agent 工具编排、交互体验、状态流、数据边界与部署落地。',
     ],
   },
   {
@@ -76,16 +75,16 @@ const narrativeSections = [
     title: '下一步想做的小东西',
     paragraphs: [
       '除了主项目，我还想持续做一些更轻、更快、更验证想法的小工具和 AI 产品原型，放进自己的 Lab 里。它们不一定很大，但会更直接地体现我对 agent、工作流、自动化流程和产品手感的理解。',
-      '目前重点会围绕 ai-pm-dev 这条线推进：用 AI 产品经理视角拆需求、做原型、接工具、验证工作流，同时把 FitMind 继续往 agent 形态推进。',
+      '目前重点会围绕 ai-pm-dev 这条线推进：用 AI 产品视角拆需求、做原型、接工具、验证工作流，同时把 FitMind 继续往 agent 形态推进。',
     ],
   },
   {
     kicker: 'Lab direction',
     title: '现在的 Lab 方向',
     paragraphs: [
-      'ai-pm-dev：偏 AI 产品经理、需求拆解、原型验证与解决方案沉淀。',
-      'cat-note-illustrations：偏内容配图、Skill 封装和统一视觉表达。',
-      'quickDate：偏轻交互、分享闭环和双端部署。',
+      'ai-pm-dev：AI 产品与 AI 应用开发实验，聚焦需求拆解、PRD / 原型、工具调用和工作流验证。',
+      'cat-note-illustrations：中文内容的猫猫风格插图生成 Skill，聚焦图像提示、内容体验与一致视觉。',
+      'quickDate：轻量快速约会 / 日期工具，聚焦互动体验、分享闭环和双端部署。',
       'PureIP：场景化 IP 与网络体检站，覆盖出口 / 指定 IP 评估、风险与 DNSBL、多指标测速和地区探针。',
     ],
   },
@@ -437,12 +436,6 @@ export default function AboutPage() {
           stagger: 0.04,
           scrollTrigger: { trigger: '.hero-mast', start: 'top top', end: 'bottom top', scrub: 1.1 },
         })
-        gsap.to('[data-hero-side]', {
-          yPercent: -10,
-          rotation: 1.6,
-          ease: 'none',
-          scrollTrigger: { trigger: '.hero-mast', start: 'top top', end: 'bottom top', scrub: 1.2 },
-        })
         if (canUseNarrativeMotion) {
           gsap.utils.toArray<HTMLElement>('[data-scroll-float]').forEach((title) => {
             gsap.from(title.querySelectorAll('[data-scroll-float-char]'), {
@@ -569,7 +562,7 @@ export default function AboutPage() {
                     我更关心如何把 AI 能力做成真实可用、可解释、可验证的产品体验，并把状态流、接口边界、数据建模和部署落地一起处理好。
                   </p>
                   <p className="max-w-xl text-[0.95rem] text-stone-300/78">
-                    我希望下一份工作能更靠近 AI 原生应用、智能工作台、agent 工具编排、AI 产品规划和需要强工程落地能力的解决方案团队。
+                    我喜欢在产品、工程和 AI 之间来回穿梭，把模糊的想法整理成清晰的体验，再一步步做成可以真实使用、持续迭代的产品。
                   </p>
                 </div>
               </div>
@@ -589,26 +582,29 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div data-hero-side className="hero-side">
+            <div className="hero-side">
               <div className="hero-lanyard-layer">
                 <Lanyard
                   position={[0, 0, 24]}
                   gravity={[0, -40, 0]}
-                  frontImage={publicAsset('lanyard-card-front.svg')}
+                  frontImage={publicAsset('lanyard-card-front.svg?v=2')}
+                  frontPortraitImage={publicAsset('profile-photo.jpg')}
                   backImage={publicAsset('lanyard-card-back.svg')}
                   imageFit="cover"
                 />
               </div>
               <div className="hero-lanyard-spacer" aria-hidden="true" />
               <div className="hero-side-caption border-glow-card">
-                <span className="index-badge">Monash University</span>
+                <span className="index-badge">个人信息 / Profile</span>
                 <div className="hero-info-list">
                   <div><span className="hero-info-label">教育</span>Master of IT（2025.03 - 2026.10）</div>
-                  <div><span className="hero-info-label">GPA</span>3.2 / 4.0</div>
                   <div><span className="hero-info-label">本科</span>南京信息工程大学 · 软件工程（专业前 10%）</div>
                   <div><span className="hero-info-label">英语</span>CET-6 · 雅思 6.5</div>
                   <div><span className="hero-info-label">方向</span>AI 应用开发 / AI 全栈 / AI 产品经理 / AI 解决方案</div>
-                  <div><span className="hero-info-label">邮箱</span><span className="text-white">JX15996596656@163.com</span></div>
+                  <div>
+                    <span className="hero-info-label">邮箱</span>
+                    <span className="text-white">JX15996596656@163.com / minyuj207@gmail.com</span>
+                  </div>
                   <div>
                     <span className="hero-info-label">GitHub</span>
                     <a href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer">Andrew-JX</a>

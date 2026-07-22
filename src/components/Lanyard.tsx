@@ -30,6 +30,7 @@ type LanyardProps = {
   fov?: number
   transparent?: boolean
   frontImage?: string | null
+  frontPortraitImage?: string | null
   backImage?: string | null
   imageFit?: 'cover' | 'contain'
   lanyardImage?: string | null
@@ -41,6 +42,7 @@ type BandProps = {
   minSpeed?: number
   isMobile?: boolean
   frontImage?: string | null
+  frontPortraitImage?: string | null
   backImage?: string | null
   imageFit?: 'cover' | 'contain'
   lanyardImage?: string | null
@@ -57,15 +59,16 @@ export default function Lanyard({
   fov = 20,
   transparent = true,
   frontImage = null,
+  frontPortraitImage = null,
   backImage = null,
   imageFit = 'cover',
   lanyardImage = null,
   lanyardWidth = 1,
 }: LanyardProps) {
-  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 1024)
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    const handleResize = () => setIsMobile(window.innerWidth < 1024)
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
@@ -83,6 +86,7 @@ export default function Lanyard({
           <Band
             isMobile={isMobile}
             frontImage={frontImage}
+            frontPortraitImage={frontPortraitImage}
             backImage={backImage}
             imageFit={imageFit}
             lanyardImage={lanyardImage}
@@ -105,6 +109,7 @@ function Band({
   minSpeed = 0,
   isMobile = false,
   frontImage = null,
+  frontPortraitImage = null,
   backImage = null,
   imageFit = 'cover',
   lanyardImage = null,
@@ -141,6 +146,7 @@ function Band({
   const { nodes, materials } = useGLTF(cardGLB) as any
   const texture = useTexture(lanyardImage || lanyard)
   const frontTex = useTexture(frontImage || BLANK_PIXEL)
+  const frontPortraitTex = useTexture(frontPortraitImage || BLANK_PIXEL)
   const backTex = useTexture(backImage || BLANK_PIXEL)
 
   const cardMap = useMemo(() => {
@@ -174,9 +180,39 @@ function Band({
       ctx.clip()
       ctx.drawImage(img, dx, dy, dw, dh)
       ctx.restore()
+      return { dx, dy, dw, dh }
     }
 
-    if (frontImage && frontTex.image) drawFitted(frontTex.image as CanvasImageSource & { width: number; height: number }, FRONT_UV_RECT)
+    const frontPlacement = frontImage && frontTex.image
+      ? drawFitted(frontTex.image as CanvasImageSource & { width: number; height: number }, FRONT_UV_RECT)
+      : null
+
+    if (frontPortraitImage && frontPortraitTex.image && frontPlacement) {
+      const portrait = frontPortraitTex.image as CanvasImageSource & { width: number; height: number }
+      const portraitDesignRect = { x: 76, y: 216, w: 188, h: 268, radius: 24 }
+      const px = frontPlacement.dx + (portraitDesignRect.x / 640) * frontPlacement.dw
+      const py = frontPlacement.dy + (portraitDesignRect.y / 900) * frontPlacement.dh
+      const pw = (portraitDesignRect.w / 640) * frontPlacement.dw
+      const ph = (portraitDesignRect.h / 900) * frontPlacement.dh
+      const radius = (portraitDesignRect.radius / 640) * frontPlacement.dw
+      const scale = Math.max(pw / portrait.width, ph / portrait.height)
+      const drawWidth = portrait.width * scale
+      const drawHeight = portrait.height * scale
+
+      ctx.save()
+      ctx.beginPath()
+      ctx.roundRect(px, py, pw, ph, radius)
+      ctx.clip()
+      ctx.drawImage(
+        portrait,
+        px + (pw - drawWidth) / 2,
+        py + (ph - drawHeight) / 2,
+        drawWidth,
+        drawHeight,
+      )
+      ctx.restore()
+    }
+
     if (backImage && backTex.image) drawFitted(backTex.image as CanvasImageSource & { width: number; height: number }, BACK_UV_RECT)
 
     const composite = new THREE.CanvasTexture(canvas)
@@ -185,7 +221,7 @@ function Band({
     composite.anisotropy = 16
     composite.needsUpdate = true
     return composite
-  }, [frontImage, backImage, imageFit, frontTex, backTex, materials.base.map])
+  }, [frontImage, frontPortraitImage, backImage, imageFit, frontTex, frontPortraitTex, backTex, materials.base.map])
 
   const [curve] = useState(
     () => new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]),
@@ -212,11 +248,22 @@ function Band({
       dir.copy(vec).sub(state.camera.position).normalize()
       vec.add(dir.multiplyScalar(state.camera.position.length()))
       ;[card, j1, j2, j3, fixed].forEach((ref) => ref.current?.wakeUp())
-      card.current?.setNextKinematicTranslation({
-        x: vec.x - dragged.x,
-        y: vec.y - dragged.y,
-        z: vec.z - dragged.z,
-      })
+      const nextX = vec.x - dragged.x
+      const nextY = vec.y - dragged.y
+      const nextZ = vec.z - dragged.z
+
+      if (isMobile && state.camera instanceof THREE.PerspectiveCamera) {
+        const visibleHalfHeight = Math.tan(THREE.MathUtils.degToRad(state.camera.fov / 2)) * Math.abs(state.camera.position.z)
+        const visibleHalfWidth = visibleHalfHeight * state.camera.aspect
+        const horizontalLimit = Math.max(0.9, visibleHalfWidth - 2.65)
+        card.current?.setNextKinematicTranslation({
+          x: THREE.MathUtils.clamp(nextX, -horizontalLimit, horizontalLimit),
+          y: nextY,
+          z: nextZ,
+        })
+      } else {
+        card.current?.setNextKinematicTranslation({ x: nextX, y: nextY, z: nextZ })
+      }
     }
 
     if (fixed.current) {
@@ -254,9 +301,9 @@ function Band({
           <BallCollider args={[0.1]} />
         </RigidBody>
         <RigidBody position={[2, 0, 0]} ref={card} {...segmentProps} type={dragged ? 'kinematicPosition' : 'dynamic'}>
-          <CuboidCollider args={[0.8, 1.125, 0.01]} />
+          <CuboidCollider args={isMobile ? [1.12, 1.58, 0.01] : [0.8, 1.125, 0.01]} />
           <group
-            scale={2.25}
+            scale={isMobile ? 3.15 : 2.25}
             position={[0, -1.2, -0.05]}
             onPointerOver={() => hover(true)}
             onPointerOut={() => hover(false)}

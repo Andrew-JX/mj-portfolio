@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
+import type { KeyboardEvent } from 'react'
 
 const asset = (file: string) => `${import.meta.env.BASE_URL}${file}`
 
@@ -16,65 +17,61 @@ const resumes = [
 ]
 
 export default function ResumePage() {
-  const [activeResumeHref, setActiveResumeHref] = useState(resumes[0]?.href ?? asset('resume1.pdf'))
-  const activeResume = useMemo(
-    () => resumes.find((resume) => resume.href === activeResumeHref) ?? resumes[0],
-    [activeResumeHref],
-  )
+  const [activeResumeIndex, setActiveResumeIndex] = useState(0)
+  const activeResume = resumes[activeResumeIndex] ?? resumes[0]
+
+  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+
+    event.preventDefault()
+    const direction = event.key === 'ArrowRight' ? 1 : -1
+    const nextIndex = (index + direction + resumes.length) % resumes.length
+    setActiveResumeIndex(nextIndex)
+    const tabs = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+    tabs?.[nextIndex]?.focus()
+  }
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight text-white">Resume</h1>
-          <p className="max-w-3xl text-sm leading-7 text-stone-300/84">
-            这里放两份简历：Resume 1 更偏 AI 产品经理 / AI 解决方案，Resume 2 更偏 AI 应用开发 / AI 全栈。
-          </p>
-        </div>
+      <h1 className="text-3xl font-semibold tracking-tight text-white">Resume</h1>
 
-        <div className="flex flex-wrap gap-2">
-          {resumes.map((resume) => (
-            <a key={resume.href} className="button-primary" href={resume.href} download>
-              Download {resume.title}
-            </a>
-          ))}
-        </div>
+      <div className="resume-glass-switch" role="tablist" aria-label="选择简历版本">
+        <span
+          aria-hidden="true"
+          className={`resume-glass-indicator ${activeResumeIndex === 1 ? 'resume-glass-indicator-right' : ''}`}
+        />
+        {resumes.map((resume, index) => (
+          <button
+            key={resume.href}
+            id={`resume-tab-${index}`}
+            type="button"
+            role="tab"
+            aria-selected={index === activeResumeIndex}
+            aria-controls="resume-preview"
+            tabIndex={index === activeResumeIndex ? 0 : -1}
+            className={`resume-glass-option ${index === activeResumeIndex ? 'resume-glass-option-active' : ''}`}
+            onClick={() => setActiveResumeIndex(index)}
+            onKeyDown={(event) => handleTabKeyDown(event, index)}
+          >
+            <span className="resume-glass-title">{resume.title}</span>
+            <span className="resume-glass-subtitle">{resume.subtitle}</span>
+          </button>
+        ))}
       </div>
 
-      <section className="grid gap-4 md:grid-cols-2">
-        {resumes.map((resume) => (
-          <article key={resume.href} className="panel-card space-y-4">
-            <div>
-              <div className="section-title">{resume.title}</div>
-              <h2 className="mt-2 text-xl font-semibold tracking-tight text-white">{resume.subtitle}</h2>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button type="button" className="button-primary" onClick={() => setActiveResumeHref(resume.href)}>
-                Preview
-              </button>
-              <a className="button-primary" href={resume.href} download>Download</a>
-              <a className="button-secondary" href={resume.href} target="_blank" rel="noreferrer">Open PDF</a>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <div className="resume-preview-shell">
+      <div
+        id="resume-preview"
+        className="resume-preview-shell"
+        role="tabpanel"
+        aria-labelledby={`resume-tab-${activeResumeIndex}`}
+      >
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/8 px-4 py-3">
           <div className="text-sm font-semibold text-white">
-            Preview: {activeResume?.title} · {activeResume?.subtitle}
+            {activeResume?.title} · {activeResume?.subtitle}
           </div>
           <div className="flex flex-wrap gap-2">
-            {resumes.map((resume) => (
-              <button
-                key={`preview-${resume.href}`}
-                type="button"
-                className={`chip-button ${resume.href === activeResumeHref ? 'chip-button-active' : ''}`}
-                onClick={() => setActiveResumeHref(resume.href)}
-              >
-                {resume.title}
-              </button>
-            ))}
+            <a className="button-primary" href={activeResume?.href} download>Download</a>
+            <a className="button-secondary" href={activeResume?.href} target="_blank" rel="noreferrer">Open PDF</a>
           </div>
         </div>
         <object data={activeResume?.href} type="application/pdf" className="h-[78vh] w-full">
