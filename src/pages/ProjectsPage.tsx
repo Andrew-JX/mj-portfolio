@@ -54,6 +54,30 @@ const linkLabels: Record<ProjectLinkKey, string> = {
   video: 'Video',
 }
 
+const lifeScienceConcept = {
+  capabilities: [
+    {
+      title: '文献检索与证据抽取',
+      description: '基于公开论文与临床试验注册数据，抽取研究对象、终点、结果和关键限制。',
+    },
+    {
+      title: '靶点—适应症证据表',
+      description: '把分散证据组织成可比较的结构化表格，保留证据等级、冲突项与待确认信息。',
+    },
+    {
+      title: '结论可追溯',
+      description: '每条 AI 结论反向引用原文片段或试验字段，让使用者能快速核验依据。',
+    },
+  ],
+  workflow: [
+    ['01', 'Scientist Agent', '检索证据并起草审查结论'],
+    ['02', 'Reviewer Agent', '复核科学依据与引用一致性'],
+    ['03', 'Supervisor', '检查流程、覆盖范围与遗漏项'],
+    ['04', 'Expert approval', '由领域专家完成最终判断与批准'],
+  ],
+  stack: ['Next.js', 'FastAPI', 'PostgreSQL', 'RAG', 'Multi-Agent', 'Public literature', 'ClinicalTrials.gov'],
+} as const
+
 function getProjectLinks(project: ProjectItem): ProjectLinkEntry[] {
   const primaryLinks = Object.entries(project.links).map(([key, url]) => ({
     label: linkLabels[key as ProjectLinkKey],
@@ -163,6 +187,63 @@ export default function ProjectsPage() {
             <p className="text-sm leading-7 text-stone-300/82">
               有些项目做 AI 应用，有些偏复杂前端、地图可视化或者全栈交付，可以按项目类型和关键词筛选着看。
             </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="panel-card concept-panel" aria-labelledby="life-science-concept-title">
+        <div className="concept-panel-header">
+          <span className="index-badge">Concept · 规划中</span>
+          <span className="project-period">Next Direction · Life Sciences AI</span>
+        </div>
+
+        <div className="grid gap-8 xl:grid-cols-[minmax(0,1.18fr)_minmax(20rem,0.82fr)] xl:gap-12">
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <div className="section-title">Future Project</div>
+              <h2 id="life-science-concept-title" className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                生命科学证据审查工作台
+              </h2>
+              <p className="max-w-3xl text-sm leading-7 text-stone-300/82 sm:text-base sm:leading-8">
+                我计划探索一个面向药物研发与转化研究的垂直 AI 应用：使用公开论文或临床试验数据，
+                把检索、证据抽取、结构化对照和多角色复核组织成一条可追溯的审查流程。
+              </p>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-3">
+              {lifeScienceConcept.capabilities.map((capability) => (
+                <article key={capability.title} className="concept-capability">
+                  <h3>{capability.title}</h3>
+                  <p>{capability.description}</p>
+                </article>
+              ))}
+            </div>
+
+            <p className="concept-principle">
+              产品原则：AI 负责提升证据处理效率，但不替代科学判断；最终结论必须可核验，并由专家批准。
+            </p>
+          </div>
+
+          <aside className="concept-workflow" aria-label="Planned evidence review workflow">
+            <div className="section-title">Review Workflow</div>
+            <ol className="mt-5 space-y-3">
+              {lifeScienceConcept.workflow.map(([index, role, description]) => (
+                <li key={role} className="concept-step">
+                  <span className="concept-step-number" aria-hidden="true">{index}</span>
+                  <div>
+                    <h3>{role}</h3>
+                    <p>{description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </aside>
+        </div>
+
+        <div className="concept-stack" aria-label="Planned technology stack">
+          <span className="section-title">Planned Stack</span>
+          <div className="flex flex-wrap gap-2">
+            {lifeScienceConcept.stack.map((tech) => <span key={tech} className="chip">{tech}</span>)}
           </div>
         </div>
       </section>

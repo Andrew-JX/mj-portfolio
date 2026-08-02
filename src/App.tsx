@@ -65,6 +65,7 @@ export default function App() {
               <span>Portfolio / AI App / AI Full-stack / Product</span>
             </div>
             <div className="flex flex-wrap gap-3">
+              <a href="https://jimmyuuu.com" target="_blank" rel="noreferrer">jimmyuuu.com</a>
               <a href="https://mj-portfolio-gray.vercel.app/#/" target="_blank" rel="noreferrer">Mirror · Vercel</a>
               <a href="https://mj-portfolio.jx15996596656.workers.dev" target="_blank" rel="noreferrer">Mirror · Cloudflare</a>
             </div>
