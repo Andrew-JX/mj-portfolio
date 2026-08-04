@@ -57,7 +57,7 @@ const capabilityCards: CapabilityCard[] = [
 
 const roles = ['AI 应用开发工程师', 'AI 全栈开发者', 'AI 产品经理', 'AI 解决方案实践者']
 const signalMetrics = [
-  { value: '2年+', label: 'AI 结对开发实践' },
+  { value: '3年', label: 'AI 结对开发实践' },
   { value: '10+', label: '完整项目交付' },
   { value: '4', label: 'AI 主线能力方向' },
 ]
@@ -68,14 +68,6 @@ const narrativeSections = [
     paragraphs: [
       '目前聚焦 AI 应用开发、AI 全栈和 AI 产品，正在把模型能力接入真实的产品与工作流。',
       '已经完成或正在交付的产品统一收进 Projects，包括 FitMind、ai-pm-dev、EaseMove，以及 cat-note-illustrations、quickDate 和 PureIP；我会继续关注 agent 工具编排、交互体验、数据边界与部署落地。',
-    ],
-  },
-  {
-    kicker: 'Next experiments',
-    title: '下一步想做的小东西',
-    paragraphs: [
-      'Lab 从现在起只记录尚未正式开工、仍在规划或等待验证的方向；当方案进入开发或形成可验证交付后，再移动到 Projects。',
-      '近期规划包括生命科学证据审查工作台，以及 tooluse 工具决策表：一个探索可追溯的科研证据工作流，一个沉淀新项目开工时的工具选择判断。',
     ],
   },
   {
@@ -366,8 +358,7 @@ export default function AboutPage() {
       const playHeroIntro = () => {
         gsap
           .timeline({ defaults: { ease: 'power3.out' } })
-          .from('[data-hero-kicker]', { y: 18, opacity: 0, duration: 0.55 })
-          .from('[data-hero-copy]', { y: 28, opacity: 0, duration: 0.7 }, '-=0.18')
+          .from('[data-hero-copy]', { y: 28, opacity: 0, duration: 0.7 })
           .from('[data-hero-metric]', { y: 18, opacity: 0, duration: 0.45, stagger: 0.08 }, '-=0.36')
           .from('[data-hero-tag]', { scale: 0.9, opacity: 0, duration: 0.5, stagger: 0.08 }, '-=0.42')
       }
@@ -528,11 +519,6 @@ export default function AboutPage() {
         <div data-hero-card-content className="hero-card-content">
           <div className="hero-grid">
             <div className="space-y-7">
-              <div data-hero-kicker className="eyebrow-pill">
-                <span className="dot-live" />
-                <span>求职方向：AI 应用开发 / AI 全栈 / AI 产品经理 / AI 解决方案</span>
-              </div>
-
               <div className="space-y-4">
                 <div data-hero-title-shell className="hero-title-shell" onPointerMove={handlePressureMove} onPointerLeave={resetPressure}>
                   <div className="impact-stack pressure-title">

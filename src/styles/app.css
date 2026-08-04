@@ -2435,6 +2435,13 @@ select {
   line-height: 1.35;
 }
 
+.resume-glass-updated {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
 .resume-preview-shell {
   overflow: hidden;
   border-radius: 1.9rem;

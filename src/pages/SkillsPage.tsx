@@ -31,7 +31,7 @@ export default function SkillsPage() {
   const activeDetail = labPlans.find((item) => item.title === activeDetailTitle)?.detail
 
   useEffect(() => {
-    const doneTimer = window.setTimeout(() => setShowIntro(false), 1500)
+    const doneTimer = window.setTimeout(() => setShowIntro(false), 1000)
     return () => window.clearTimeout(doneTimer)
   }, [])
 

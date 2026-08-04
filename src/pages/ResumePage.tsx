@@ -7,11 +7,13 @@ const resumes = [
   {
     title: 'Resume 1',
     subtitle: 'AI 产品经理 / AI 解决方案方向',
+    updated: '2026年5月更新',
     href: asset('resume1.pdf'),
   },
   {
     title: 'Resume 2',
     subtitle: 'AI 应用开发 / AI 全栈方向',
+    updated: '2026年5月更新',
     href: asset('resume2.pdf'),
   },
 ]
@@ -55,6 +57,7 @@ export default function ResumePage() {
           >
             <span className="resume-glass-title">{resume.title}</span>
             <span className="resume-glass-subtitle">{resume.subtitle}</span>
+            <span className="resume-glass-updated">{resume.updated}</span>
           </button>
         ))}
       </div>
