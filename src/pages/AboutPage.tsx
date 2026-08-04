@@ -58,7 +58,7 @@ const capabilityCards: CapabilityCard[] = [
 const roles = ['AI 应用开发工程师', 'AI 全栈开发者', 'AI 产品经理', 'AI 解决方案实践者']
 const signalMetrics = [
   { value: '2年+', label: 'AI 结对开发实践' },
-  { value: '8+', label: '完整项目交付' },
+  { value: '10+', label: '完整项目交付' },
   { value: '4', label: 'AI 主线能力方向' },
 ]
 const narrativeSections = [
@@ -67,25 +67,24 @@ const narrativeSections = [
     title: '我现在在做什么',
     paragraphs: [
       '目前聚焦 AI 应用开发、AI 全栈和 AI 产品，正在把模型能力接入真实的产品与工作流。',
-      '近期主要推进 FitMind、ai-pm-dev 和 EaseMove，关注 agent 工具编排、交互体验、状态流、数据边界与部署落地。',
+      '已经完成或正在交付的产品统一收进 Projects，包括 FitMind、ai-pm-dev、EaseMove，以及 cat-note-illustrations、quickDate 和 PureIP；我会继续关注 agent 工具编排、交互体验、数据边界与部署落地。',
     ],
   },
   {
     kicker: 'Next experiments',
     title: '下一步想做的小东西',
     paragraphs: [
-      '除了主项目，我还想持续做一些更轻、更快、更验证想法的小工具和 AI 产品原型，放进自己的 Lab 里。它们不一定很大，但会更直接地体现我对 agent、工作流、自动化流程和产品手感的理解。',
-      '目前重点会围绕 ai-pm-dev 这条线推进：用 AI 产品视角拆需求、做原型、接工具、验证工作流，同时把 FitMind 继续往 agent 形态推进。',
+      'Lab 从现在起只记录尚未正式开工、仍在规划或等待验证的方向；当方案进入开发或形成可验证交付后，再移动到 Projects。',
+      '近期规划包括生命科学证据审查工作台，以及 tooluse 工具决策表：一个探索可追溯的科研证据工作流，一个沉淀新项目开工时的工具选择判断。',
     ],
   },
   {
     kicker: 'Lab direction',
     title: '现在的 Lab 方向',
     paragraphs: [
-      'ai-pm-dev：AI 产品与 AI 应用开发实验，聚焦需求拆解、PRD / 原型、工具调用和工作流验证。',
-      'cat-note-illustrations：中文内容的猫猫风格插图生成 Skill，聚焦图像提示、内容体验与一致视觉。',
-      'quickDate：轻量快速约会 / 日期工具，聚焦互动体验、分享闭环和双端部署。',
-      'PureIP：场景化 IP 与网络体检站，覆盖出口 / 指定 IP 评估、风险与 DNSBL、多指标测速和地区探针。',
+      '生命科学证据审查工作台：基于公开论文与临床试验数据，探索证据抽取、靶点—适应症证据表、原文反向引用和多 Agent 审核。',
+      'tooluse：以“观察到什么信号”为主键的工具决策表，帮助自己和 Agent 在新项目开工时判断该不该增加工具，以及不该增加什么。',
+      'Lab 只保存 Concept / Planning；已完成、正在交付或已有公开链接的内容统一归入 Projects。',
     ],
   },
 ]

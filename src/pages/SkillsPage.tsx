@@ -1,73 +1,6 @@
-import type { PointerEvent as ReactPointerEvent } from 'react'
-import { useEffect, useState } from 'react'
-
-type LabItem = {
-  title: string
-  stage: string
-  summary: string
-  tags: string[]
-  bullets?: string[]
-  repo?: string
-  links?: Array<{ label: string; url: string }>
-}
-
-const labItems: LabItem[] = [
-  {
-    title: 'ai-pm-dev',
-    stage: 'Building',
-    summary: '当前正在推进的 AI 产品经理与 AI 应用开发实验区，用来沉淀从问题定义、用户任务、PRD/原型到工具调用、工作流验证和解决方案表达的完整方法。',
-    tags: ['AI PM', 'PRD', 'Prototype', 'Solution'],
-    bullets: [
-      '定位为本地 Idea-to-Build workflow CLI，不是通用聊天 Agent。',
-      '通过 AGENTS.md + docs 给 Codex、Claude Code、v0、Figma 安装可读取的协作操作层。',
-      '用交互式 PM 访谈、scope、acceptance tests 和 prd check --strict 逼出优先级、非目标和验收标准。',
-    ],
-    repo: 'https://github.com/Andrew-JX/ai-pm-dev',
-  },
-  {
-    title: 'cat-note-illustrations',
-    stage: 'Shipping',
-    summary: '面向中文文章、笔记和知识型内容的猫猫风格插图生成 Skill，用更轻的视觉资产帮助内容表达变得更亲和、更容易被记住。',
-    tags: ['Skill', 'Image Prompt', 'Content UX'],
-    bullets: [
-      '把文章中的关键判断、流程、结构或隐喻转成适合正文使用的 16:9 配图。',
-      '固定猫猫 IP Specimen 0，保持白底、粗黑轮廓、手账贴纸风的一致视觉识别。',
-      '包含 Skill、角色设定、prompt 模板、QA 清单、示例 prompt、示例图片和贡献说明。',
-    ],
-    repo: 'https://github.com/Andrew-JX/cat-note-illustrations',
-  },
-  {
-    title: 'quickDate',
-    stage: 'Shipping',
-    summary: '一个偏轻松、好玩的快速约会 / 日期小工具，重点展示从小想法到可访问产品的完整闭环：轻交互、明确入口、双端部署和适合分享的产品节奏。',
-    tags: ['Fun App', 'Interaction', 'Deployment'],
-    bullets: [
-      '发送者配置专属邀请链接，对方完成 No 躲闪、时间、吃什么、活动和地点选择。',
-      '纯静态 H5，无后端；身份和结果通过 URL 参数传递，完成邀请、回传、结果页和日历卡片闭环。',
-      '国内 Cloudflare 与海外 Vercel 双部署，更适合真实分享场景。',
-    ],
-    repo: 'https://github.com/Andrew-JX/quickDate',
-    links: [
-      { label: '国内访问', url: 'https://quickdate-77o.pages.dev/' },
-      { label: 'Global', url: 'https://app-nine-chi-68.vercel.app/' },
-    ],
-  },
-  {
-    title: 'PureIP',
-    stage: 'Shipping',
-    summary: '一个可自托管的场景化 IP 与网络体检站：既能完整实测当前出口，也能预评估指定公网 IPv4 / IPv6，并按 AI 工具、上网、账号、看剧和游戏五类用途给出结论。',
-    tags: ['IP Intelligence', 'Speed Test', 'Risk & DNSBL', 'Render'],
-    bullets: [
-      '“当前网络检测”和“手动输入 IP”共用多源地理、ASN、代理 / 机房、滥用风险、DNSBL 与浏览器环境证据，并明确区分完整实测、IP 侧预评估和可信度。',
-      '集成 Cloudflare 公网测速，覆盖下载、上传、空闲与负载延迟、抖动和 Bufferbloat；结合 Oregon、Singapore、Frankfurt 地区探针，为 AI、4K、游戏和视频会议给出体验建议。',
-      '检测结果不落库，最近 10 次测速仅保存在浏览器本地；项目已通过 Render 上线并在 GitHub 开源，支持环境变量配置数据源和自托管部署。',
-    ],
-    repo: 'https://github.com/Andrew-JX/testPureIP',
-    links: [
-      { label: 'Live', url: 'https://pureip.onrender.com/' },
-    ],
-  },
-]
+import type { KeyboardEvent as ReactKeyboardEvent, PointerEvent as ReactPointerEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { labPlans } from '@/data/labPlans'
 
 function handleLabCardMove(event: ReactPointerEvent<HTMLElement>) {
   const card = event.currentTarget
@@ -92,11 +25,65 @@ function resetLabCardTilt(event: ReactPointerEvent<HTMLElement>) {
 
 export default function SkillsPage() {
   const [showIntro, setShowIntro] = useState(true)
+  const [activeDetailTitle, setActiveDetailTitle] = useState<string | null>(null)
+  const detailDialogRef = useRef<HTMLElement | null>(null)
+  const detailCloseRef = useRef<HTMLButtonElement | null>(null)
+  const activeDetail = labPlans.find((item) => item.title === activeDetailTitle)?.detail
 
   useEffect(() => {
     const doneTimer = window.setTimeout(() => setShowIntro(false), 1500)
     return () => window.clearTimeout(doneTimer)
   }, [])
+
+  useEffect(() => {
+    if (!activeDetail) return undefined
+
+    const previousActiveElement = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const previousOverflow = document.body.style.overflow
+    const focusTimer = window.requestAnimationFrame(() => detailCloseRef.current?.focus())
+    document.body.style.overflow = 'hidden'
+
+    const handleDialogKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setActiveDetailTitle(null)
+        return
+      }
+
+      if (event.key !== 'Tab' || !detailDialogRef.current) return
+
+      const focusableElements = Array.from(
+        detailDialogRef.current.querySelectorAll<HTMLElement>('button, [href], [tabindex]:not([tabindex="-1"])'),
+      ).filter((element) => !element.hasAttribute('disabled'))
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements.at(-1)
+
+      if (!firstElement || !lastElement) {
+        event.preventDefault()
+      } else if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault()
+        lastElement.focus()
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault()
+        firstElement.focus()
+      }
+    }
+
+    window.addEventListener('keydown', handleDialogKeyDown)
+
+    return () => {
+      window.cancelAnimationFrame(focusTimer)
+      window.removeEventListener('keydown', handleDialogKeyDown)
+      document.body.style.overflow = previousOverflow
+      previousActiveElement?.focus()
+    }
+  }, [activeDetail])
+
+  const handlePlanKeyDown = (event: ReactKeyboardEvent<HTMLElement>, title: string, hasDetail: boolean) => {
+    if (!hasDetail || (event.key !== 'Enter' && event.key !== ' ')) return
+    event.preventDefault()
+    setActiveDetailTitle(title)
+  }
 
   return (
     <div className="space-y-8">
@@ -109,12 +96,26 @@ export default function SkillsPage() {
 
       <section className="hero-panel space-y-4">
         <div className="section-title">Lab</div>
-        <h1 className="text-3xl font-semibold tracking-tight text-white">AI 小工具 / 快速实验</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-white">待做项目 / 规划中的实验</h1>
+        <p className="max-w-3xl text-sm leading-7 text-stone-300/82">
+          这里记录尚未正式开工的方向、已完成设计但仍待落地的方案，以及值得继续验证的产品假设。
+        </p>
       </section>
 
       <section className="lab-card-grid">
-        {labItems.map((item) => (
-          <article key={item.title} className="lab-tilt-card" onPointerMove={handleLabCardMove} onPointerLeave={resetLabCardTilt}>
+        {labPlans.map((item) => (
+          <article
+            key={item.title}
+            className="lab-tilt-card"
+            role={item.detail ? 'button' : undefined}
+            tabIndex={item.detail ? 0 : undefined}
+            aria-haspopup={item.detail ? 'dialog' : undefined}
+            aria-label={item.detail ? `${item.title}：${item.detail.label}` : undefined}
+            onClick={item.detail ? () => setActiveDetailTitle(item.title) : undefined}
+            onKeyDown={(event) => handlePlanKeyDown(event, item.title, Boolean(item.detail))}
+            onPointerMove={handleLabCardMove}
+            onPointerLeave={resetLabCardTilt}
+          >
             <span aria-hidden="true" className="lab-tilt-glow" />
 
             <div className="lab-card-top">
@@ -129,34 +130,60 @@ export default function SkillsPage() {
               {item.tags.map((tag) => <span key={tag} className="chip">{tag}</span>)}
             </div>
 
-            {item.bullets?.length ? (
-              <ul className="space-y-2 text-sm leading-7 text-stone-300/84">
-                {item.bullets.map((bullet) => <li key={bullet} className="detail-list-item">{bullet}</li>)}
-              </ul>
-            ) : null}
+            <ul className="space-y-2 text-sm leading-7 text-stone-300/84">
+              {item.bullets.map((bullet) => <li key={bullet} className="detail-list-item">{bullet}</li>)}
+            </ul>
 
-            {(item.repo || item.links?.length) && (
-              <div className="flex flex-wrap gap-2 pt-1">
-                {item.repo && <a className="button-secondary" href={item.repo} target="_blank" rel="noreferrer">GitHub</a>}
-                {item.links?.map((link) => (
-                  <a key={`${item.title}-${link.label}`} className="button-secondary" href={link.url} target="_blank" rel="noreferrer">
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            )}
+            {item.detail && <span aria-hidden="true" className="button-secondary lab-detail-action">{item.detail.label}</span>}
           </article>
         ))}
       </section>
 
       <section className="panel-card space-y-4">
-        <div className="section-title">这个页面之后会放什么</div>
+        <div className="section-title">Lab 的使用方式</div>
         <ul className="space-y-3 text-sm leading-7 text-stone-300/84">
-          <li className="detail-list-item">已经做出来或正在推进的 AI 产品原型、agent demo 和解决方案草稿。</li>
-          <li className="detail-list-item">它们现在分别处在 idea、building 还是 shipping 的哪个阶段。</li>
-          <li className="detail-list-item">以后也可以慢慢补 live 链接、截图和简短说明，做成一个持续更新的小实验区。</li>
+          <li className="detail-list-item">Lab 只保留 Concept、Planning 等尚待落地的方向，不再混放已经完成或正在交付的项目。</li>
+          <li className="detail-list-item">方案进入实际开发或形成可验证交付后，会移动到 Projects 继续记录。</li>
+          <li className="detail-list-item">卡片保留项目动机、范围、工作流与关键约束；内容较长的设计记录可从卡片进入全文弹窗。</li>
         </ul>
       </section>
+
+      {activeDetail && (
+        <div
+          className="lab-detail-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setActiveDetailTitle(null)
+          }}
+        >
+          <section
+            ref={detailDialogRef}
+            id="lab-detail-dialog"
+            className="lab-detail-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="lab-detail-title"
+            aria-describedby="lab-detail-description"
+          >
+            <header className="lab-detail-header">
+              <div className="space-y-2">
+                <div className="section-title">Full Design Notes</div>
+                <h2 id="lab-detail-title" className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                  {activeDetail.title}
+                </h2>
+                <p id="lab-detail-description" className="text-sm leading-6 text-stone-300/82">
+                  2026-08-03 讨论记录 · 包含动机、被推翻的方案、实测结果、结构设计与未来分期
+                </p>
+              </div>
+              <button ref={detailCloseRef} className="button-secondary" type="button" onClick={() => setActiveDetailTitle(null)}>
+                关闭
+              </button>
+            </header>
+            <div className="lab-detail-scroll">
+              <pre className="lab-detail-document">{activeDetail.content}</pre>
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   )
 }

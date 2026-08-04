@@ -59,6 +59,76 @@ export const projects: Project[] = [
     visibility: 'public',
   },
   {
+    slug: 'cat-note-illustrations',
+    title: 'cat-note-illustrations',
+    period: '2026 · Shipped',
+    positionTag: 'AI Tool / Content UX',
+    stack: ['Codex Skill', 'Image Generation', 'Prompt Design', 'Content UX', 'Visual QA'],
+    oneLiner:
+      '面向中文文章、笔记和知识型内容的猫猫风格插图生成 Skill，用更轻的视觉资产帮助内容表达变得更亲和、更容易被记住。',
+    links: { repo: 'https://github.com/Andrew-JX/cat-note-illustrations' },
+    contributions: [
+      '把文章中的关键判断、流程、结构或隐喻转成适合正文使用的 16:9 配图。',
+      '固定猫猫 IP Specimen 0，保持白底、粗黑轮廓、手账贴纸风的一致视觉识别。',
+      '整理 Skill、角色设定、prompt 模板、QA 清单、示例 prompt、示例图片和贡献说明，形成可复用的内容生产流程。',
+    ],
+    highlights: [
+      '把“为文章配图”从一次性提示词拆成内容判断、视觉转译、角色一致性和交付检查四个步骤。',
+      '通过固定 Specimen 0 与视觉约束，减少连续生成中的角色漂移，让不同文章的插图仍保持统一识别。',
+      '用 QA 清单约束构图、文字密度、比例与正文适配，使生成结果更接近可直接使用的内容资产。',
+    ],
+    visibility: 'public',
+  },
+  {
+    slug: 'quickdate',
+    title: 'quickDate',
+    period: '2026 · Shipped',
+    positionTag: 'Frontend / Product',
+    stack: ['Static H5', 'URL State', 'Interaction Design', 'Cloudflare Pages', 'Vercel'],
+    oneLiner:
+      '一个偏轻松、好玩的快速约会 / 日期小工具，重点展示从小想法到可访问产品的完整闭环：轻交互、明确入口、双端部署和适合分享的产品节奏。',
+    links: { repo: 'https://github.com/Andrew-JX/quickDate' },
+    extraLinks: [
+      { label: '国内访问', url: 'https://quickdate-77o.pages.dev/' },
+      { label: 'Global', url: 'https://app-nine-chi-68.vercel.app/' },
+    ],
+    contributions: [
+      '设计发送者配置专属邀请链接、接收者完成选择、结果回传与日历卡片生成的完整互动路径。',
+      '采用纯静态 H5 实现，无后端；身份和结果通过 URL 参数传递，完成邀请、回传与结果展示闭环。',
+      '同时部署到 Cloudflare Pages 与 Vercel，兼顾国内访问和海外分享场景。',
+    ],
+    highlights: [
+      '用 URL 参数承载轻量状态，避免为一次性分享流程引入后端与账户系统。',
+      '围绕 No 躲闪、时间、吃什么、活动和地点选择组织短路径交互，让产品节奏更适合真实分享。',
+      '从邀请配置到日历卡片形成端到端闭环，小体量项目仍具备完整产品结构与线上交付。',
+    ],
+    visibility: 'public',
+  },
+  {
+    slug: 'pureip',
+    title: 'PureIP',
+    period: '2026 · Shipped',
+    positionTag: 'Web Product / Network',
+    stack: ['IP Intelligence', 'Cloudflare Speed Test', 'DNSBL', 'Browser Storage', 'Render', 'Self-hosting'],
+    oneLiner:
+      '一个可自托管的场景化 IP 与网络体检站：既能完整实测当前出口，也能预评估指定公网 IPv4 / IPv6，并按 AI 工具、上网、账号、看剧和游戏五类用途给出结论。',
+    links: {
+      live: 'https://pureip.onrender.com/',
+      repo: 'https://github.com/Andrew-JX/testPureIP',
+    },
+    contributions: [
+      '让“当前网络检测”和“手动输入 IP”共用多源地理、ASN、代理 / 机房、滥用风险、DNSBL 与浏览器环境证据，并区分完整实测、IP 侧预评估和可信度。',
+      '集成 Cloudflare 公网测速，覆盖下载、上传、空闲与负载延迟、抖动和 Bufferbloat；结合 Oregon、Singapore、Frankfurt 地区探针输出场景建议。',
+      '坚持检测结果不落库，最近 10 次测速仅保存在浏览器本地；通过 Render 上线并保留环境变量配置与自托管能力。',
+    ],
+    highlights: [
+      '不把 IP 侧可推断信息包装成完整网络实测，通过证据范围与可信度提示降低结论误读。',
+      '把网络指标翻译成 AI 工具、4K、游戏和视频会议等使用场景，避免只展示缺少解释的测速数字。',
+      '数据源可配置、结果不落库并支持自托管，在产品可用性、隐私边界和部署灵活性之间保持平衡。',
+    ],
+    visibility: 'public',
+  },
+  {
     slug: 'easemove',
     title: 'EaseMove Melbourne / MoveComfortly',
     period: '2026.03 - 2026.05（团队项目）',
