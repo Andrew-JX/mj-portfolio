@@ -4,6 +4,7 @@ import AboutPage from '@/pages/AboutPage'
 import ProjectsPage from '@/pages/ProjectsPage'
 import ProjectDetailPage from '@/pages/ProjectDetailPage'
 import SkillsPage from '@/pages/SkillsPage'
+import ToolusePage from '@/pages/ToolusePage'
 import ResumePage from '@/pages/ResumePage'
 
 function ScrollToTop() {
@@ -26,6 +27,7 @@ export default function AppRoutes() {
         <Route path="/projects/:slug" element={<ProjectDetailPage />} />
         <Route path="/lab" element={<SkillsPage />} />
         <Route path="/skills" element={<Navigate to="/lab" replace />} />
+        <Route path="/tooluse" element={<ToolusePage />} />
         <Route path="/resume" element={<ResumePage />} />
       </Routes>
     </>
