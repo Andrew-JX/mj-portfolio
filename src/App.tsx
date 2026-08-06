@@ -44,6 +44,7 @@ export default function App() {
               <NavLink className="nav-link" to="/">About</NavLink>
               <NavLink className="nav-link" to="/projects">Projects</NavLink>
               <NavLink className="nav-link" to="/lab">Lab</NavLink>
+              <NavLink className="nav-link" to="/tooluse">工具分享</NavLink>
               <NavLink className="nav-link" to="/resume">Resume</NavLink>
               <a className="nav-link" href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer">GitHub</a>
             </nav>

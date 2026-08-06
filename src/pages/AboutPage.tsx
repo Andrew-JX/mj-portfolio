@@ -75,7 +75,6 @@ const narrativeSections = [
     title: '现在的 Lab 方向',
     paragraphs: [
       '生命科学证据审查工作台：基于公开论文与临床试验数据，探索证据抽取、靶点—适应症证据表、原文反向引用和多 Agent 审核。',
-      'tooluse：以“观察到什么信号”为主键的工具决策表，帮助自己和 Agent 在新项目开工时判断该不该增加工具，以及不该增加什么。',
       'Lab 只保存 Concept / Planning；已完成、正在交付或已有公开链接的内容统一归入 Projects。',
     ],
   },
@@ -647,6 +646,7 @@ export default function AboutPage() {
         <div className="narrative-actions">
           <Link className="button-primary" to="/lab">进入 Lab</Link>
           <Link className="button-secondary" to="/projects">查看项目列表</Link>
+          <Link className="button-secondary" to="/tooluse">工具分享</Link>
         </div>
       </section>
     </div>
