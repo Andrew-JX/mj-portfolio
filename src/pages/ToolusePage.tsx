@@ -1,134 +1,142 @@
-import { useEffect, useRef, useState } from 'react'
-import { toolPrinciples, toolShares } from '@/data/toolShares'
+import DeliveryFlow from '@/components/DeliveryFlow'
+import { flowNodes } from '@/data/deliveryFlow.zh'
+import {
+  toolCategories,
+  toolKindLabels,
+  toolShares,
+  type ToolKind,
+  type ToolShare,
+  type ToolStatus,
+} from '@/data/toolShares.zh'
 
-function useCenteredTool() {
-  const listRef = useRef<HTMLDivElement>(null)
-  const [activeIndex, setActiveIndex] = useState(0)
+const statusClassNames: Record<ToolStatus, string> = {
+  正在使用: 'tooluse-status-active',
+  试用后保留: 'tooluse-status-kept',
+  试用中: 'tooluse-status-trial',
+  已卸载: 'tooluse-status-removed',
+  尚未实测: 'tooluse-status-unverified',
+}
 
-  useEffect(() => {
-    const list = listRef.current
-    if (!list) return undefined
+const latestChecked = toolShares.reduce(
+  (latest, tool) => (tool.lastChecked > latest ? tool.lastChecked : latest),
+  toolShares[0]?.lastChecked ?? '',
+)
 
-    let animationFrame = 0
+const kindOrder: ToolKind[] = ['tool', 'skill', 'method']
+const toolIndexById = new Map(toolShares.map((tool, index) => [tool.id, index]))
+const workflowStepsByToolId = new Map<string, typeof flowNodes>()
 
-    const updateActiveItem = () => {
-      window.cancelAnimationFrame(animationFrame)
-      animationFrame = window.requestAnimationFrame(() => {
-        const listRect = list.getBoundingClientRect()
-        const listCenter = listRect.top + listRect.height / 2
-        const items = list.querySelectorAll<HTMLElement>('[data-tool-index]')
-        let closestIndex = 0
-        let closestDistance = Number.POSITIVE_INFINITY
+flowNodes.forEach((node) => {
+  node.toolIds.forEach((toolId) => {
+    const current = workflowStepsByToolId.get(toolId) ?? []
+    workflowStepsByToolId.set(toolId, [...current, node])
+  })
+})
 
-        items.forEach((item) => {
-          const itemRect = item.getBoundingClientRect()
-          const itemCenter = itemRect.top + itemRect.height / 2
-          const distance = Math.abs(itemCenter - listCenter)
+function ToolRow({ tool }: { tool: ToolShare }) {
+  const index = toolIndexById.get(tool.id) ?? 0
+  const publicUrl = tool.repoUrl ?? tool.url
+  const workflowSteps = workflowStepsByToolId.get(tool.id) ?? []
 
-          if (distance < closestDistance) {
-            closestDistance = distance
-            closestIndex = Number(item.dataset.toolIndex)
-          }
-        })
+  return (
+    <details id={tool.id} className="tooluse-row">
+      <summary className="tooluse-row-summary">
+        <span className="tooluse-row-number">{String(index + 1).padStart(2, '0')}</span>
 
-        setActiveIndex((current) => (current === closestIndex ? current : closestIndex))
-      })
-    }
+        <span className="tooluse-row-identity">
+          {publicUrl ? (
+            <a href={publicUrl} target="_blank" rel="noreferrer" onClick={(event) => event.stopPropagation()}>
+              {tool.name}
+            </a>
+          ) : (
+            <strong>{tool.name}</strong>
+          )}
+          <small>{toolCategories[tool.categoryId]} · {tool.origin === 'self' ? '自建' : '第三方'}</small>
+        </span>
 
-    updateActiveItem()
-    list.addEventListener('scroll', updateActiveItem, { passive: true })
-    window.addEventListener('resize', updateActiveItem)
+        <span className={`tooluse-status ${statusClassNames[tool.status]}`}>{tool.status}</span>
+        <span className="tooluse-row-description">{tool.summary}</span>
 
-    return () => {
-      window.cancelAnimationFrame(animationFrame)
-      list.removeEventListener('scroll', updateActiveItem)
-      window.removeEventListener('resize', updateActiveItem)
-    }
-  }, [])
+        <span className="tooluse-row-meta">
+          <span><b>用在</b>{tool.usedIn}</span>
+          <span><b>侵入性</b>{tool.intrusion}</span>
+          <span><b>核对</b>{tool.lastChecked}</span>
+        </span>
 
-  return { activeIndex, listRef }
+        <span className="tooluse-row-toggle" aria-hidden="true">+</span>
+      </summary>
+
+      <div className="tooluse-row-detail">
+        <dl>
+          <div><dt>判断来源</dt><dd>{tool.source}</dd></div>
+          <div><dt>作者归属</dt><dd>{tool.origin === 'self' ? '我自己写的' : '第三方项目'}</dd></div>
+          <div><dt>替代了什么劳动</dt><dd>{tool.replaces}</dd></div>
+          <div><dt>实测好在哪</dt><dd>{tool.goodAt}</dd></div>
+          <div><dt>不好在哪</dt><dd>{tool.badAt}</dd></div>
+          <div><dt>边界</dt><dd>{tool.boundary}</dd></div>
+          <div>
+            <dt>流程节点</dt>
+            <dd>
+              {workflowSteps.length > 0 ? (
+                <span className="tooluse-workflow-steps">
+                  {workflowSteps.map((step) => <span key={step.id}>{String(step.order).padStart(2, '0')} · {step.title}</span>)}
+                </span>
+              ) : '尚未接入交付工作流'}
+            </dd>
+          </div>
+          {tool.installNote ? <div><dt>获取方式</dt><dd>{tool.installNote}</dd></div> : null}
+        </dl>
+
+        <div className="tooluse-row-tags" aria-label={`${tool.name} 标签`}>
+          {tool.tags.map((tag) => <span key={tag} className="chip">{tag}</span>)}
+        </div>
+      </div>
+    </details>
+  )
 }
 
 export default function ToolusePage() {
-  const { activeIndex, listRef } = useCenteredTool()
-
   return (
-    <div className="tooluse-page space-y-8">
-      <section className="tooluse-library" aria-labelledby="used-tools-title">
-        <div className="tooluse-section-heading tooluse-library-heading">
-          <div>
-            <div className="section-title">Used in real work</div>
-            <h1 id="used-tools-title">实际使用与判断</h1>
-          </div>
-        </div>
+    <div className="tooluse-page space-y-10">
+      <header className="tooluse-position">
+        <div className="section-title">Tooluse / 工具分享</div>
+        <p>没实测过的会明确标出来，我不写没用过的使用感受。</p>
+      </header>
 
-        <div className="tooluse-scroll-frame">
-          <div className="tooluse-center-line" aria-hidden="true" />
-          <div className="tooluse-scroll-viewport" ref={listRef}>
-            <div className="tooluse-scroll-spacer" aria-hidden="true" />
-            <div className="tooluse-scroll-list">
-              {toolShares.map((tool, index) => (
-                <article
-                  key={tool.name}
-                  className="tooluse-list-item"
-                  data-active={activeIndex === index ? '' : undefined}
-                  data-tool-index={index}
-                  tabIndex={0}
-                >
-                  <div className="tooluse-list-reflection" aria-hidden="true" />
-
-                  <header className="tooluse-list-header">
-                    <div className="tooluse-list-identity">
-                      <span className="tooluse-list-number">{String(index + 1).padStart(2, '0')}</span>
-                      <div>
-                        <div className="tooluse-card-category">{tool.category}</div>
-                        <h2>{tool.name}</h2>
-                      </div>
-                    </div>
-                    <span className={`tooluse-status ${tool.status === '试用中' ? 'tooluse-status-trial' : 'tooluse-status-used'}`}>
-                      {tool.status}
-                    </span>
-                  </header>
-
-                  <p className="tooluse-list-summary">{tool.summary}</p>
-
-                  <dl className="tooluse-list-facts">
-                    <div><dt>判断来源</dt><dd>{tool.source}</dd></div>
-                    <div><dt>替代的劳动</dt><dd>{tool.replaces}</dd></div>
-                    <div><dt>我的感受</dt><dd>{tool.impression}</dd></div>
-                    <div><dt>边界</dt><dd>{tool.boundary}</dd></div>
-                  </dl>
-
-                  <footer className="tooluse-list-footer">
-                    <div className="flex flex-wrap gap-2">
-                      {tool.tags.map((tag) => <span key={tag} className="chip">{tag}</span>)}
-                    </div>
-                    <span className="tooluse-intrusion">侵入性 · {tool.intrusion}</span>
-                    {tool.url ? <a className="magnetic-link" href={tool.url} target="_blank" rel="noreferrer">Official</a> : null}
-                  </footer>
-                </article>
-              ))}
-            </div>
-            <div className="tooluse-scroll-spacer" aria-hidden="true" />
-          </div>
-        </div>
-      </section>
-
-      <section className="section-shell tooluse-principles">
-        <div className="section-title">How I choose</div>
+      <section className="tooluse-library" aria-labelledby="tool-list-title">
         <div className="tooluse-section-heading">
-          <h2>先看信号，再找工具</h2>
-          <p>开工时手上通常没有工具名，只有正在反复出现的问题。</p>
+          <div>
+            <div className="section-title">Tool list</div>
+            <h2 id="tool-list-title">工具清单</h2>
+          </div>
+          <span className="tooluse-list-count">{toolShares.length} 项 · 最近核对 {latestChecked}</span>
         </div>
-        <div className="tooluse-principle-grid">
-          {toolPrinciples.map((principle, index) => (
-            <article key={principle} className="tooluse-principle-card">
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <p>{principle}</p>
-            </article>
-          ))}
+
+        <div className="tooluse-groups">
+          {kindOrder.map((kind) => {
+            const kindTools = toolShares.filter((tool) => tool.kind === kind)
+            if (kindTools.length === 0) return null
+
+            return (
+              <section key={kind} className="tooluse-group" aria-labelledby={`tooluse-kind-${kind}`}>
+                <header className="tooluse-group-heading">
+                  <div>
+                    <span>Library group</span>
+                    <h3 id={`tooluse-kind-${kind}`}>{toolKindLabels[kind].title}</h3>
+                    <p>{toolKindLabels[kind].description}</p>
+                  </div>
+                  <strong>{kindTools.length} 项</strong>
+                </header>
+                <div className="tooluse-rows">
+                  {kindTools.map((tool) => <ToolRow key={tool.id} tool={tool} />)}
+                </div>
+              </section>
+            )
+          })}
         </div>
       </section>
+
+      <DeliveryFlow />
     </div>
   )
 }
