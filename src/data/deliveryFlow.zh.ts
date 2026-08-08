@@ -12,8 +12,9 @@ export type FlowNode = {
 export type FlowEdge = {
   from: string
   to: string
-  kind: 'quick-path' | 'rework'
+  kind: 'quick-path' | 'work-route' | 'rework'
   label: string
+  detail: string
 }
 
 export const flowScales = [
@@ -39,10 +40,10 @@ export const flowNodes: FlowNode[] = [
     id: 'self-brief',
     order: 1,
     title: '先自己写三分钟',
-    oneLiner: '不开任何 AI 窗口，先自己写下：用我的话复述任务、一句可证伪的完成判据、带后果的假设、以及我不懂的地方（分成技术和领域两类）。',
+    oneLiner: '先不开 AI，用自己的话写下任务、可证伪判据、带后果的假设和两类不懂；工作任务再用 work-skill A 把这份原始理解整理成可结账的事实。',
     skipWhen: '一晚上内能做完、只动单个模块、随时可回滚的小活，只写一句判据就够。',
-    toolIds: [],
-    methodNote: '方法入口：workSkill A',
+    toolIds: ['work-skill'],
+    methodNote: '工作入口：A · 接任务；先自己写，再让 Skill 整理。',
     pitfall: '一旦先跟 AI 聊，我写下来的「我理解的任务」就已经是它的措辞了。这一步要的是被污染之前的那一版。另一个反复出现的坑是把领域不懂当成技术不懂——那种东西查不到，因为它根本不在任何文档里，只能问人。',
   },
   {
@@ -76,46 +77,47 @@ export const flowNodes: FlowNode[] = [
     id: 'contract',
     order: 5,
     title: '建任务与验收判据',
-    oneLiner: '任务进任务库，验收判据由我在开工之前写死。',
+    oneLiner: '先用 Acceptance Author 攻击假绿灯，再由我批准并冻结 contract SHA 与 baseline SHA；个人任务进 Beads，工作任务沿用团队已有任务系统。',
     skipWhen: '小活跳过，判据写在第一步那一句里就行。',
-    toolIds: ['beads'],
-    pitfall: '验收判据只是个字段，工具不会校验它。提前写死确实管用——有一条任务的验收写的是“进程自行退出”，交上来的脚本全绿，但只证明了退出码为 0，是那几个字把缺陷挡下来的。但它挡不住另一种情况：判据本身就写错了。写的人是规划者也一样会错，而且写得越精确，错得越牢。所以写判据的时候，“本周 / 最近 / 该用户 / 前 N 条”这类限定词必须当场写出它在运行时到底从哪里来——不写清楚，后面四层没有任何一层能发现它是假的。',
+    toolIds: ['acceptance-author', 'beads'],
+    pitfall: '判据写得精确不等于写得正确。必须把机器判据、人工判据和尚不可验证分开，并让限定词追到运行时来源。contract、baseline、candidate 是三个锚点；candidate 一旦改契约文件，原批准失效，不能让执行方把判据和实现一起改成绿灯。',
   },
   {
     id: 'execute',
     order: 6,
     title: '执行：出计划、审、补全、做、交接',
-    oneLiner: '执行方先出计划交审查方过，带着意见补全后再动手；交接时每条判据只用「达成 / 未达成 / 未验证」，并给出证据。',
+    oneLiner: '执行方按冻结契约实施，交接时用 Evidence-Bound Executor 逐条报告「达成 / 未达成 / 未验证」和脱敏证据；没有 candidate SHA 只能写未收口。',
     skipWhen: '不跳过。',
-    toolIds: ['git'],
+    toolIds: ['evidence-bound-executor', 'git', 'work-skill'],
+    methodNote: '工作任务连续没有新证据或范围变化时：B · 卡住。',
     pitfall: '执行方最了解自己写了什么，也最容易用自己的叙述替代核验。真实见过的几种：报告「测试全绿」但不说跑的是哪条命令；用测试名推断安全性质，没构造过真实的破坏；把「部分关闭」写成「已关闭」；新一轮报告里，上一轮的遗留悄悄不见了。',
   },
   {
     id: 'verify',
     order: 7,
     title: '独立核验',
-    oneLiner: '审查方钉住一个固定 SHA，自己读真实 diff 和未跟踪文件，不拿执行方的摘要当事实；改动文件对着契约清单点一遍，源码增删和测试文件增删分开列。',
+    oneLiner: '审查方在干净 worktree 钉住 contract、baseline、candidate 三个 SHA，自己读真实 diff，不拿执行方摘要当事实；浮动工作区只能给 ADVISORY。',
     skipWhen: '不跳过。',
-    toolIds: ['git'],
-    pitfall: '换一个角色名不等于换了一个参与者。同一个窗口把自己从执行者改成审查者，不构成独立审查。还有一个很隐蔽的：普通的 git diff 看不见未跟踪的新文件，所以“我看过 diff 了”可能漏掉了一整个新增的测试目录。还有一条：审查方自己跑一遍测试的意义有限——环境和命令仍然在被审这一侧，那是下一格的活。这一步要盯的是改动本身。',
+    toolIds: ['evidence-led-reviewer', 'git'],
+    pitfall: '换角色名不等于独立。普通 diff 还看不见未跟踪文件；正式审查必须另查并固定 candidate。审查退回可以直接回⑥，但每轮都要编号，⑨最终必须看到打回 N 轮和每轮 finding，不能让两个窗口私下循环到看不见。',
   },
   {
     id: 'ci-gate',
     order: 8,
     title: 'CI 门',
-    oneLiner: '在固定环境里跑固定命令，绿灯由它给，不由任何一个窗口给。这是整条流程里唯一的非参与者。',
-    skipWhen: '不跳过。仓库还没有 CI 的时候，这一格是空的——而这件事本身就该先解决。',
+    oneLiner: '自动化在独立于执行窗口的固定环境运行时，是非参与者见证；只有 required check、分支保护、受控状态来源和不可绕过规则同时成立时，它才是合并门。',
+    skipWhen: '仓库没有 CI 时可以明确记为空门，但不能把本地命令写成 CI 证据。是否先补门，按任务风险决定。',
     toolIds: ['playwright', 'vitest', 'stryker'],
-    pitfall: '在这之前，我所有的验证都是参与者自己跑的：执行方跑一遍，审查方再跑一遍，但环境和命令始终在被审的那一方手里。这一格现在还是空的——FitMind 和本站都没有 CI。所以“已经验证过了”这句话，目前为止一次都没有由非参与者说出来过。',
+    pitfall: '见证和门是两个性质：远端跑过不代表阻塞合并，required check 也可能被跳过或由错误来源置绿。FitMind 和本站当前都没有这两层，所以这里只能如实显示缺口，不能借“CI”两个字加码证据。',
   },
   {
     id: 'verdict',
     order: 9,
     title: '我裁决',
-    oneLiner: '看声明与证据是否对得上。只要这次改动是用户看得见的，我必须自己用真实数据走一遍真实路径，再决定通过还是打回。',
+    oneLiner: '先看本批被审查打回 N 轮及每轮 finding，再核对声明与证据。用户可见改动必须由我用真实数据走真实路径；实现错回⑥，判据错回⑤重新冻结。',
     skipWhen: '不跳过。这是我唯一不能外包的一步。',
     toolIds: [],
-    pitfall: '证据看得再细，也只覆盖被写进判据的那部分。我有一次把“本周共记录 N 次训练”写进了验收标准和评测的标准答案，而客户端默认发的是近 30 天——数字是真的，“本周”两个字是假的。单测、评测、端到端和审查全部放行，最后是我自己用真实数据问了一句才撞出来。另一头的坑相反：验证越强等待越贵，如果裁决锁的是整个仓库的全量测试，一次要等十几分钟，人就会开始跳过裁决，整条流程退化成橡皮图章。锁哪条命令是设计问题，不是测试越多越好。',
+    pitfall: '证据只覆盖判据写到的部分。判据本身错时，继续修实现只会让下一轮更牢地通过错误标准，所以必须回⑤。另一头也要防止等待成本把裁决变成橡皮图章：锁哪条命令是设计问题，不是测试越多越好。',
   },
   {
     id: 'settle',
@@ -123,7 +125,8 @@ export const flowNodes: FlowNode[] = [
     title: '结账与欠账入库',
     oneLiner: '上一轮的每条未决和每条假设逐条点名，只用三种结果，一条都不许消失；跨天的欠账进任务库，跨项目的更新到索引。',
     skipWhen: '不跳过。',
-    toolIds: ['beads', 'git'],
+    toolIds: ['beads', 'git', 'work-skill'],
+    methodNote: '工作任务使用 C1 逐条结账；C2 按真实日终或周终节奏独立使用。',
     pitfall: '结账要放在收尾流程的最前面，不能放最后。放最后一定会被跳过，而被跳过的那条，恰好总是最不想面对的那条。',
   },
 ]
@@ -134,17 +137,41 @@ export const flowEdges: FlowEdge[] = [
     to: 'end',
     kind: 'quick-path',
     label: '小活直通',
+    detail: '做完自己看 diff · 结束',
+  },
+  {
+    from: 'self-brief',
+    to: 'contract',
+    kind: 'work-route',
+    label: '工作任务分支',
+    detail: '①⑤⑥⑩自己守 · ⑦团队 review · ⑧团队 CI · ⑨授权合并人',
   },
   {
     from: 'self-brief',
     to: 'recon',
     kind: 'rework',
     label: '溢出 · 回②',
+    detail: '小活跨到第二晚或第二模块，升级为完整流程',
+  },
+  {
+    from: 'verify',
+    to: 'execute',
+    kind: 'rework',
+    label: '审查退回 · review round + 1',
+    detail: '记录轮次与本轮 findings，⑨汇总查看',
+  },
+  {
+    from: 'verdict',
+    to: 'contract',
+    kind: 'rework',
+    label: '判据错误 · contract round + 1',
+    detail: '回⑤重新冻结 contract 与 baseline',
   },
   {
     from: 'verdict',
     to: 'execute',
     kind: 'rework',
-    label: '打回 · round + 1',
+    label: '实现错误 · execution round + 1',
+    detail: '契约不变，回⑥修候选实现',
   },
 ]

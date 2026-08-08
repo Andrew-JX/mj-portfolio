@@ -9,6 +9,7 @@ import { toolShares } from '@/data/toolShares.zh'
 
 const toolById = new Map(toolShares.map((tool) => [tool.id, tool]))
 const quickPaths = flowEdges.filter((edge) => edge.kind === 'quick-path')
+const workRoutes = flowEdges.filter((edge) => edge.kind === 'work-route')
 const reworkPaths = flowEdges.filter((edge) => edge.kind === 'rework')
 
 type FlowDetailProps = {
@@ -38,7 +39,7 @@ function FlowDetail({ node, onToolSelect, variant }: FlowDetailProps) {
           <dd>{node.skipWhen}</dd>
         </div>
         <div>
-          <dt>用到哪些工具</dt>
+          <dt>用到哪些工具 / Skill</dt>
           <dd>
             {node.toolIds.length > 0 ? (
               <span className="delivery-flow-tools">
@@ -80,7 +81,9 @@ export default function DeliveryFlow() {
   const selectedNode = flowNodes.find((node) => node.id === requestedStep) ?? flowNodes[0]
 
   const selectStep = (stepId: string) => {
-    setSearchParams({ step: stepId }, { replace: true })
+    const nextSearchParams = new URLSearchParams(searchParams)
+    nextSearchParams.set('step', stepId)
+    setSearchParams(nextSearchParams, { replace: true })
   }
 
   const selectTool = (toolId: string) => {
@@ -98,7 +101,7 @@ export default function DeliveryFlow() {
       <div className="section-title">Delivery workflow / 交付工作流</div>
       <div className="tooluse-section-heading delivery-flow-heading">
         <h2 id="delivery-flow-title">从接到活，到裁决与结账</h2>
-        <p>十个节点，三条特殊边；任务越大，证据链走得越完整。</p>
+        <p>十个节点，工作与个人两条路线；退回原因决定回到判据还是实现。</p>
       </div>
 
       <ol className="delivery-flow-scales" aria-label="任务规模分档">
@@ -119,6 +122,7 @@ export default function DeliveryFlow() {
             {flowNodes.map((node) => {
               const isSelected = node.id === selectedNode.id
               const nodeQuickPaths = quickPaths.filter((edge) => edge.from === node.id)
+              const nodeWorkRoutes = workRoutes.filter((edge) => edge.from === node.id)
 
               return (
                 <li key={node.id} className={`delivery-flow-node${isSelected ? ' is-selected' : ''}`}>
@@ -140,7 +144,14 @@ export default function DeliveryFlow() {
                   {nodeQuickPaths.map((edge) => (
                     <div key={`${edge.from}-${edge.to}`} className="delivery-flow-branch" aria-label={`${edge.label}：做完自己看 diff 后结束`}>
                       <span>{edge.label}</span>
-                      <strong>做完自己看 diff · 结束</strong>
+                      <strong>{edge.detail}</strong>
+                    </div>
+                  ))}
+
+                  {nodeWorkRoutes.map((edge) => (
+                    <div key={`${edge.from}-${edge.to}`} className="delivery-flow-branch is-work-route" aria-label={`${edge.label}：${edge.detail}`}>
+                      <span>{edge.label}</span>
+                      <strong>{edge.detail}</strong>
                     </div>
                   ))}
 
@@ -161,7 +172,7 @@ export default function DeliveryFlow() {
               <div key={`${edge.from}-${edge.to}`} className="delivery-flow-loop" aria-label={`${edge.label}，从第 ${fromNode.order} 步返回第 ${toNode.order} 步`}>
                 <span aria-hidden="true">↶</span>
                 <strong>{edge.label}</strong>
-                <small>{String(fromNode.order).padStart(2, '0')} {fromNode.title} → {String(toNode.order).padStart(2, '0')} {toNode.title}</small>
+                <small>{String(fromNode.order).padStart(2, '0')} {fromNode.title} → {String(toNode.order).padStart(2, '0')} {toNode.title} · {edge.detail}</small>
               </div>
             )
           })}

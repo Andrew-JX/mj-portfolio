@@ -1,5 +1,5 @@
-// 维护规则：「尚未实测」的条目数不得超过实测过的条目数（正在使用 + 试用后保留 + 试用中 + 已卸载）。
-// 超过就说明这一页在退化成 awesome list。
+// 维护规则 1：第三方条目的「尚未实测」不得超过第三方实测条目（正在使用 + 试用后保留 + 试用中 + 已卸载）。
+// 维护规则 2：自建 Skill 没跑过真实批次前不得标「正在使用」，只能是「试用中」或「尚未实测」。
 
 export type ToolStatus =
   | '正在使用'
@@ -8,10 +8,37 @@ export type ToolStatus =
   | '已卸载'
   | '尚未实测'
 
+export type ToolKind = 'tool' | 'skill' | 'method'
+export type ToolOrigin = 'self' | 'third-party'
+export type ToolCategoryId =
+  | 'foundation-evidence'
+  | 'specification-workflow'
+  | 'task-memory'
+  | 'code-intelligence'
+  | 'verification-testing'
+  | 'orchestration-connectors'
+
+export const toolKindLabels: Record<ToolKind, { title: string; description: string }> = {
+  tool: { title: '工具', description: '第三方工具、框架与基础设施。' },
+  skill: { title: '我写的 Skill', description: '把真实踩坑压成可重复调用的执行规则。' },
+  method: { title: '方法', description: '不依赖特定产品的工作方法。' },
+}
+
+export const toolCategories: Record<ToolCategoryId, string> = {
+  'foundation-evidence': '基础与证据',
+  'specification-workflow': '规格与流程',
+  'task-memory': '任务与记忆',
+  'code-intelligence': '代码理解',
+  'verification-testing': '验证测试',
+  'orchestration-connectors': '编排与连接器',
+}
+
 export type ToolShare = {
   id: string
   name: string
-  category: string
+  kind: ToolKind
+  origin: ToolOrigin
+  categoryId: ToolCategoryId
   status: ToolStatus
   usedIn: string
   source: string
@@ -24,13 +51,17 @@ export type ToolShare = {
   boundary: string
   tags: string[]
   url?: string
+  repoUrl?: string
+  installNote?: string
 }
 
 export const toolShares: ToolShare[] = [
   {
     id: 'playwright',
     name: 'Playwright',
-    category: 'Browser Verification',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'verification-testing',
     status: '正在使用',
     usedIn: 'FitMind、本站',
     source: 'FitMind E2E 与个人网站浏览器验证',
@@ -47,7 +78,9 @@ export const toolShares: ToolShare[] = [
   {
     id: 'git',
     name: 'Git',
-    category: 'Versioned Evidence',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'foundation-evidence',
     status: '正在使用',
     usedIn: 'ai-pm-dev、FitMind、本站',
     source: '三个个人项目的真实提交、固定 SHA 与 diff 核验',
@@ -64,7 +97,9 @@ export const toolShares: ToolShare[] = [
   {
     id: 'vitest',
     name: 'Vitest',
-    category: 'Unit Verification',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'verification-testing',
     status: '正在使用',
     usedIn: 'FitMind',
     source: 'FitMind 依赖、pnpm verify 脚本与现有单元测试结构',
@@ -81,7 +116,9 @@ export const toolShares: ToolShare[] = [
   {
     id: 'agentsview',
     name: 'AgentsView',
-    category: 'Session Evidence',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'foundation-evidence',
     status: '试用后保留',
     usedIn: '本机会话归档取证',
     source: '本机会话归档取证',
@@ -97,7 +134,9 @@ export const toolShares: ToolShare[] = [
   {
     id: 'codebase-memory',
     name: 'codebase-memory',
-    category: 'Code Intelligence',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'code-intelligence',
     status: '试用后保留',
     usedIn: 'ai-pm-dev、FitMind',
     source: '项目内真实结构查询与归档证据',
@@ -113,7 +152,9 @@ export const toolShares: ToolShare[] = [
   {
     id: 'beads',
     name: 'Beads',
-    category: 'Task Graph',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'task-memory',
     status: '试用中',
     usedIn: 'FitMind（进行中）',
     source: '正在 FitMind 真实任务中试用',
@@ -130,7 +171,9 @@ export const toolShares: ToolShare[] = [
   {
     id: 'agent-reach',
     name: 'Agent-Reach',
-    category: 'External Connector',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'orchestration-connectors',
     status: '已卸载',
     usedIn: '装过，已移除',
     source: '本机会话归档取证',
@@ -146,7 +189,9 @@ export const toolShares: ToolShare[] = [
   {
     id: 'multica',
     name: 'Multica',
-    category: 'Multi-Agent Orchestration',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'orchestration-connectors',
     status: '尚未实测',
     usedIn: '未实测',
     source: '官方资料',
@@ -163,7 +208,9 @@ export const toolShares: ToolShare[] = [
   {
     id: 'deerflow',
     name: 'DeerFlow',
-    category: 'Agent Runtime',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'orchestration-connectors',
     status: '尚未实测',
     usedIn: '未实测',
     source: '官方资料',
@@ -180,7 +227,9 @@ export const toolShares: ToolShare[] = [
   {
     id: 'spec-kit',
     name: 'GitHub Spec Kit',
-    category: 'Specification Workflow',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'specification-workflow',
     status: '尚未实测',
     usedIn: '未实测',
     source: '官方资料',
@@ -197,7 +246,9 @@ export const toolShares: ToolShare[] = [
   {
     id: 'stryker',
     name: 'StrykerJS',
-    category: 'Mutation Testing',
+    kind: 'tool',
+    origin: 'third-party',
+    categoryId: 'verification-testing',
     status: '尚未实测',
     usedIn: '未实测',
     source: '官方资料',
@@ -210,5 +261,81 @@ export const toolShares: ToolShare[] = [
     boundary: '它要的是一套能跑的测试，不是 CI——FitMind 已经有 698 条单测，随时可以试。顺序反而应该倒过来：先跑一次变异，知道哪些测试是空壳，再决定 CI 该锁哪条命令。第一次只打算扫确定性计算层那个目录，全仓跑对晚上和周末的时间预算不现实。',
     tags: ['Mutation testing', 'Test quality', 'Unverified'],
     url: 'https://github.com/stryker-mutator/stryker-js',
+  },
+  {
+    id: 'acceptance-author',
+    name: 'Acceptance Author',
+    kind: 'skill',
+    origin: 'self',
+    categoryId: 'specification-workflow',
+    status: '尚未实测',
+    usedIn: '本站 Skill 库，尚未跑真实批次',
+    source: '从既有批次的假绿灯事件提炼，完成结构审查，尚未真实试跑',
+    intrusion: 'L1 · 本地 Markdown 指令',
+    lastChecked: '2026-08-08',
+    summary: '在实现前攻击验收判据的假绿灯，并用 contract、baseline、candidate 三个 SHA 防止判据随实现漂移。',
+    replaces: '靠规划者写完判据后凭感觉通读一遍。',
+    goodAt: '尚未实测。设计目标是把限定词来源、度量口径、文件范围和人工验收者写成开工前的硬输入。',
+    badAt: '尚未实测。清单本身仍可能被机械填写，也不能替代最终验收者的业务判断。',
+    boundary: '它只能起草和反证判据；判据是否冻结仍由用户决定，执行方不得自行改写。',
+    tags: ['Self-built', 'Acceptance', 'False green', 'Contract SHA'],
+    installNote: '目前随本站仓库维护；独立 GitHub 安装地址待公开。',
+  },
+  {
+    id: 'evidence-bound-executor',
+    name: 'Evidence-Bound Executor',
+    kind: 'skill',
+    origin: 'self',
+    categoryId: 'specification-workflow',
+    status: '尚未实测',
+    usedIn: '本站 Skill 库，尚未跑真实批次',
+    source: '从多轮“报告完成、实际未完成”事件提炼，完成结构审查，尚未真实试跑',
+    intrusion: 'L1 · 本地 Markdown 指令',
+    lastChecked: '2026-08-08',
+    summary: '约束执行方不动冻结判据，用可穷举、可脱敏、可独立复核的证据交接候选实现。',
+    replaces: '执行方用完成摘要解释自己做了什么。',
+    goodAt: '尚未实测。设计目标是钉住全称声称、真实用户路径、上一轮遗留和实现完成与批次完成的区别。',
+    badAt: '尚未实测。它不能制造独立性；同一窗口仍可能把自述包装成证据。',
+    boundary: '负向验证只在隔离、无生产凭据环境按风险执行；未获提交授权时不得自行制造 candidate SHA。',
+    tags: ['Self-built', 'Execution', 'Evidence', 'Handoff'],
+    installNote: '目前随本站仓库维护；独立 GitHub 安装地址待公开。',
+  },
+  {
+    id: 'evidence-led-reviewer',
+    name: 'Evidence-Led Reviewer',
+    kind: 'skill',
+    origin: 'self',
+    categoryId: 'specification-workflow',
+    status: '尚未实测',
+    usedIn: '本站 Skill 库，尚未跑真实批次',
+    source: '从既有独立审查与漏检事件提炼，完成结构审查，尚未真实试跑',
+    intrusion: 'L1 · Markdown 指令、审查参考与跨工具 prompt',
+    lastChecked: '2026-08-08',
+    summary: '从固定候选提交重建事实，区分正式审查与浮动工作区预审，并按影响而不是语气给 finding 定级。',
+    replaces: '把执行方报告、测试名或旧命令输出直接当成审查事实。',
+    goodAt: '尚未实测。设计目标是固定三锚点、逐项比对改动范围，并用盲区清单寻找同类入口和协调篡改。',
+    badAt: '尚未实测。角色名和 prompt 都不是权限边界；不在独立 worktree 运行就不能声称独立。',
+    boundary: '浮动工作区只能给 ADVISORY；契约错误直接回到重新冻结，不把流程失效硬套成产品 P1。',
+    tags: ['Self-built', 'Review', 'Severity', 'Advisory'],
+    installNote: '目前随本站仓库维护；独立 GitHub 安装地址待公开。',
+  },
+  {
+    id: 'work-skill',
+    name: 'work-skill',
+    kind: 'skill',
+    origin: 'self',
+    categoryId: 'specification-workflow',
+    status: '尚未实测',
+    usedIn: '工作任务事实整理，真实两周判据未完成',
+    source: '四张脱敏入口卡已完成虚构任务干跑，真实复用判据仍未完成',
+    intrusion: 'L1 · 本地 Markdown 指令与四张入口卡',
+    lastChecked: '2026-08-08',
+    summary: '用接任务、卡住、任务收尾、日终周终四个入口，把工作事实、假设、未决和证据整理成可结账的本地草稿。',
+    replaces: '领任务靠记忆、卡住后无限试错、收尾时把局部测试写成整体完成。',
+    goodAt: '虚构干跑能稳定产出可证伪判据、带后果的假设、截止点和逐条结账，不需要安装运行时。',
+    badAt: '真实两周、至少十个任务、无人提醒仍会主动使用的判据尚未完成；当前不能称为已验证习惯。',
+    boundary: '只处理脱敏概述并生成草稿，不接收真实工作代码、日志、密钥或可定位业务与个人的数据，也不替代团队 review、CI 和合并权限。',
+    tags: ['Self-built', 'Work', 'Privacy', 'Closeout'],
+    installNote: '目前随本站仓库维护；独立 GitHub 安装地址待公开。',
   },
 ]

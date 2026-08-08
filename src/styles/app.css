@@ -1612,6 +1612,57 @@ select {
   gap: 1.25rem;
 }
 
+.tooluse-groups {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+}
+
+.tooluse-group {
+  min-width: 0;
+}
+
+.tooluse-group-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0.35rem 0.75rem;
+}
+
+.tooluse-group-heading > div {
+  min-width: 0;
+}
+
+.tooluse-group-heading span {
+  color: var(--accent);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tooluse-group-heading h3 {
+  margin: 0.2rem 0 0;
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  letter-spacing: -0.025em;
+}
+
+.tooluse-group-heading p {
+  margin: 0.24rem 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.tooluse-group-heading > strong {
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
 .tooluse-rows {
   border-top: 1px solid var(--line-strong);
 }
@@ -1856,6 +1907,21 @@ select {
   padding-top: 0.9rem;
 }
 
+.tooluse-workflow-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tooluse-workflow-steps > span {
+  border: 1px solid rgba(251, 146, 60, 0.26);
+  border-radius: 999px;
+  padding: 0.14rem 0.42rem;
+  color: var(--text-soft);
+  font-size: 0.65rem;
+  line-height: 1.4;
+}
+
 .delivery-flow {
   display: grid;
   gap: 1.5rem;
@@ -2066,6 +2132,20 @@ select {
   font-weight: 500;
 }
 
+.delivery-flow-branch.is-work-route {
+  border-left-color: rgba(56, 189, 248, 0.45);
+  background: rgba(56, 189, 248, 0.045);
+}
+
+.delivery-flow-branch.is-work-route::before,
+.delivery-flow-branch.is-work-route span {
+  color: #7dd3fc;
+}
+
+.delivery-flow-branch.is-work-route span {
+  border-color: rgba(56, 189, 248, 0.44);
+}
+
 .delivery-flow-loop {
   display: grid;
   grid-template-columns: 1.5rem minmax(0, 1fr);
@@ -2220,6 +2300,15 @@ select {
   background: rgba(255, 255, 255, 0.62);
 }
 
+[data-theme="light"] .delivery-flow-branch.is-work-route {
+  background: rgba(2, 132, 199, 0.055);
+}
+
+[data-theme="light"] .delivery-flow-branch.is-work-route::before,
+[data-theme="light"] .delivery-flow-branch.is-work-route span {
+  color: #0369a1;
+}
+
 [data-theme="light"] .tooluse-status-active {
   color: #15803d;
 }
@@ -2308,6 +2397,10 @@ select {
 
   .tooluse-list-count {
     white-space: normal;
+  }
+
+  .tooluse-group-heading {
+    align-items: start;
   }
 
   .tooluse-row-summary {
