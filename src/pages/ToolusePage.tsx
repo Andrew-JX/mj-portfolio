@@ -1,4 +1,5 @@
-import { toolPrinciples, toolShares, type ToolStatus } from '@/data/toolShares.zh'
+import DeliveryFlow from '@/components/DeliveryFlow'
+import { toolShares, type ToolStatus } from '@/data/toolShares.zh'
 
 const statusClassNames: Record<ToolStatus, string> = {
   正在使用: 'tooluse-status-active',
@@ -8,12 +9,16 @@ const statusClassNames: Record<ToolStatus, string> = {
   尚未实测: 'tooluse-status-unverified',
 }
 
+const latestChecked = toolShares.reduce(
+  (latest, tool) => (tool.lastChecked > latest ? tool.lastChecked : latest),
+  toolShares[0]?.lastChecked ?? '',
+)
+
 export default function ToolusePage() {
   return (
     <div className="tooluse-page space-y-10">
       <header className="tooluse-position">
         <div className="section-title">Tooluse / 工具分享</div>
-        <h1>这里只记我真正装过、用过或者用完卸掉的东西，附上判断来源和边界。</h1>
         <p>没实测过的会明确标出来，我不写没用过的使用感受。</p>
       </header>
 
@@ -23,7 +28,7 @@ export default function ToolusePage() {
             <div className="section-title">Tool list</div>
             <h2 id="tool-list-title">工具清单</h2>
           </div>
-          <span className="tooluse-list-count">{toolShares.length} 项 · 最后核对 2026-08-04</span>
+          <span className="tooluse-list-count">{toolShares.length} 项 · 最近核对 {latestChecked}</span>
         </div>
 
         <div className="tooluse-rows">
@@ -73,21 +78,7 @@ export default function ToolusePage() {
         </div>
       </section>
 
-      <section className="section-shell tooluse-principles">
-        <div className="section-title">How I choose</div>
-        <div className="tooluse-section-heading">
-          <h2>先看信号，再找工具</h2>
-          <p>开工时手上通常没有工具名，只有正在反复出现的问题。</p>
-        </div>
-        <div className="tooluse-principle-grid">
-          {toolPrinciples.map((principle, index) => (
-            <article key={principle} className="tooluse-principle-card">
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <p>{principle}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      <DeliveryFlow />
     </div>
   )
 }
