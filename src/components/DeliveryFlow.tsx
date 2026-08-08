@@ -8,8 +8,8 @@ import {
 import { toolShares } from '@/data/toolShares.zh'
 
 const toolById = new Map(toolShares.map((tool) => [tool.id, tool]))
-const quickPath = flowEdges.find((edge) => edge.kind === 'quick-path')
-const reworkPath = flowEdges.find((edge) => edge.kind === 'rework')
+const quickPaths = flowEdges.filter((edge) => edge.kind === 'quick-path')
+const reworkPaths = flowEdges.filter((edge) => edge.kind === 'rework')
 
 type FlowDetailProps = {
   node: FlowNode
@@ -98,7 +98,7 @@ export default function DeliveryFlow() {
       <div className="section-title">Delivery workflow / 交付工作流</div>
       <div className="tooluse-section-heading delivery-flow-heading">
         <h2 id="delivery-flow-title">从接到活，到裁决与结账</h2>
-        <p>十个节点，两条特殊边；任务越大，证据链走得越完整。</p>
+        <p>十个节点，三条特殊边；任务越大，证据链走得越完整。</p>
       </div>
 
       <ol className="delivery-flow-scales" aria-label="任务规模分档">
@@ -118,6 +118,7 @@ export default function DeliveryFlow() {
           <ol className="delivery-flow-nodes" aria-label="交付流程节点">
             {flowNodes.map((node) => {
               const isSelected = node.id === selectedNode.id
+              const nodeQuickPaths = quickPaths.filter((edge) => edge.from === node.id)
 
               return (
                 <li key={node.id} className={`delivery-flow-node${isSelected ? ' is-selected' : ''}`}>
@@ -136,12 +137,12 @@ export default function DeliveryFlow() {
                     <span className="delivery-flow-node-arrow" aria-hidden="true">→</span>
                   </button>
 
-                  {node.id === quickPath?.from ? (
-                    <div className="delivery-flow-branch" aria-label={`${quickPath.label}：做完自己看 diff 后结束`}>
-                      <span>{quickPath.label}</span>
+                  {nodeQuickPaths.map((edge) => (
+                    <div key={`${edge.from}-${edge.to}`} className="delivery-flow-branch" aria-label={`${edge.label}：做完自己看 diff 后结束`}>
+                      <span>{edge.label}</span>
                       <strong>做完自己看 diff · 结束</strong>
                     </div>
-                  ) : null}
+                  ))}
 
                   {isSelected ? (
                     <FlowDetail node={node} onToolSelect={selectTool} variant="mobile" />
@@ -151,13 +152,19 @@ export default function DeliveryFlow() {
             })}
           </ol>
 
-          {reworkPath ? (
-            <div className="delivery-flow-loop" aria-label={`${reworkPath.label}，从第九步返回第六步`}>
-              <span aria-hidden="true">↶</span>
-              <strong>{reworkPath.label}</strong>
-              <small>09 我裁决 → 06 执行</small>
-            </div>
-          ) : null}
+          {reworkPaths.map((edge) => {
+            const fromNode = flowNodes.find((node) => node.id === edge.from)
+            const toNode = flowNodes.find((node) => node.id === edge.to)
+            if (!fromNode || !toNode) return null
+
+            return (
+              <div key={`${edge.from}-${edge.to}`} className="delivery-flow-loop" aria-label={`${edge.label}，从第 ${fromNode.order} 步返回第 ${toNode.order} 步`}>
+                <span aria-hidden="true">↶</span>
+                <strong>{edge.label}</strong>
+                <small>{String(fromNode.order).padStart(2, '0')} {fromNode.title} → {String(toNode.order).padStart(2, '0')} {toNode.title}</small>
+              </div>
+            )
+          })}
         </div>
 
         <FlowDetail node={selectedNode} onToolSelect={selectTool} variant="desktop" />
