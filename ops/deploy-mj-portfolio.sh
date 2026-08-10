@@ -44,7 +44,7 @@ rollback() {
 trap cleanup EXIT
 trap rollback ERR
 
-dd bs=1M count="$max_archive_megabytes" status=none > "$archive"
+dd bs=1M count="$max_archive_megabytes" iflag=fullblock status=none > "$archive"
 test -s "$archive"
 
 python3 - "$archive" "$max_extracted_bytes" "$max_members" <<'PY'
