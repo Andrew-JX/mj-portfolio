@@ -42,6 +42,7 @@
 html,
 body {
   height: 100%;
+  overflow-x: clip;
 }
 
 html {
@@ -589,25 +590,32 @@ select {
 }
 
 @media (max-width: 1023px) {
-  .hero-lanyard-layer {
-    position: relative;
-    top: auto;
-    right: auto;
-    z-index: 3;
-    width: 100%;
-    height: 19rem;
-    margin: -0.75rem 0 -0.75rem;
-    opacity: 1;
-    pointer-events: auto;
+  .about-start-page {
+    width: calc(100% + 2rem);
+    margin-inline: -1rem;
+  }
+
+  .hero-lanyard-layer,
+  .hero-lanyard-spacer {
+    display: none;
   }
 
   .hero-side {
+    position: static;
     min-height: 0;
-    gap: 0.75rem;
+    gap: 0;
+    margin-top: 0;
   }
 
-  .hero-lanyard-spacer {
-    display: none;
+  .hero-side-caption {
+    z-index: 2;
+    min-width: 0;
+    background: rgba(20, 14, 11, 0.78);
+    backdrop-filter: blur(16px);
+  }
+
+  [data-theme="light"] .hero-side-caption {
+    background: rgba(255, 250, 245, 0.88);
   }
 }
 
@@ -685,12 +693,6 @@ select {
 
   .hero-card-content {
     z-index: 2;
-  }
-
-  .hero-lanyard-layer {
-    width: 100%;
-    height: 18rem;
-    margin: -0.5rem 0 -0.75rem;
   }
 
   .hero-title-shell,
@@ -904,6 +906,21 @@ select {
   line-height: 1.8;
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-side {
+    position: static;
+    min-height: 0;
+    gap: 0;
+    margin-top: 0;
+  }
+
+  .hero-side-caption {
+    z-index: 2;
+    min-width: 0;
+    padding: 1rem 1.1rem;
+  }
+}
+
 @media (max-width: 767px) {
   .site-header .mx-auto {
     gap: 0.85rem;
@@ -919,25 +936,16 @@ select {
   }
 
   .hero-side {
+    position: static;
     min-height: 0;
-    gap: 0.65rem;
-  }
-
-  .hero-lanyard-spacer {
-    display: none;
+    gap: 0;
+    margin-top: 0;
   }
 
   .hero-side-caption {
     margin-top: 0;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    padding: 0;
-    box-shadow: none;
-  }
-
-  .hero-side-caption.border-glow-card::before {
-    display: none;
+    border-radius: 1.35rem;
+    padding: 1rem;
   }
 }
 

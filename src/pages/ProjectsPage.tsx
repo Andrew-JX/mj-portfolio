@@ -151,19 +151,11 @@ export default function ProjectsPage() {
 
       <section className="section-shell space-y-4">
         <div className="section-title">Projects</div>
-        <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr] xl:items-end">
-          <div className="space-y-4">
-            <h1 className="display-headline text-[clamp(2.8rem,8vw,5.8rem)]">PROJECTS</h1>
-            <p className="max-w-3xl text-sm leading-7 text-stone-300/82 sm:text-base">
-              这里放的是我做过的一些项目，主要以前端、AI 应用、全栈交付和地图可视化相关为主。
-            </p>
-          </div>
-          <div className="panel-card panel-citrus space-y-4">
-            <div className="section-title">说明</div>
-            <p className="text-sm leading-7 text-stone-300/82">
-              有些项目做 AI 应用，有些偏复杂前端、地图可视化或者全栈交付，可以按项目类型和关键词筛选着看。
-            </p>
-          </div>
+        <div className="space-y-4">
+          <h1 className="display-headline text-[clamp(2.8rem,8vw,5.8rem)]">PROJECTS</h1>
+          <p className="max-w-3xl text-sm leading-7 text-stone-300/82 sm:text-base">
+            这里放的是我做过的一些项目，主要以前端、AI 应用、全栈交付和地图可视化相关为主，可以按照项目类型和关键词筛选。
+          </p>
         </div>
       </section>
 

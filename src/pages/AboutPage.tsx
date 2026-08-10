@@ -542,7 +542,7 @@ export default function AboutPage() {
                     <span className="text-gradient-sky typing-cursor">{displayText}</span>
                   </div>
                   <p className="max-w-2xl">
-                    我目前的主线方向是 AI 应用开发、AI 全栈、AI 产品经理与 AI 解决方案。相比“把模型接上去”，
+                    我目前的主线方向是 AI 应用开发、AI 全栈与 AI 解决方案。相比“把模型接上去”，
                     我更关心如何把 AI 能力做成真实可用、可解释、可验证的产品体验，并把状态流、接口边界、数据建模和部署落地一起处理好。
                   </p>
                   <p className="max-w-xl text-[0.95rem] text-stone-300/78">
@@ -582,9 +582,9 @@ export default function AboutPage() {
                 <span className="index-badge">个人信息 / Profile</span>
                 <div className="hero-info-list">
                   <div><span className="hero-info-label">教育</span>Master of IT（2025.03 - 2026.10）</div>
-                  <div><span className="hero-info-label">本科</span>南京信息工程大学 · 软件工程（专业前 10%）</div>
+                  <div><span className="hero-info-label">本科</span>南京信息工程大学 · 软件工程（2020.9 - 2024.7）</div>
                   <div><span className="hero-info-label">英语</span>CET-6 · 雅思 6.5</div>
-                  <div><span className="hero-info-label">方向</span>AI 应用开发 / AI 全栈 / AI 产品经理 / AI 解决方案</div>
+                  <div><span className="hero-info-label">方向</span>AI 应用开发 / AI 全栈 / AI 解决方案</div>
                   <div>
                     <span className="hero-info-label">邮箱</span>
                     <span className="text-white">JX15996596656@163.com / minyuj207@gmail.com</span>
