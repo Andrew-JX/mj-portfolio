@@ -1,10 +1,11 @@
 import type { PointerEvent as ReactPointerEvent } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import BallpitBackground from '@/components/BallpitBackground'
-import Lanyard from '@/components/Lanyard'
+
+const Lanyard = lazy(() => import('@/components/Lanyard'))
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -164,8 +165,18 @@ export default function AboutPage() {
   const pageRef = useRef<HTMLDivElement | null>(null)
   const [displayText, setDisplayText] = useState('')
   const [introVisible, setIntroVisible] = useState(false)
+  const [showDesktopLanyard, setShowDesktopLanyard] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
   const typingStateRef = useRef({ roleIdx: 0, displayText: '', isDeleting: false })
   const pressurePointerRef = useRef({ active: false, x: 0, y: 0 })
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia('(min-width: 1024px)')
+    const syncDesktopLanyard = () => setShowDesktopLanyard(desktopQuery.matches)
+
+    syncDesktopLanyard()
+    desktopQuery.addEventListener('change', syncDesktopLanyard)
+    return () => desktopQuery.removeEventListener('change', syncDesktopLanyard)
+  }, [])
 
   useEffect(() => {
     let typingTimer: ReturnType<typeof setTimeout> | undefined
@@ -568,14 +579,18 @@ export default function AboutPage() {
 
             <div className="hero-side">
               <div className="hero-lanyard-layer">
-                <Lanyard
-                  position={[0, 0, 24]}
-                  gravity={[0, -40, 0]}
-                  frontImage={publicAsset('lanyard-card-front.svg?v=2')}
-                  frontPortraitImage={publicAsset('profile-photo.jpg')}
-                  backImage={publicAsset('lanyard-card-back.svg')}
-                  imageFit="cover"
-                />
+                {showDesktopLanyard ? (
+                  <Suspense fallback={null}>
+                    <Lanyard
+                      position={[0, 0, 24]}
+                      gravity={[0, -40, 0]}
+                      frontImage={publicAsset('lanyard-card-front.svg?v=2')}
+                      frontPortraitImage={publicAsset('profile-photo.jpg')}
+                      backImage={publicAsset('lanyard-card-back.svg')}
+                      imageFit="cover"
+                    />
+                  </Suspense>
+                ) : null}
               </div>
               <div className="hero-lanyard-spacer" aria-hidden="true" />
               <div className="hero-side-caption border-glow-card">

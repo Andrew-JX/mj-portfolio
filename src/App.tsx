@@ -70,7 +70,12 @@ export default function App() {
               <a href="https://mj-portfolio-gray.vercel.app/#/" target="_blank" rel="noreferrer">Mirror · Vercel</a>
               <a href="https://mj-portfolio.jx15996596656.workers.dev" target="_blank" rel="noreferrer">Mirror · Cloudflare</a>
             </div>
-            <div>© {new Date().getFullYear()} Minyu Ji</div>
+            <div className="flex flex-wrap gap-x-3 gap-y-1">
+              <span>版权所有 © {new Date().getFullYear()} 吉敏宇</span>
+              <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">
+                苏ICP备2026054660号-1
+              </a>
+            </div>
           </div>
         </footer>
 
