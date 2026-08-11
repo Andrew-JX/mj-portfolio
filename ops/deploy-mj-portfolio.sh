@@ -23,18 +23,25 @@ readonly backup="/var/www/mj-portfolio-backup-${release_id}"
 readonly failed="/var/www/mj-portfolio-failed-${release_id}"
 archive="$(mktemp /tmp/mj-portfolio-upload-XXXXXXXX.tar.gz)"
 readonly archive
+live="$(mktemp /tmp/mj-portfolio-live-XXXXXXXX.html)"
+readonly live
 swapped=0
 
 cleanup() {
-  rm -f -- "$archive"
+  rm -f -- "$archive" "$live"
 }
 
+# Set before the first mv, not after the second: if the second mv fails the
+# document root is already gone, and that is exactly when rollback must run.
 rollback() {
   status=$?
   trap - ERR
   if [[ "$swapped" == '1' && -d "$backup" ]]; then
-    sudo mv "$current" "$failed"
-    sudo mv "$backup" "$current"
+    # $current is absent when the failure happened between the two moves.
+    if [[ -e "$current" ]]; then
+      sudo mv "$current" "$failed" || true
+    fi
+    sudo mv "$backup" "$current" || true
     sudo systemctl reload nginx || true
   fi
   cleanup
@@ -86,14 +93,23 @@ test -d "$release/assets"
 grep -q '苏ICP备2026054660号-1' "$release/index.html"
 chmod -R a+rX "$release"
 
+swapped=1
 sudo mv "$current" "$backup"
 sudo mv "$release" "$current"
-swapped=1
 
 sudo nginx -t
 sudo systemctl reload nginx
+
+# Fetch to a file instead of piping into grep: `curl | grep -q` makes grep close
+# the pipe on its first match, curl dies of SIGPIPE, and pipefail turns a healthy
+# deployment into a rollback as soon as the page outgrows the pipe buffer.
 curl --fail --silent --show-error --retry 3 --retry-delay 2 \
-  https://mj.jimmyuuu.com/ | grep -q '苏ICP备2026054660号-1'
+  -o "$live" https://mj.jimmyuuu.com/
+grep -q '苏ICP备2026054660号-1' "$live"
+
+# The marker above is in every release, so it cannot tell this release from the
+# previous one. Compare the served bytes with the release we just activated.
+cmp -s "$live" "$current/index.html"
 
 trap - ERR
 echo "DEPLOY_OK ${release_id}"
