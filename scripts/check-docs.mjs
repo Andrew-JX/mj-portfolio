@@ -6,7 +6,8 @@
 // production. Run with --self-test to prove each check can still fail; a gate
 // that cannot fail protects nothing.
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -22,29 +23,25 @@ const SOURCE_FILES = [
   "ops/install-mj-deploy-key.sh",
 ];
 
-// Directories that hold no repository-authored source.
-const IGNORED_DIRS = new Set(["node_modules", "dist"]);
-
+// Enumerate what Git tracks, not what happens to sit on this disk. A manifest
+// built from the local filesystem describes one working copy: `docs/` is fully
+// gitignored here, so it exists locally and is absent from a fresh checkout.
+// Tracked paths are the same on every machine and in CI.
 function realDirectories() {
-  const topLevel = readdirSync(root, { withFileTypes: true })
-    .filter((e) => e.isDirectory() && !e.name.startsWith(".") && !IGNORED_DIRS.has(e.name))
-    .map((e) => e.name);
+  const tracked = execFileSync("git", ["ls-files"], { cwd: root, encoding: "utf8" }).split("\n").filter(Boolean);
+  const directories = new Set();
 
-  // `src` is described by its children, not as one entry.
-  return topLevel
-    .filter((name) => name !== "src")
-    .concat(
-      readdirSync(join(root, "src"), { withFileTypes: true })
-        .filter((e) => e.isDirectory())
-        .map((e) => `src/${e.name}`),
-    )
-    .sort();
-}
-
-function isEmpty(relative) {
-  const absolute = join(root, relative);
-  const entries = readdirSync(absolute, { withFileTypes: true });
-  return !entries.some((e) => (e.isDirectory() ? !isEmpty(join(relative, e.name)) : statSync(join(absolute, e.name)).size > 0));
+  for (const file of tracked) {
+    const parts = file.split("/");
+    if (parts.length < 2 || parts[0].startsWith(".")) continue;
+    // `src` is described by its children, not as one entry.
+    if (parts[0] === "src") {
+      if (parts.length > 2) directories.add(`src/${parts[1]}`);
+    } else {
+      directories.add(parts[0]);
+    }
+  }
+  return [...directories].sort();
 }
 
 function loadContext() {
@@ -71,8 +68,7 @@ const checks = [
       if (declared.length === 0) return ["AGENTS.md 里找不到 architecture-manifest 表格"];
 
       for (const dir of declared) {
-        if (!directories.includes(dir)) problems.push(`清单里有 \`${dir}\`，仓库里没有这个目录`);
-        else if (isEmpty(dir)) problems.push(`\`${dir}\` 在清单里，但目录是空的`);
+        if (!directories.includes(dir)) problems.push(`清单里有 \`${dir}\`，但 Git 里没有跟踪这个目录下的任何文件`);
       }
       for (const dir of directories) {
         if (!declared.includes(dir)) problems.push(`\`${dir}\` 存在于仓库，但没写进 AGENTS.md 目录清单`);
