@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "check:docs": "node scripts/check-docs.mjs",
+    "check:docs:self-test": "node scripts/check-docs.mjs --self-test",
     "preview": "vite preview"
   },
   "dependencies": {
