@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,400..800&family=Inter:wght@400;500;600;700;800&family=Syne:wght@500;700;800&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -1737,11 +1737,11 @@ select {
 .tooluse-row-identity strong {
   width: fit-content;
   color: var(--text);
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(0.98rem, 1.4vw, 1.15rem);
-  font-weight: 750;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
+  font-family: 'Bricolage Grotesque', 'Inter', sans-serif;
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
 }
 
 .tooluse-row-identity a {
