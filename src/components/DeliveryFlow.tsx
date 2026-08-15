@@ -11,6 +11,7 @@ const toolById = new Map(toolShares.map((tool) => [tool.id, tool]))
 const quickPaths = flowEdges.filter((edge) => edge.kind === 'quick-path')
 const workRoutes = flowEdges.filter((edge) => edge.kind === 'work-route')
 const reworkPaths = flowEdges.filter((edge) => edge.kind === 'rework')
+const exitPaths = flowEdges.filter((edge) => edge.kind === 'exit')
 
 type FlowDetailProps = {
   node: FlowNode
@@ -100,8 +101,8 @@ export default function DeliveryFlow() {
     <section className="section-shell delivery-flow" aria-labelledby="delivery-flow-title">
       <div className="section-title">Delivery workflow / 交付工作流</div>
       <div className="tooluse-section-heading delivery-flow-heading">
-        <h2 id="delivery-flow-title">从接到活，到裁决与结账</h2>
-        <p>十个节点，工作与个人两条路线；退回原因决定回到判据还是实现。</p>
+        <h2 id="delivery-flow-title">从接到活，到发布反馈回流</h2>
+        <p>十一节点，先继承项目协议再按风险加码；返工、停止和发布回流都有明确去向。</p>
       </div>
 
       <ol className="delivery-flow-scales" aria-label="任务规模分档">
@@ -176,6 +177,31 @@ export default function DeliveryFlow() {
               </div>
             )
           })}
+
+          <section className="delivery-flow-exits" aria-labelledby="delivery-flow-exits-title">
+            <header>
+              <span>Exit routes</span>
+              <h3 id="delivery-flow-exits-title">合法停止出口</h3>
+              <p>暂停不是失败。缺决定、缺权限、范围溢出或任务失效时，先留下可接手的事实。</p>
+            </header>
+
+            <ul>
+              {exitPaths.map((edge) => {
+                const fromNode = flowNodes.find((node) => node.id === edge.from)
+                if (!fromNode) return null
+
+                return (
+                  <li key={`${edge.from}-${edge.to}`} aria-label={`从第 ${fromNode.order} 步退出：${edge.label}`}>
+                    <span>{String(fromNode.order).padStart(2, '0')}</span>
+                    <div>
+                      <strong>{edge.label}</strong>
+                      <p>{fromNode.title} · {edge.detail}</p>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
         </div>
 
         <FlowDetail node={selectedNode} onToolSelect={selectTool} variant="desktop" />

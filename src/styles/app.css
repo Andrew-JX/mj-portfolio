@@ -2181,6 +2181,85 @@ select {
   font-size: 0.68rem;
 }
 
+.delivery-flow-exits {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1rem 0 0 2.45rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+
+.delivery-flow-exits > header {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.delivery-flow-exits > header > span {
+  color: #c4b5fd;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.delivery-flow-exits h3 {
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+}
+
+.delivery-flow-exits header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.delivery-flow-exits ul {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.delivery-flow-exits li {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.65rem;
+  border: 1px solid rgba(167, 139, 250, 0.22);
+  border-radius: 0.85rem;
+  background: rgba(167, 139, 250, 0.035);
+  padding: 0.65rem 0.7rem;
+}
+
+.delivery-flow-exits li > span {
+  color: #c4b5fd;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.delivery-flow-exits li div {
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.delivery-flow-exits li strong {
+  color: var(--text);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.delivery-flow-exits li p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.67rem;
+  line-height: 1.55;
+}
+
 .delivery-flow-detail {
   min-width: 0;
   border: 1px solid rgba(251, 146, 60, 0.2);
@@ -2315,6 +2394,16 @@ select {
 [data-theme="light"] .delivery-flow-branch.is-work-route::before,
 [data-theme="light"] .delivery-flow-branch.is-work-route span {
   color: #0369a1;
+}
+
+[data-theme="light"] .delivery-flow-exits > header > span,
+[data-theme="light"] .delivery-flow-exits li > span {
+  color: #6d28d9;
+}
+
+[data-theme="light"] .delivery-flow-exits li {
+  border-color: rgba(109, 40, 217, 0.2);
+  background: rgba(109, 40, 217, 0.04);
 }
 
 [data-theme="light"] .tooluse-status-active {
@@ -2493,6 +2582,10 @@ select {
   }
 
   .delivery-flow-loop {
+    margin-left: 1.9rem;
+  }
+
+  .delivery-flow-exits {
     margin-left: 1.9rem;
   }
 

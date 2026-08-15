@@ -12,7 +12,7 @@ export type FlowNode = {
 export type FlowEdge = {
   from: string
   to: string
-  kind: 'quick-path' | 'work-route' | 'rework'
+  kind: 'quick-path' | 'work-route' | 'rework' | 'exit'
   label: string
   detail: string
 }
@@ -21,17 +21,17 @@ export const flowScales = [
   {
     id: 'small',
     label: '小活',
-    description: '只走 ①，写一句判据；做完自己看 diff。溢出到第二个晚上、或者碰到第二个模块，就停下回到 ②。',
+    description: '项目已有规则照常执行；额外只走 ①，写一句判据并检查真实 diff。溢出到第二个晚上或第二个模块，就停下回到 ②。',
   },
   {
     id: 'medium',
     label: '跨几个晚上',
-    description: '走完整流程，监察不开。',
+    description: '沿用项目的 branch / commit / PR / CI 基线；冻结判据、证据化交接。团队走普通 review，个人项目用独立窗口做 ADVISORY；默认不开三 SHA 正式审计。',
   },
   {
     id: 'large',
     label: '跨周 / 跨项目',
-    description: '走完整流程；涉及数据、权限、发布，或有争议、退回两轮、范围溢出时才开瘦身监察。',
+    description: '走完整流程并追加三 SHA、干净 worktree、正式独立核验与负向验证；涉及数据、权限、发布、有争议、退回两轮或范围溢出时开瘦身监察。',
   },
 ] as const
 
@@ -49,11 +49,12 @@ export const flowNodes: FlowNode[] = [
   {
     id: 'recon',
     order: 2,
-    title: '摸底四个数',
-    oneLiner: '开一个只读窗口，拿到四个数：有没有 CI、全量测试跑多久、有没有仓库规则文件、现有代码怎么组织。',
-    skipWhen: '全新项目，还没有代码的时候。',
-    toolIds: ['codebase-memory'],
-    pitfall: '我以为自己知道项目的状态，其实不知道。FitMind 有 698 条单测、26 条 E2E，我一直觉得它测试很全——直到专门去查才发现它没有任何 CI，也就是说那些测试从来没有在我不主动跑的时候拦下过任何东西。',
+    title: '摸底工程与协作协议',
+    oneLiner: '开只读窗口分两类摸底：自动读取 CI、测试、代码结构、规则文件、ruleset / 分支保护、合并方式、部署触发器和最近提交风格；只向人确认 review 与批准归谁、哪层历史永久保留、什么才算可以发布。②的发布控制关系决定⑪走自持发布还是团队发布。',
+    skipWhen: '全新项目可以跳过「继承已有协议」，但仍要确认仓库归属、提交权限和发布控制人，再选择最小默认。',
+    toolIds: ['codebase-memory', 'git'],
+    methodNote: '自动读机器事实，问人只问权限与裁决；读不到的远端规则明确记未知。',
+    pitfall: '我以为自己知道项目的状态，其实不知道。FitMind 有 698 条单测、26 条 E2E，我一直觉得它测试很全——直到专门去查才发现它没有任何 CI。另一个相反的坑，是把 ruleset、PR 模板和 git log 能回答的问题逐条问人，让摸底本身变成最贵的一格。',
   },
   {
     id: 'planning',
@@ -67,11 +68,11 @@ export const flowNodes: FlowNode[] = [
   {
     id: 'repo-rules',
     order: 4,
-    title: '把规则落进仓库',
-    oneLiner: '把事实边界和交付规则写成仓库里的 AGENTS.md，不靠聊天传递。',
-    skipWhen: '仓库里已经有一份规则文件，且它的「最后复核」日期还在有效期内。过期就不许跳过——规则烂掉是静默的，照着烂规则干活会全链路绿灯。',
+    title: '继承规则，只记获批差异',
+    oneLiner: '现成项目先服从维护者指令、仓库文档和远端强制规则；发现空缺或冲突只提出差异，未经维护者批准不新建制度。全新项目才把最小事实边界和交付规则写进 AGENTS.md，并给绝对要求配机器门禁。',
+    skipWhen: '现成项目不能跳过规则继承；全新项目没有旧规则可读，但仍要建立与当前风险相称的最小规则。',
     toolIds: ['git'],
-    pitfall: '聊天记录不是项目状态。窗口一换，目标、非目标、我批过的例外和还没验证的东西就可能被摘要压掉，新窗口看起来在接着干，实际是从另一个版本的任务开始的。',
+    pitfall: '聊天记录不是项目状态，但把自己的流程整套写进别人的仓库同样错误。规则文件、实际门禁和团队口径冲突时不能擅自选一个顺眼的；先记录冲突、暂停并请有权限的人裁决。规则烂掉又是静默的，照着过期规则干活会全链路绿灯。',
   },
   {
     id: 'contract',
@@ -85,21 +86,21 @@ export const flowNodes: FlowNode[] = [
   {
     id: 'execute',
     order: 6,
-    title: '执行：出计划、审、补全、做、交接',
-    oneLiner: '执行方按冻结契约实施，交接时用 Evidence-Bound Executor 逐条报告「达成 / 未达成 / 未验证」和脱敏证据；没有 candidate SHA 只能写未收口。',
+    title: '执行：按项目规范提交与交接',
+    oneLiner: '执行方沿用②发现的 branch / commit / PR 规范，按项目真正保留的历史单位组织可审查改动，再按冻结契约实施；交接时用 Evidence-Bound Executor 逐条报告「达成 / 未达成 / 未验证」和脱敏证据，没有 candidate SHA 只能写未收口。',
     skipWhen: '不跳过。',
     toolIds: ['evidence-bound-executor', 'git', 'work-skill'],
     methodNote: '工作任务连续没有新证据或范围变化时：B · 卡住。',
-    pitfall: '执行方最了解自己写了什么，也最容易用自己的叙述替代核验。真实见过的几种：报告「测试全绿」但不说跑的是哪条命令；用测试名推断安全性质，没构造过真实的破坏；把「部分关闭」写成「已关闭」；新一轮报告里，上一轮的遗留悄悄不见了。',
+    pitfall: '执行方最了解自己写了什么，也最容易用自己的叙述替代核验。真实见过的几种：报告「测试全绿」但不说跑的是哪条命令；用测试名推断安全性质，没构造过真实破坏；把「部分关闭」写成「已关闭」；上一轮遗留在新报告里消失。另一个坑是把自己的 Conventional Commits、分支前缀或合并偏好强塞进已有仓库；规范哪一层历史，取决于项目最终保留 commit、squash 后的 PR 标题还是 merge commit。',
   },
   {
     id: 'verify',
     order: 7,
-    title: '独立核验',
-    oneLiner: '审查方在干净 worktree 钉住 contract、baseline、candidate 三个 SHA，自己读真实 diff，不拿执行方摘要当事实；浮动工作区只能给 ADVISORY。',
-    skipWhen: '不跳过。',
+    title: '分级核验',
+    oneLiner: '中档团队项目沿用普通 code review；个人项目由独立窗口读取真实 diff，浮动工作区只给 ADVISORY。高风险批次才在干净 worktree 钉住 contract、baseline、candidate 三个 SHA，正式独立重跑并裁定。',
+    skipWhen: '小活只执行项目已有 review 基线；中档不能把普通 review 或 ADVISORY 冒充正式放行，高风险不能跳过三锚点核验。',
     toolIds: ['evidence-led-reviewer', 'git'],
-    pitfall: '换角色名不等于独立。普通 diff 还看不见未跟踪文件；正式审查必须另查并固定 candidate。审查退回可以直接回⑥，但每轮都要编号，⑨最终必须看到打回 N 轮和每轮 finding，不能让两个窗口私下循环到看不见。但也别把这一格当摆设：它有效不是因为身份隔离——同权限同机器装不出身份——而是因为第二次阅读的人手上没有第一次的叙述。所以真正要守的不是「换个人」，是「审查方拿到的必须是仓库事实，不是执行方的摘要」。',
+    pitfall: '换角色名不等于独立，浮动工作区也不能产出正式 PASS；普通 diff 还看不见未跟踪文件。审查退回可以直接回⑥，但每轮都要编号，⑨最终必须看到打回 N 轮和每轮 finding。真正要守的不是「换个人」，是审查方拿到仓库事实而不是执行方摘要，同时别让中档任务为形式承担高风险审计的全部成本。',
   },
   {
     id: 'ci-gate',
@@ -114,10 +115,10 @@ export const flowNodes: FlowNode[] = [
     id: 'verdict',
     order: 9,
     title: '我裁决',
-    oneLiner: '先看本批被审查打回 N 轮及每轮 finding，再核对声明与证据。用户可见改动必须由我用真实数据走真实路径；实现错回⑥，判据错回⑤重新冻结。',
+    oneLiner: '先看本批被审查打回 N 轮及每轮 finding，再核对声明与证据。用户可见改动必须由我用真实数据走真实路径；放行时预登记上线后观测项、期限和失败形态，确实不可外部观测才记⑪不适用。实现错回⑥，判据错回⑤重新冻结。',
     skipWhen: '不跳过。这是我唯一不能外包的一步。',
     toolIds: [],
-    pitfall: '证据只覆盖判据写到的部分。判据本身错时，继续修实现只会让下一轮更牢地通过错误标准，所以必须回⑤。另一头也要防止等待成本把裁决变成橡皮图章：锁哪条命令是设计问题，不是测试越多越好。还有一头没人管：超过 14 天没裁决，这个批次要转 stale——SHA 还在，但依赖、环境和我自己的上下文都变了，必须重新核验，不能直接沿用旧证据继续裁决。',
+    pitfall: '证据只覆盖判据写到的部分。判据本身错时必须回⑤，不能继续修实现把错误标准做得更牢。上线观测如果等看到结果后再定义，就会按现象重写成功；如果说不出任何观测量，要在此处区分「确实不可观测」和「其实不知道为什么放行」。超过 14 天没裁决要转 stale 并重新核验；⑪的观测窗口过期不同，证据已经消失，只能记未验证，不能无限顺延。',
   },
   {
     id: 'settle',
@@ -128,6 +129,16 @@ export const flowNodes: FlowNode[] = [
     toolIds: ['beads', 'git', 'work-skill'],
     methodNote: '工作任务使用 C1 逐条结账；C2 按真实日终或周终节奏独立使用。',
     pitfall: '结账要放在收尾流程的最前面，不能放最后。放最后一定会被跳过，而被跳过的那条，恰好总是最不想面对的那条。',
+  },
+  {
+    id: 'observe',
+    order: 11,
+    title: '发布反馈回流',
+    oneLiner: '触发形态由②决定：自持发布在⑨预登记观测项，push 后按期限核对；团队发布等真实发布事件到达，再核对 release、观测结果和是否混批上线。结论仍只用达成 / 未达成 / 未验证，并把判据偏差与有效门禁写回下一批。',
+    skipWhen: '没有真实 merge / 发布，或⑨已经证明这类改动从外部不可观测时记不适用；观测窗口过期只能记未验证。',
+    toolIds: ['git', 'playwright'],
+    methodNote: '⑨预登记 → ⑩把跨天观测项入任务库 → ⑪到期核对；团队混批上线时先解决归因。',
+    pitfall: '自持发布在部署尚未完成、用户尚未访问时立刻填写「成功、无异常」，会制造比空白更危险的假绿灯。团队发布的另一种坑是混批归因：同一 release 带了别人的改动，却把线上现象全部记到自己这批；没有版本边界或可区分观测时只能写未验证。',
   },
 ]
 
@@ -173,5 +184,33 @@ export const flowEdges: FlowEdge[] = [
     kind: 'rework',
     label: '实现错误 · execution round + 1',
     detail: '契约不变，回⑥修候选实现',
+  },
+  {
+    from: 'repo-rules',
+    to: 'pause',
+    kind: 'exit',
+    label: '规则冲突 · 暂停请裁决',
+    detail: '记录冲突事实、影响和裁决人；未获决定前不擅自改仓库制度。',
+  },
+  {
+    from: 'contract',
+    to: 'blocked',
+    kind: 'exit',
+    label: '证据或权限不足 · 阻塞',
+    detail: '缺真实数据、必要权限或可验证条件时保持未验证，交给有权限的人处理。',
+  },
+  {
+    from: 'execute',
+    to: 'split',
+    kind: 'exit',
+    label: '范围溢出 · 退回拆批',
+    detail: '停止当前批次，把新增范围另建任务；原契约不与新范围混做。',
+  },
+  {
+    from: 'verdict',
+    to: 'cancelled',
+    kind: 'exit',
+    label: '任务失效 · 取消',
+    detail: '记录取消依据和已产生资产，不把未交付写成完成，也不强行继续。',
   },
 ]
