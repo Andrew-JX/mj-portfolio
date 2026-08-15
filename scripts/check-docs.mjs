@@ -93,6 +93,35 @@ const checks = [
     breaks: [(ctx) => ({ ...ctx, files: { ...ctx.files, "AGENTS.md": `${ctx.files["AGENTS.md"]}\n运行 \`npm run nonexistent\`。\n` } })],
   },
   {
+    id: "flow-node-references",
+    // AGENTS.md used to say "第④步不得跳过", pointing at a node in
+    // src/data/deliveryFlow.zh.ts. That node was later rewritten and lost the
+    // condition the sentence depended on, but the sentence kept being obeyed.
+    // A reference by position rots without touching either file, so this repo
+    // states conditions here and leaves the numbering to the flow itself.
+    describe: "AGENTS.md 不拿流程节点编号做跨文件引用",
+    run({ files }) {
+      const agents = files["AGENTS.md"];
+      const problems = [];
+
+      const circled = [...new Set(agents.match(/[①-⑫]/g) ?? [])];
+      if (circled.length > 0) {
+        problems.push(`AGENTS.md 里出现节点编号 ${circled.join("")}；把条件本身写出来，别指向 deliveryFlow.zh.ts 的节点顺序`);
+      }
+
+      const numbered = [...new Set(agents.match(/第\s*\d+\s*步/g) ?? [])];
+      if (numbered.length > 0) {
+        problems.push(`AGENTS.md 里出现「${numbered.join("」「")}」；步骤顺序会变，这里要写触发条件`);
+      }
+
+      return problems;
+    },
+    breaks: [
+      (ctx) => ({ ...ctx, files: { ...ctx.files, "AGENTS.md": `${ctx.files["AGENTS.md"]}\n第④步不得跳过。\n` } }),
+      (ctx) => ({ ...ctx, files: { ...ctx.files, "AGENTS.md": `${ctx.files["AGENTS.md"]}\n细节见第 4 步。\n` } }),
+    ],
+  },
+  {
     id: "icp-marker",
     // The ICP number lives in five files. Changing it in four of them leaves a
     // deploy gate grepping for a string the page no longer contains.
