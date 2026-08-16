@@ -3,18 +3,18 @@ import type { ProjectMedia } from '@/types'
 export const projectMediaMap: Record<string, ProjectMedia> = {
   'fitmind-ai': {
     slug: 'fitmind-ai',
-    eyebrow: 'AI training copilot',
-    title: 'Insight stream',
-    caption: 'Deterministic analytics layered with assistant responses and guided review states.',
-    metrics: ['SSE', 'Tool loop', 'Analytics'],
+    eyebrow: 'Evidence-backed AI coach',
+    title: 'Train, analyze, plan',
+    caption: 'Structured logs, deterministic analysis, grounded retrieval, and editable weekly plans in one mobile-first product loop.',
+    metrics: ['Plans', 'RAG', 'SSE'],
     tone: 'ember',
   },
   'ai-pm-dev': {
     slug: 'ai-pm-dev',
-    eyebrow: 'AI product workflow',
-    title: 'Idea to build',
-    caption: 'PRD, scope, handoff, and quality gates shaped into a reusable AI collaboration layer.',
-    metrics: ['PRD', 'Scope', 'Handoff'],
+    eyebrow: 'Frozen workflow research',
+    title: 'Claim to evidence',
+    caption: 'A local experiment in fixed contracts, participant-separated review, authority-bound handoffs, and human verdicts.',
+    metrics: ['Gates', 'Handoff', 'Verdict'],
     tone: 'violet',
   },
   'cat-note-illustrations': {
@@ -36,9 +36,9 @@ export const projectMediaMap: Record<string, ProjectMedia> = {
   pureip: {
     slug: 'pureip',
     eyebrow: 'Network intelligence',
-    title: 'Connection check',
-    caption: 'IP evidence, network measurements, and scenario-based guidance in one self-hostable tool.',
-    metrics: ['IP', 'DNSBL', 'Speed'],
+    title: 'Evidence-led network check',
+    caption: 'Public-IP intelligence, browser signals, coverage-aware scoring, and regional network measurements in one self-hostable tool.',
+    metrics: ['IPv4/6', 'DNSBL', 'Speed'],
     tone: 'ocean',
   },
   easemove: {
