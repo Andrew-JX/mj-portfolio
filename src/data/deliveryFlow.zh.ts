@@ -91,7 +91,7 @@ export const flowNodes: FlowNode[] = [
     skipWhen: '不跳过。',
     toolIds: ['evidence-bound-executor', 'git', 'work-skill'],
     methodNote: '工作任务连续没有新证据或范围变化时：B · 卡住。',
-    pitfall: '执行方最了解自己写了什么，也最容易用自己的叙述替代核验。真实见过的几种：报告「测试全绿」但不说跑的是哪条命令；用测试名推断安全性质，没构造过真实破坏；把「部分关闭」写成「已关闭」；上一轮遗留在新报告里消失。另一个坑是把自己的 Conventional Commits、分支前缀或合并偏好强塞进已有仓库；规范哪一层历史，取决于项目最终保留 commit、squash 后的 PR 标题还是 merge commit。',
+    pitfall: '执行方最了解自己写了什么，也最容易用自己的叙述替代核验。真实见过的几种：报告「测试全绿」但不说跑的是哪条命令；把浏览器断言通过、根命令退出 0、资源清理完成合并成一条结论；用测试名推断安全性质，没构造过真实破坏；把「部分关闭」写成「已关闭」；上一轮遗留在新报告里消失。另一个坑是把自己的 Conventional Commits、分支前缀或合并偏好强塞进已有仓库；规范哪一层历史，取决于项目最终保留 commit、squash 后的 PR 标题还是 merge commit。',
   },
   {
     id: 'verify',
@@ -100,7 +100,7 @@ export const flowNodes: FlowNode[] = [
     oneLiner: '中档团队项目沿用普通 code review；个人项目由独立窗口读取真实 diff，浮动工作区只给 ADVISORY。高风险批次才在干净 worktree 钉住 contract、baseline、candidate 三个 SHA，正式独立重跑并裁定。',
     skipWhen: '小活只执行项目已有 review 基线；中档不能把普通 review 或 ADVISORY 冒充正式放行，高风险不能跳过三锚点核验。',
     toolIds: ['evidence-led-reviewer', 'git'],
-    pitfall: '换角色名不等于独立，浮动工作区也不能产出正式 PASS；普通 diff 还看不见未跟踪文件。审查退回可以直接回⑥，但每轮都要编号，⑨最终必须看到打回 N 轮和每轮 finding。真正要守的不是「换个人」，是审查方拿到仓库事实而不是执行方摘要，同时别让中档任务为形式承担高风险审计的全部成本。',
+    pitfall: '换角色名不等于独立，浮动工作区也不能产出正式 PASS；普通 diff 还看不见未跟踪文件。family-finance 2B 的首个 candidate 浏览器断言全部通过，但 Reviewer 独立复现出 Windows 根进程清理超时、命令退出 1，因此在合同不变的情况下退回⑥重做 candidate。每轮都要编号，⑨最终必须看到打回 N 轮和每轮 finding。真正要守的不是「换个人」，是审查方拿到仓库事实而不是执行方摘要。',
   },
   {
     id: 'ci-gate',
@@ -109,7 +109,7 @@ export const flowNodes: FlowNode[] = [
     oneLiner: '自动化在独立于执行窗口的固定环境运行时，是非参与者见证；只有 required check、分支保护、受控状态来源和不可绕过规则同时成立时，它才是合并门。',
     skipWhen: '仓库没有 CI 时可以明确记为空门，但不能把本地命令写成 CI 证据。是否先补门，按任务风险决定。',
     toolIds: ['playwright', 'vitest', 'stryker'],
-    pitfall: '见证和门是两个性质：远端跑过不代表阻塞合并，required check 也可能被跳过或由错误来源置绿。FitMind 和本站当前都没有这两层，所以这里只能如实显示缺口，不能借“CI”两个字加码证据。',
+    pitfall: '见证和门是两个性质：远端跑过不代表阻塞合并，required check 也可能被跳过或由错误来源置绿。FitMind、family-finance 和本站当前都没有这两层；family-finance 甚至在开工合同里把「CI 文件数 0」作为摸底事实固定下来，所以这里只能如实显示空门，不能借“CI”两个字加码证据。',
   },
   {
     id: 'verdict',
@@ -138,7 +138,7 @@ export const flowNodes: FlowNode[] = [
     skipWhen: '没有真实 merge / 发布，或⑨已经证明这类改动从外部不可观测时记不适用；观测窗口过期只能记未验证。',
     toolIds: ['git', 'playwright'],
     methodNote: '⑨预登记 → ⑩把跨天观测项入任务库 → ⑪到期核对；团队混批上线时先解决归因。',
-    pitfall: '自持发布在部署尚未完成、用户尚未访问时立刻填写「成功、无异常」，会制造比空白更危险的假绿灯。团队发布的另一种坑是混批归因：同一 release 带了别人的改动，却把线上现象全部记到自己这批；没有版本边界或可区分观测时只能写未验证。',
+    pitfall: '自持发布在部署尚未完成、用户尚未访问时立刻填写「成功、无异常」，会制造比空白更危险的假绿灯。family-finance 这轮没有 push、部署或发布回滚入口，所以⑪只能记不适用，不能拿本地 candidate 冒充上线反馈。团队发布的另一种坑是混批归因：同一 release 带了别人的改动，却把线上现象全部记到自己这批；没有版本边界或可区分观测时只能写未验证。',
   },
 ]
 
