@@ -82,7 +82,7 @@ function ToolRow({ tool }: { tool: ToolShare }) {
                 <span className="tooluse-workflow-steps">
                   {workflowSteps.map((step) => <span key={step.id}>{String(step.order).padStart(2, '0')} · {step.title}</span>)}
                 </span>
-              ) : '尚未接入交付工作流'}
+              ) : '当前未被任何交付流程节点引用'}
             </dd>
           </div>
           {tool.installNote ? <div><dt>获取方式</dt><dd>{tool.installNote}</dd></div> : null}
