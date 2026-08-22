@@ -13,6 +13,7 @@ const statusClassNames: Record<ToolStatus, string> = {
   正在使用: 'tooluse-status-active',
   试用后保留: 'tooluse-status-kept',
   试用中: 'tooluse-status-trial',
+  冻结: 'tooluse-status-frozen',
   已卸载: 'tooluse-status-removed',
   尚未实测: 'tooluse-status-unverified',
 }

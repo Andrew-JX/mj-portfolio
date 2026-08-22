@@ -8,6 +8,7 @@ export type ToolStatus =
   | '正在使用'
   | '试用后保留'
   | '试用中'
+  | '冻结'
   | '已卸载'
   | '尚未实测'
 
@@ -444,18 +445,18 @@ export const toolShares: ToolShare[] = [
     kind: 'skill',
     origin: 'self',
     categoryId: 'specification-workflow',
-    status: '尚未实测',
-    usedIn: '私人本地工作系统；真实两周判据未完成',
-    source: '从旧版完整规则与拆卡测试整理成唯一可安装包；本站只保留公开说明',
+    status: '冻结',
+    usedIn: '入职后在真实工作流里一次未使用；原先存放它的私人本地工作系统已随工作机更换整体退役',
+    source: '从旧版完整规则与拆卡测试整理成唯一可安装包；2026-08 唯一源码迁回公开仓库 tooluse',
     intrusion: 'L1 · 本地 Markdown 指令与四张入口卡',
-    lastChecked: '2026-08-14',
+    lastChecked: '2026-08-22',
     summary: '用接任务、卡住、任务收尾、日终周终四个入口，把工作事实、假设、未决和证据整理成可结账的本地草稿。',
     replaces: '领任务靠记忆、卡住后无限试错、收尾时把局部测试写成整体完成。',
     goodAt: '虚构干跑能稳定产出可证伪判据、带后果的假设、截止点和逐条结账，不需要安装运行时。',
-    badAt: '真实两周、至少十个任务、无人提醒仍会主动使用的判据尚未完成；当前不能称为已验证习惯。',
+    badAt: '真实工作里一次也没被拿起来过。入职后遇到的任务不需要那四张入口卡，随它摆渡过去的私人运行记忆 log/ 同样零使用，已被工作机上另一套记录目录取代。它不是没跑通，是不需要——虚构干跑时看着有用的形状，在真实工作流里没有对应的空缺。弃用原因清楚，这一点与 Superpowers 相反。',
     boundary: '只处理脱敏概述并生成草稿，不接收真实工作代码、日志、密钥或可定位业务与个人的数据，也不替代团队 review、CI 和合并权限。',
     tags: ['Self-built', 'Work', 'Privacy', 'Closeout'],
-    installNote: '私人本地唯一源码通过用户级目录联接加载；尚无公开安装地址。',
+    installNote: '源码在独立仓库维护：https://github.com/Andrew-JX/tooluse；用户级目录联接仍指向该位置，未移除，所以是冻结而不是已卸载。',
   },
   {
     id: 'superpowers',
