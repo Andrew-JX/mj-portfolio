@@ -106,7 +106,7 @@ export const flowNodes: FlowNode[] = [
     title: 'CI 门',
     oneLiner: '自动化在独立于执行窗口的固定环境运行时，是非参与者见证；只有 required check、分支保护、受控状态来源和不可绕过规则同时成立时，它才是合并门。',
     skipWhen: '仓库没有 CI 时可以明确记为空门，但不能把本地命令写成 CI 证据。是否先补门，按任务风险决定。',
-    toolIds: ['playwright', 'vitest', 'stryker'],
+    toolIds: ['playwright', 'vitest'],
     pitfall: '见证和门是两个性质：远端跑过不代表阻塞合并，required check 也可能被跳过或由错误来源置绿。FitMind、family-finance 和本站当前都没有这两层；family-finance 甚至在开工合同里把「CI 文件数 0」作为摸底事实固定下来，所以这里只能如实显示空门，不能借“CI”两个字加码证据。',
   },
   {

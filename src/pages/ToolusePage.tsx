@@ -1,6 +1,9 @@
 import DeliveryFlow from '@/components/DeliveryFlow'
 import { flowNodes } from '@/data/deliveryFlow.zh'
 import {
+  candidateActivitySnapshot,
+  lastChecked,
+  toolCandidates,
   toolCategories,
   toolKindLabels,
   toolShares,
@@ -10,18 +13,9 @@ import {
 } from '@/data/toolShares.zh'
 
 const statusClassNames: Record<ToolStatus, string> = {
-  正在使用: 'tooluse-status-active',
-  试用后保留: 'tooluse-status-kept',
-  试用中: 'tooluse-status-trial',
-  冻结: 'tooluse-status-frozen',
-  已卸载: 'tooluse-status-removed',
-  尚未实测: 'tooluse-status-unverified',
+  在用: 'tooluse-status-active',
+  放弃: 'tooluse-status-removed',
 }
-
-const latestChecked = toolShares.reduce(
-  (latest, tool) => (tool.lastChecked > latest ? tool.lastChecked : latest),
-  toolShares[0]?.lastChecked ?? '',
-)
 
 const kindOrder: ToolKind[] = ['tool', 'skill', 'method']
 const toolIndexById = new Map(toolShares.map((tool, index) => [tool.id, index]))
@@ -41,7 +35,14 @@ function ToolRow({ tool }: { tool: ToolShare }) {
 
   return (
     <details id={tool.id} className="tooluse-row">
-      <summary className="tooluse-row-summary">
+      <summary
+        className="tooluse-row-summary"
+        onKeyDown={(event) => {
+          if (event.key !== 'Enter' || event.target !== event.currentTarget) return
+          event.preventDefault()
+          event.currentTarget.parentElement?.toggleAttribute('open')
+        }}
+      >
         <span className="tooluse-row-number">{String(index + 1).padStart(2, '0')}</span>
 
         <span className="tooluse-row-identity">
@@ -61,7 +62,6 @@ function ToolRow({ tool }: { tool: ToolShare }) {
         <span className="tooluse-row-meta">
           <span><b>用在</b>{tool.usedIn}</span>
           <span><b>侵入性</b>{tool.intrusion}</span>
-          <span><b>核对</b>{tool.lastChecked}</span>
         </span>
 
         <span className="tooluse-row-toggle" aria-hidden="true">+</span>
@@ -101,7 +101,7 @@ export default function ToolusePage() {
     <div className="tooluse-page space-y-10">
       <header className="tooluse-position">
         <div className="section-title">Tooluse / 工具分享</div>
-        <p>没实测过的会明确标出来，我不写没用过的使用感受。</p>
+        <p>主清单只放用过的工具；没用过的单列候选，不写使用感受。</p>
       </header>
 
       <section className="tooluse-library" aria-labelledby="tool-list-title">
@@ -110,7 +110,7 @@ export default function ToolusePage() {
             <div className="section-title">Tool list</div>
             <h2 id="tool-list-title">工具清单</h2>
           </div>
-          <span className="tooluse-list-count">{toolShares.length} 项 · 最近核对 {latestChecked}</span>
+          <span className="tooluse-list-count">{toolShares.length} 项 · 最近核对 {lastChecked}</span>
         </div>
 
         <div className="tooluse-groups">
@@ -134,6 +134,74 @@ export default function ToolusePage() {
               </section>
             )
           })}
+        </div>
+      </section>
+
+      <section className="tooluse-candidates" aria-labelledby="tool-candidate-title">
+        <div className="tooluse-section-heading">
+          <div>
+            <div className="section-title">Watch list</div>
+            <h2 id="tool-candidate-title">候选</h2>
+          </div>
+          <p>没用过，所以不评价。</p>
+        </div>
+
+        <table className="tooluse-data-table" aria-label="工具候选清单">
+          <thead>
+            <tr>
+              <th scope="col">名字</th>
+              <th scope="col">自称干什么</th>
+              <th scope="col">侵入</th>
+              <th scope="col">已知顾虑</th>
+              <th scope="col">链接</th>
+            </tr>
+          </thead>
+          <tbody>
+            {toolCandidates.map((candidate) => (
+              <tr key={candidate.id}>
+                <th scope="row" data-label="名字">{candidate.name}</th>
+                <td data-label="自称干什么">{candidate.claim}</td>
+                <td data-label="侵入"><span className="tooluse-intrusion">{candidate.intrusion}</span></td>
+                <td data-label="已知顾虑">{candidate.concern}</td>
+                <td data-label="链接">
+                  <a href={candidate.url} target="_blank" rel="noreferrer" aria-label={`打开 ${candidate.name} 项目页面`}>
+                    查看
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="tooluse-snapshot">
+          <div className="tooluse-snapshot-heading">
+            <div>
+              <span>Activity snapshot</span>
+              <h3>活跃度快照</h3>
+            </div>
+            <p>{candidateActivitySnapshot.checkedOn} · 快照，不逐条维护</p>
+          </div>
+
+          <table className="tooluse-data-table tooluse-snapshot-table" aria-label={`候选活跃度快照，核对日期 ${candidateActivitySnapshot.checkedOn}`}>
+            <thead>
+              <tr>
+                <th scope="col">项目</th>
+                <th scope="col">★</th>
+                <th scope="col">近 30 天提交</th>
+                <th scope="col">建仓</th>
+              </tr>
+            </thead>
+            <tbody>
+              {candidateActivitySnapshot.rows.map((row) => (
+                <tr key={row.project}>
+                  <th scope="row" data-label="项目">{row.project}</th>
+                  <td data-label="★">{row.stars}</td>
+                  <td data-label="近 30 天提交">{row.commitsLast30Days}</td>
+                  <td data-label="建仓">{row.createdOn}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
