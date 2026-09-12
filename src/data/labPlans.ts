@@ -13,14 +13,15 @@ export type LabPlan = {
 
 export const labPlans: LabPlan[] = [
   {
-    title: '生命科学证据审查工作台',
-    stage: 'Concept',
-    summary: '计划探索一个面向药物研发与转化研究的垂直 AI 应用，基于公开论文和临床试验数据，把检索、证据抽取、结构化对照与多角色复核组织成可追溯流程。',
-    tags: ['Life Sciences AI', 'RAG', 'Multi-Agent', 'Evidence Review'],
+    title: 'family-finance',
+    stage: 'In Progress',
+    summary:
+      '面向家庭记账与债务管理的全栈应用，用 Taro 让同一套客户端代码同时产出 H5 与微信小程序两端。范围仍在推进中，还没有收敛到最终形态。',
+    tags: ['Taro', 'H5', 'WeChat Mini Program', 'MySQL'],
     bullets: [
-      '围绕文献检索与证据抽取、靶点—适应症证据表和结论反向引用构建核心工作台。',
-      '由 Scientist Agent 起草、Reviewer Agent 复核科学依据、Supervisor 检查流程完整性，最后由专家批准。',
-      '规划采用 Next.js、FastAPI、PostgreSQL 与 RAG / Agent；AI 提升处理效率，但不替代科学判断。',
+      '围绕记账与债务两类真实使用场景搭建功能，同时维护 H5 与微信小程序双端产物。',
+      '代码按 contracts、domain、miniapp 三层组织，用 Vitest 覆盖单元与组件测试，用 Docker Compose 拉起真实 MySQL 做集成测试。',
+      '记账、债务操作等关键路径已用 Playwright 做真实浏览器验证；目前已完成多个开发批次，仍在迭代中。',
     ],
   },
 ]

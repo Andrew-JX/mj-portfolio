@@ -75,8 +75,8 @@ const narrativeSections = [
     kicker: 'Lab direction',
     title: '现在的 Lab 方向',
     paragraphs: [
-      '生命科学证据审查工作台：基于公开论文与临床试验数据，探索证据抽取、靶点—适应症证据表、原文反向引用和多 Agent 审核。',
-      'Lab 只保存 Concept / Planning；已完成、正在交付或已有公开链接的内容统一归入 Projects。',
+      'family-finance：面向家庭记账与债务管理的全栈应用，用 Taro 同时产出 H5 与微信小程序两端，范围仍在推进中，还没有收敛到最终形态。',
+      'Lab 记录尚在探索和迭代中的方向；Projects 展示已有明确成果的项目。',
     ],
   },
 ]
@@ -163,8 +163,12 @@ function ScrollRevealText({ children }: { children: string }) {
 
 export default function AboutPage() {
   const pageRef = useRef<HTMLDivElement | null>(null)
+  const splashRef = useRef<HTMLElement | null>(null)
+  const lanyardLayerRef = useRef<HTMLDivElement | null>(null)
   const [displayText, setDisplayText] = useState('')
   const [introVisible, setIntroVisible] = useState(false)
+  const [heroStarted, setHeroStarted] = useState(false)
+  const [lanyardRevealed, setLanyardRevealed] = useState(false)
   const [showDesktopLanyard, setShowDesktopLanyard] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
   const typingStateRef = useRef({ roleIdx: 0, displayText: '', isDeleting: false })
   const pressurePointerRef = useRef({ active: false, x: 0, y: 0 })
@@ -492,6 +496,52 @@ export default function AboutPage() {
     pressurePointerRef.current.active = false
   }
 
+  const handleStartClick = () => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const splash = splashRef.current
+
+    document.getElementById('about-core')?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' })
+
+    if (reducedMotion || !splash) {
+      setHeroStarted(true)
+      return
+    }
+
+    splash.style.pointerEvents = 'none'
+    gsap.to(splash, {
+      autoAlpha: 0,
+      duration: 0.5,
+      ease: 'power2.out',
+      onComplete: () => setHeroStarted(true),
+    })
+  }
+
+  const handleLanyardToggle = () => {
+    if (lanyardRevealed) {
+      const layer = lanyardLayerRef.current
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      if (reducedMotion || !layer) {
+        setLanyardRevealed(false)
+        return
+      }
+
+      gsap.killTweensOf(layer)
+      gsap.to(layer, {
+        autoAlpha: 0,
+        duration: 0.32,
+        ease: 'power2.in',
+        onComplete: () => {
+          gsap.set(layer, { clearProps: 'opacity,visibility' })
+          setLanyardRevealed(false)
+        },
+      })
+      return
+    }
+
+    setLanyardRevealed(true)
+  }
+
   return (
     <div ref={pageRef} className="space-y-10 lg:space-y-14">
       <div aria-hidden="true" data-intro-overlay className={`hero-intro-overlay ${!introVisible ? 'hero-intro-overlay-hidden' : ''}`}>
@@ -503,27 +553,54 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <section className="about-start-page" aria-label="Portfolio start">
-        <BallpitBackground count={58} />
-        <div className="about-start-content">
-          <div className="eyebrow-pill">
-            <span className="dot-live" />
-            <span>AI Application / Full-stack / Product</span>
+      {!heroStarted && (
+        <section ref={splashRef} className="about-start-page" aria-label="Portfolio start">
+          <BallpitBackground count={58} />
+          <div className="about-start-content">
+            <div className="eyebrow-pill">
+              <span className="dot-live" />
+              <span>AI Application / Full-stack / Product</span>
+            </div>
+            <div className="about-start-title">
+              <span>MINYU</span>
+              <span>JI</span>
+            </div>
+            <p>Building practical AI products with thoughtful interfaces, reliable systems, and product judgment.</p>
+            <button className="button-primary" type="button" onClick={handleStartClick}>
+              Start
+            </button>
           </div>
-          <div className="about-start-title">
-            <span>MINYU</span>
-            <span>JI</span>
-          </div>
-          <p>Building practical AI products with thoughtful interfaces, reliable systems, and product judgment.</p>
-          <button
-            className="button-primary"
-            type="button"
-            onClick={() => document.getElementById('about-core')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-          >
-            Start
-          </button>
+        </section>
+      )}
+
+      {showDesktopLanyard && (
+        <button
+          type="button"
+          className={`hero-lanyard-trigger ${lanyardRevealed ? 'hero-lanyard-trigger-open' : ''}`}
+          aria-label={lanyardRevealed ? '收起挂件' : '展开挂件'}
+          aria-expanded={lanyardRevealed}
+          onClick={handleLanyardToggle}
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" className="hero-lanyard-trigger-icon">
+            <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      )}
+
+      {showDesktopLanyard && lanyardRevealed && (
+        <div ref={lanyardLayerRef} className="hero-lanyard-layer">
+          <Suspense fallback={null}>
+            <Lanyard
+              position={[0, 0, 24]}
+              gravity={[0, -40, 0]}
+              frontImage={publicAsset('lanyard-card-front.svg?v=2')}
+              frontPortraitImage={publicAsset('profile-photo.jpg')}
+              backImage={publicAsset('lanyard-card-back.svg')}
+              imageFit="cover"
+            />
+          </Suspense>
         </div>
-      </section>
+      )}
 
       <section id="about-core" data-hero-card-shell className="hero-mast">
         <div data-hero-card-content className="hero-card-content">
@@ -564,7 +641,6 @@ export default function AboutPage() {
 
               <div className="flex flex-wrap gap-3">
                 <Link className="button-primary" to="/projects">View Selected Works</Link>
-                <Link className="button-secondary" to="/resume">Resume / 简历</Link>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-3">
@@ -578,27 +654,11 @@ export default function AboutPage() {
             </div>
 
             <div className="hero-side">
-              <div className="hero-lanyard-layer">
-                {showDesktopLanyard ? (
-                  <Suspense fallback={null}>
-                    <Lanyard
-                      position={[0, 0, 24]}
-                      gravity={[0, -40, 0]}
-                      frontImage={publicAsset('lanyard-card-front.svg?v=2')}
-                      frontPortraitImage={publicAsset('profile-photo.jpg')}
-                      backImage={publicAsset('lanyard-card-back.svg')}
-                      imageFit="cover"
-                    />
-                  </Suspense>
-                ) : null}
-              </div>
-              <div className="hero-lanyard-spacer" aria-hidden="true" />
               <div className="hero-side-caption border-glow-card">
                 <span className="index-badge">个人信息 / Profile</span>
                 <div className="hero-info-list">
                   <div><span className="hero-info-label">教育</span>Master of IT（2025.03 - 2026.10）</div>
                   <div><span className="hero-info-label">本科</span>南京信息工程大学 · 软件工程（2020.9 - 2024.7）</div>
-                  <div><span className="hero-info-label">英语</span>CET-6 · 雅思 6.5</div>
                   <div><span className="hero-info-label">方向</span>AI 应用开发 / AI 全栈 / AI 解决方案</div>
                   <div>
                     <span className="hero-info-label">邮箱</span>

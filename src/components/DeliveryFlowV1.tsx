@@ -76,7 +76,7 @@ function FlowDetail({ node, onToolSelect, variant }: FlowDetailProps) {
   )
 }
 
-export default function DeliveryFlow() {
+export default function DeliveryFlowV1() {
   const [searchParams, setSearchParams] = useSearchParams()
   const requestedStep = searchParams.get('step')
   const selectedNode = flowNodes.find((node) => node.id === requestedStep) ?? flowNodes[0]
@@ -98,8 +98,7 @@ export default function DeliveryFlow() {
   }
 
   return (
-    <section className="section-shell delivery-flow" aria-labelledby="delivery-flow-title">
-      <div className="section-title">Delivery workflow / 交付工作流</div>
+    <div className="delivery-flow-version delivery-flow-version-v1">
       <div className="tooluse-section-heading delivery-flow-heading">
         <h2 id="delivery-flow-title">从接到活，到发布反馈回流</h2>
         <p>十一节点，先继承项目协议再按风险加码；返工、停止和发布回流都有明确去向。</p>
@@ -206,6 +205,6 @@ export default function DeliveryFlow() {
 
         <FlowDetail node={selectedNode} onToolSelect={selectTool} variant="desktop" />
       </div>
-    </section>
+    </div>
   )
 }

@@ -34,9 +34,6 @@ export default function App() {
                 <div className={`font-semibold tracking-[0.08em] ${isDark ? 'text-white' : 'text-stone-950'}`}>
                   Minyu Ji / 吉敏宇
                 </div>
-                <div className={`text-xs tracking-[0.14em] ${isDark ? 'text-stone-400' : 'text-stone-500'}`}>
-                  AI 应用开发 / AI 全栈 / AI 产品
-                </div>
               </div>
             </div>
 
