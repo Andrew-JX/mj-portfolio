@@ -4,9 +4,8 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import ProjectPreviewFrame from '@/components/ProjectPreviewFrame'
 import TargetCursor from '@/components/TargetCursor'
-import { projects } from '@/data/projects'
+import { getProjectLinks, projects } from '@/data/projects'
 import { getProjectMedia } from '@/data/projectMedia'
-import type { ProjectLinkEntry, ProjectLinkKey } from '@/types'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -47,22 +46,6 @@ const categories: ProjectCategory[] = [
   },
 ]
 
-const linkLabels: Record<ProjectLinkKey, string> = {
-  live: 'Live',
-  repo: 'Repo',
-  doc: 'Doc',
-  video: 'Video',
-}
-
-function getProjectLinks(project: ProjectItem): ProjectLinkEntry[] {
-  const primaryLinks = Object.entries(project.links).map(([key, url]) => ({
-    label: linkLabels[key as ProjectLinkKey],
-    url,
-  }))
-
-  return [...primaryLinks, ...(project.extraLinks ?? [])]
-}
-
 export default function ProjectsPage() {
   const pageRef = useRef<HTMLDivElement | null>(null)
   const [q, setQ] = useState('')
@@ -83,6 +66,10 @@ export default function ProjectsPage() {
       return matchesKeyword && activeCategory.matches(project)
     })
   }, [q, selectedCategory])
+
+  // 动画绑定在卡片 DOM 上，筛选集合变化时必须重建；用 slug 签名而不是数量，
+  // 避免「3 张换 3 张」时新卡片拿不到入场动画和指针交互。
+  const cardSignature = filtered.map((project) => project.slug).join('|')
 
   useEffect(() => {
     const root = pageRef.current
@@ -143,7 +130,7 @@ export default function ProjectsPage() {
       context.revert()
       motionCleanups.splice(0).forEach((fn) => fn())
     }
-  }, [filtered.length])
+  }, [cardSignature])
 
   return (
     <div ref={pageRef} className="space-y-8 lg:space-y-10">

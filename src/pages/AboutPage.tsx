@@ -3,7 +3,9 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import BallpitBackground from '@/components/BallpitBackground'
+
+// 3D 背景连同 three/rapier 一起拆成异步 chunk：splash 界面不等地先画出来。
+const BallpitBackground = lazy(() => import('@/components/BallpitBackground'))
 
 const Lanyard = lazy(() => import('@/components/Lanyard'))
 
@@ -555,7 +557,9 @@ export default function AboutPage() {
 
       {!heroStarted && (
         <section ref={splashRef} className="about-start-page" aria-label="Portfolio start">
-          <BallpitBackground count={58} />
+          <Suspense fallback={null}>
+            <BallpitBackground count={58} />
+          </Suspense>
           <div className="about-start-content">
             <div className="eyebrow-pill">
               <span className="dot-live" />

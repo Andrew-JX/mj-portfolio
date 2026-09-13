@@ -8,10 +8,13 @@ type ToolShareWithRoutes = ToolShare & {
   routes?: readonly string[]
 }
 
-export const toolKindOrderV2: ToolKind[] = ['tool', 'skill']
+export type { ToolShareWithRoutes }
+
+// v2 清单里没有任何 kind: 'tool' 的条目（grill-me 已归入 skill），
+// 只保留实际会渲染的 Skill 分组。
+export const toolKindOrderV2: ToolKind[] = ['skill']
 
 export const toolKindLabelsV2: Partial<Record<ToolKind, { title: string; description: string }>> = {
-  tool: { title: '工具', description: '第三方工具、框架与基础设施。' },
   skill: { title: 'Skill', description: '可安装的执行规则；自建与第三方按作者归属区分。' },
 }
 

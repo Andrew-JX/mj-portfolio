@@ -31,6 +31,7 @@ export default function AppRoutes() {
           <Route path="/skills" element={<Navigate to="/lab" replace />} />
           <Route path="/tooluse" element={<ToolusePage />} />
           <Route path="/resume" element={<ResumePage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
     </>

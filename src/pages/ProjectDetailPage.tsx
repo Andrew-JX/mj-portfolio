@@ -1,15 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import ProjectPreviewFrame from '@/components/ProjectPreviewFrame'
-import { projects } from '@/data/projects'
+import { getProjectLinks, projects } from '@/data/projects'
 import { getProjectMedia } from '@/data/projectMedia'
-import type { ProjectLinkEntry, ProjectLinkKey } from '@/types'
-
-const linkLabels: Record<ProjectLinkKey, string> = {
-  live: 'Live',
-  repo: 'Repo',
-  doc: 'Doc',
-  video: 'Video',
-}
 
 export default function ProjectDetailPage() {
   const { slug } = useParams()
@@ -19,10 +11,7 @@ export default function ProjectDetailPage() {
     return <div className="text-stone-300">Project not found.</div>
   }
 
-  const projectLinks: ProjectLinkEntry[] = [
-    ...Object.entries(project.links).map(([key, url]) => ({ label: linkLabels[key as ProjectLinkKey], url })),
-    ...(project.extraLinks ?? []),
-  ]
+  const projectLinks = getProjectLinks(project)
   const projectMedia = getProjectMedia(project.slug)
 
   return (

@@ -18,6 +18,7 @@ FROM nginx:1.27-alpine
 
 # 使用自定义 nginx 配置
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY nginx/security-headers.inc /etc/nginx/conf.d/security-headers.inc
 
 # 复制构建产物
 COPY --from=builder /app/dist /usr/share/nginx/html

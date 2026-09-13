@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from 'react'
 
+const THEME_STORAGE_KEY = 'theme'
+
 let isDark = true
 const listeners = new Set<() => void>()
 
@@ -21,6 +23,11 @@ function emit() {
 }
 
 if (typeof document !== 'undefined') {
+  try {
+    if (window.localStorage.getItem(THEME_STORAGE_KEY) === 'light') isDark = false
+  } catch {
+    // Storage can fail in private browsing; the page should still render.
+  }
   applyTheme()
 }
 
@@ -31,6 +38,11 @@ export function useTheme() {
     isDark: dark,
     toggle: () => {
       isDark = !isDark
+      try {
+        window.localStorage.setItem(THEME_STORAGE_KEY, isDark ? 'dark' : 'light')
+      } catch {
+        // 写失败只影响记忆，不影响本次切换。
+      }
       applyTheme()
       emit()
     },

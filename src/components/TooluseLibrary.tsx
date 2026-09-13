@@ -1,9 +1,9 @@
 import {
   toolCategories,
   type ToolKind,
-  type ToolShare,
   type ToolStatus,
 } from '@/data/toolShares.zh'
+import type { ToolShareWithRoutes } from '@/data/toolSharesV2.zh'
 
 const statusClassNames: Record<ToolStatus, string> = {
   在用: 'tooluse-status-active',
@@ -19,10 +19,6 @@ type WorkflowStep = {
   id: string
   order: number
   title: string
-}
-
-export type ToolShareWithRoutes = ToolShare & {
-  routes?: readonly string[]
 }
 
 type TooluseLibraryProps = {

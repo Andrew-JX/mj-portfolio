@@ -1,4 +1,20 @@
-import type { Project } from '@/types'
+import type { Project, ProjectLinkEntry, ProjectLinkKey } from '@/types'
+
+export const projectLinkLabels: Record<ProjectLinkKey, string> = {
+  live: 'Live',
+  repo: 'Repo',
+  doc: 'Doc',
+  video: 'Video',
+}
+
+export function getProjectLinks(project: Project): ProjectLinkEntry[] {
+  const primaryLinks = Object.entries(project.links).map(([key, url]) => ({
+    label: projectLinkLabels[key as ProjectLinkKey],
+    url,
+  }))
+
+  return [...primaryLinks, ...(project.extraLinks ?? [])]
+}
 
 export const projects: Project[] = [
   {
