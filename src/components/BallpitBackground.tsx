@@ -20,7 +20,7 @@ type BallSeed = {
   metalness: number
 }
 
-const COLORS = ['#fb923c', '#f59e0b', '#facc15', '#fed7aa', '#78716c', '#38bdf8']
+const COLORS = ['#df48b2', '#383638', '#a47898', '#e9b4d8', '#535153', '#c3c3c3']
 
 export default function BallpitBackground({ count = 34 }: BallpitBackgroundProps) {
   const [effectiveCount, setEffectiveCount] = useState(() => {
@@ -52,8 +52,8 @@ export default function BallpitBackground({ count = 34 }: BallpitBackgroundProps
         gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
       >
         <ambientLight intensity={1.2} />
-        <directionalLight position={[-5, 6, 8]} intensity={2.4} color="#fff7ed" />
-        <directionalLight position={[6, -3, 5]} intensity={0.95} color="#38bdf8" />
+        <directionalLight position={[-5, 6, 8]} intensity={2.4} color="#ffffff" />
+        <directionalLight position={[6, -3, 5]} intensity={0.95} color="#c3c3c3" />
         <Physics gravity={[0, -9.5, 0]} timeStep={1 / 45}>
           <BallpitScene count={effectiveCount} />
         </Physics>
@@ -92,7 +92,7 @@ function BallpitScene({ count }: Required<BallpitBackgroundProps>) {
         torque: [(Math.random() - 0.5) * 0.04, (Math.random() - 0.5) * 0.04, (Math.random() - 0.5) * 0.08],
         color,
         roughness: 0.34 + Math.random() * 0.28,
-        metalness: color === '#38bdf8' ? 0.35 : 0.18,
+        metalness: color === '#c3c3c3' ? 0.35 : 0.18,
       }
     })
   }, [bounds.halfHeight, bounds.halfWidth, count])
@@ -193,7 +193,7 @@ function BallpitScene({ count }: Required<BallpitBackgroundProps>) {
               roughness={ball.roughness}
               metalness={ball.metalness}
               emissive={ball.color}
-              emissiveIntensity={ball.color === '#38bdf8' ? 0.08 : 0.035}
+              emissiveIntensity={ball.color === '#c3c3c3' ? 0.08 : 0.035}
             />
           </mesh>
         </RigidBody>

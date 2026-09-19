@@ -34,11 +34,7 @@ export default function App() {
       window.removeEventListener('pointerdown', handlePointerDown)
     }
   }, [menuOpen])
-  const pageStyle = {
-    background: isDark
-      ? 'radial-gradient(circle at 16% 12%, rgba(249, 115, 22, 0.14), transparent 26%), radial-gradient(circle at 84% 20%, rgba(245, 158, 11, 0.1), transparent 24%), radial-gradient(circle at 50% 82%, rgba(217, 119, 6, 0.14), transparent 34%), linear-gradient(180deg, #110d0b 0%, #18110d 36%, #0d0a09 100%)'
-      : 'radial-gradient(circle at 18% 10%, rgba(251, 146, 60, 0.2), transparent 26%), radial-gradient(circle at 85% 18%, rgba(245, 158, 11, 0.14), transparent 24%), radial-gradient(circle at 48% 82%, rgba(249, 115, 22, 0.12), transparent 28%), linear-gradient(180deg, #fff8ef 0%, #fff1df 52%, #f7ead8 100%)',
-  }
+  const pageStyle = { background: 'var(--bg)' }
 
   return (
     <HashRouter>
