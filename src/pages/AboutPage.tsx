@@ -452,23 +452,46 @@ export default function AboutPage() {
             <div className="hero-side">
               <div className="hero-side-caption border-glow-card">
                 <span className="index-badge">个人信息 / Profile</span>
-                <div className="hero-info-list">
-                  <div><span className="hero-info-label">教育</span>Master of IT（2025.03 - 2026.10）</div>
-                  <div><span className="hero-info-label">本科</span>南京信息工程大学 · 软件工程（2020.9 - 2024.7）</div>
-                  <div><span className="hero-info-label">方向</span>AI 应用开发 / AI 全栈 / AI 解决方案</div>
-                  <div>
-                    <span className="hero-info-label">邮箱</span>
-                    <span className="text-white">JX15996596656@163.com / minyuj207@gmail.com</span>
+                <dl className="hero-info-list">
+                  <div className="hero-info-row">
+                    <dt className="hero-info-label">任职</dt>
+                    <dd className="hero-info-content">
+                      <div className="hero-info-position"><strong>DIP</strong><span>AI 工程师</span></div>
+                    </dd>
                   </div>
-                  <div>
-                    <span className="hero-info-label">GitHub</span>
-                    <a href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer">Andrew-JX</a>
+                  <div className="hero-info-row">
+                    <dt className="hero-info-label">教育</dt>
+                    <dd className="hero-info-content hero-education-list">
+                      <div className="hero-education-item">
+                        <span className="hero-info-meta">硕士 · 2025.03 — 2026.10</span>
+                        <span>Master of IT</span>
+                      </div>
+                      <div className="hero-education-item">
+                        <span className="hero-info-meta">本科 · 2020.09 — 2024.07</span>
+                        <span>南京信息工程大学</span>
+                        <span className="hero-info-secondary">软件工程</span>
+                      </div>
+                    </dd>
                   </div>
-                  <div>
-                    <span className="hero-info-label">Gitee</span>
-                    <a href="https://gitee.com/ji-minyu" target="_blank" rel="noreferrer">ji-minyu</a>
+                  <div className="hero-info-row">
+                    <dt className="hero-info-label">方向</dt>
+                    <dd className="hero-info-content">AI 应用开发 / AI 全栈 / AI 解决方案</dd>
                   </div>
-                </div>
+                  <div className="hero-info-row">
+                    <dt className="hero-info-label">邮箱</dt>
+                    <dd className="hero-info-content hero-info-emails">
+                      <a href="mailto:JX15996596656@163.com">JX15996596656@163.com</a>
+                      <a href="mailto:minyuj207@gmail.com">minyuj207@gmail.com</a>
+                    </dd>
+                  </div>
+                  <div className="hero-info-row">
+                    <dt className="hero-info-label">主页</dt>
+                    <dd className="hero-info-content hero-info-profiles">
+                      <a href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer"><span className="hero-info-meta">GitHub</span>Andrew-JX ↗</a>
+                      <a href="https://gitee.com/ji-minyu" target="_blank" rel="noreferrer"><span className="hero-info-meta">Gitee</span>ji-minyu ↗</a>
+                    </dd>
+                  </div>
+                </dl>
               </div>
             </div>
           </div>
