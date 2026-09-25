@@ -1,8 +1,42 @@
-import { useEffect, useRef, useState } from 'react'
-import { HashRouter, NavLink } from 'react-router-dom'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { HashRouter, NavLink, useLocation } from 'react-router-dom'
 import AppRoutes from '@/router'
 import TorchToggle from '@/components/TorchToggle'
 import { useTheme } from '@/composables/useTheme'
+import { INKROAD_REPLAY_EVENT, shouldPlayInkRoad } from '@/components/inkRoadVisit'
+
+// 首页开场的墨线公路放在页眉之前：它是整页的封面，驶完才进入站点本体。
+// 首次访问或在首页刷新时出现；离开首页后收起，“重看开场”可以再次挂上。
+const InkRoadIntro = lazy(() => import('@/components/InkRoadIntro'))
+
+function HomeIntro() {
+  const { pathname } = useLocation()
+  // 只看首次挂载那一刻：刷新或首次访问且落在首页时播放
+  const [show, setShow] = useState(() => shouldPlayInkRoad())
+  const showRef = useRef(show)
+  showRef.current = show
+
+  useEffect(() => {
+    if (pathname !== '/' && show) setShow(false)
+  }, [pathname, show])
+
+  useEffect(() => {
+    const onReplay = () => {
+      // 开场还挂着（首次访问中）就直接回到起点，否则重新挂上
+      if (showRef.current) window.scrollTo({ top: 0 })
+      else setShow(true)
+    }
+    window.addEventListener(INKROAD_REPLAY_EVENT, onReplay)
+    return () => window.removeEventListener(INKROAD_REPLAY_EVENT, onReplay)
+  }, [])
+
+  if (pathname !== '/' || !show) return null
+  return (
+    <Suspense fallback={<div className="inkroad inkroad-placeholder" aria-hidden="true" />}>
+      <InkRoadIntro />
+    </Suspense>
+  )
+}
 
 const NAV_LINKS = [
   { to: '/', label: 'About' },
@@ -46,6 +80,8 @@ export default function App() {
         </div>
 
         <div aria-hidden="true" className="grain-overlay" />
+
+        <HomeIntro />
 
         <header
           ref={headerRef}

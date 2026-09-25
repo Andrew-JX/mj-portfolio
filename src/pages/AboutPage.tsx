@@ -3,9 +3,9 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-// 3D 背景连同 three/rapier 一起拆成异步 chunk：splash 界面不等地先画出来。
-const BallpitBackground = lazy(() => import('@/components/BallpitBackground'))
+import { replayInkRoad } from '@/components/inkRoadVisit'
+import UnboxSection from '@/components/UnboxSection'
+import WorksStrip from '@/components/WorksStrip'
 
 const Lanyard = lazy(() => import('@/components/Lanyard'))
 
@@ -20,7 +20,6 @@ type CapabilityCard = {
   bullets: string[]
 }
 
-const ABOUT_INTRO_SESSION_KEY = 'about-hero-intro-played'
 const publicAsset = (path: string) => `${import.meta.env.BASE_URL}${path}`
 
 const capabilityCards: CapabilityCard[] = [
@@ -89,87 +88,10 @@ const pressureLines = [
   { text: '吉敏宇', accent: false, cn: true },
 ]
 
-function hasPlayedAboutIntro() {
-  try {
-    return window.sessionStorage.getItem(ABOUT_INTRO_SESSION_KEY) === '1'
-  } catch {
-    return true
-  }
-}
-
-function markAboutIntroPlayed() {
-  try {
-    window.sessionStorage.setItem(ABOUT_INTRO_SESSION_KEY, '1')
-  } catch {
-    // Storage can fail in private browsing; the page should still render.
-  }
-}
-
-function isReloadNavigation() {
-  const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
-  return navigationEntry?.type === 'reload'
-}
-
-function syncIntroLineToHeroCard(root: HTMLElement) {
-  const heroCard = root.querySelector<HTMLElement>('[data-hero-card-shell]')
-  const introLineWrap = root.querySelector<HTMLElement>('[data-intro-line-wrap]')
-
-  if (!heroCard || !introLineWrap) return
-
-  const rect = heroCard.getBoundingClientRect()
-  gsap.set(introLineWrap, {
-    left: rect.left + rect.width / 2,
-    top: rect.top + rect.height / 2,
-    xPercent: -50,
-    yPercent: -50,
-  })
-}
-
-function getHeroIntroScale(root: HTMLElement) {
-  const heroCard = root.querySelector<HTMLElement>('[data-hero-card-shell]')
-  const introLineWrap = root.querySelector<HTMLElement>('[data-intro-line-wrap]')
-
-  if (!heroCard || !introLineWrap) return 0.72
-
-  const heroWidth = heroCard.getBoundingClientRect().width
-  const lineWidth = introLineWrap.getBoundingClientRect().width
-
-  if (heroWidth <= 0 || lineWidth <= 0) return 0.72
-
-  return Math.min(Math.max(lineWidth / heroWidth, 0.12), 1)
-}
-
-function ScrollFloatTitle({ children }: { children: string }) {
-  return (
-    <h2 data-scroll-float className="scroll-float-title" aria-label={children}>
-      {Array.from(children).map((char, index) => (
-        <span key={`${children}-${index}`} data-scroll-float-char aria-hidden="true">
-          {char === ' ' ? '\u00a0' : char}
-        </span>
-      ))}
-    </h2>
-  )
-}
-
-function ScrollRevealText({ children }: { children: string }) {
-  return (
-    <p data-scroll-reveal className="scroll-reveal-text">
-      {children.split(/(\s+)/).map((part, index) => (
-        <span key={`${part}-${index}`} data-scroll-reveal-word>
-          {part}
-        </span>
-      ))}
-    </p>
-  )
-}
-
 export default function AboutPage() {
   const pageRef = useRef<HTMLDivElement | null>(null)
-  const splashRef = useRef<HTMLElement | null>(null)
   const lanyardLayerRef = useRef<HTMLDivElement | null>(null)
   const [displayText, setDisplayText] = useState('')
-  const [introVisible, setIntroVisible] = useState(false)
-  const [heroStarted, setHeroStarted] = useState(false)
   const [lanyardRevealed, setLanyardRevealed] = useState(false)
   const [showDesktopLanyard, setShowDesktopLanyard] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
   const typingStateRef = useRef({ roleIdx: 0, displayText: '', isDeleting: false })
@@ -224,9 +146,7 @@ export default function AboutPage() {
     if (!root) return undefined
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const shouldPlayIntro = !reducedMotion && (isReloadNavigation() || !hasPlayedAboutIntro())
     const motionCleanups: Array<() => void> = []
-    setIntroVisible(shouldPlayIntro)
 
     const setupPressureTitle = () => {
       if (reducedMotion) return
@@ -369,70 +289,24 @@ export default function AboutPage() {
     }
 
     const context = gsap.context(() => {
-      syncIntroLineToHeroCard(root)
-
-      const playHeroIntro = () => {
-        gsap
-          .timeline({ defaults: { ease: 'power3.out' } })
-          .from('[data-hero-copy]', { y: 28, opacity: 0, duration: 0.7 })
-          .from('[data-hero-metric]', { y: 18, opacity: 0, duration: 0.45, stagger: 0.08 }, '-=0.36')
-          .from('[data-hero-tag]', { scale: 0.9, opacity: 0, duration: 0.5, stagger: 0.08 }, '-=0.42')
-      }
-
       if (reducedMotion) {
         gsap.set('[data-hero-card-shell]', { clearProps: 'all' })
         gsap.set('[data-hero-card-content]', { clearProps: 'all' })
-        gsap.set('[data-hero-title-shell]', { clearProps: 'all' })
-        gsap.set('[data-intro-overlay]', { autoAlpha: 0 })
-      } else if (shouldPlayIntro) {
-        markAboutIntroPlayed()
-        const introScale = getHeroIntroScale(root)
-
-        gsap.set('[data-hero-card-shell]', {
-          opacity: 1,
-          y: 22,
-          rotateX: -89,
-          scaleX: introScale,
-          scaleY: introScale,
-          transformOrigin: '50% 50%',
-          transformPerspective: 2200,
-        })
-        gsap.set('[data-hero-card-content]', { opacity: 0 })
-        gsap.set('[data-intro-overlay]', { autoAlpha: 1 })
-        gsap.set('[data-intro-dot]', { autoAlpha: 0, scale: 0.18 })
-        gsap.set('[data-intro-line]', { scaleX: 0.02, transformOrigin: '50% 50%' })
-        gsap.set('[data-intro-line-wrap]', {
-          autoAlpha: 1,
-          rotateX: 0,
-          transformOrigin: '50% 50%',
-          transformPerspective: 2200,
-        })
-
-        gsap
-          .timeline({
-            defaults: { ease: 'power3.out' },
-            onComplete: () => {
-              setIntroVisible(false)
-              playHeroIntro()
-            },
-          })
-          .to('[data-intro-dot]', { autoAlpha: 1, scale: 1, duration: 0.24 })
-          .to('[data-intro-line]', { scaleX: 1, duration: 0.68, ease: 'power4.inOut' }, '-=0.02')
-          .to('[data-intro-overlay]', { autoAlpha: 0.62, duration: 0.34, ease: 'power1.out' }, '-=0.28')
-          .to('[data-intro-dot]', { autoAlpha: 0, duration: 0.14 }, '-=0.2')
-          .to('[data-intro-overlay]', { autoAlpha: 0, duration: 0.24, ease: 'power2.out' }, '+=0.02')
-          .to('[data-intro-line-wrap]', { rotateX: -89, autoAlpha: 0, duration: 0.42, ease: 'power2.in' }, '<')
-          .to('[data-hero-card-shell]', { y: 0, rotateX: 0, scaleX: 1, scaleY: 1, duration: 1, ease: 'power4.out' }, '-=0.18')
-          .to('[data-hero-card-content]', { opacity: 1, duration: 0.34, ease: 'power2.out' }, '-=0.56')
       } else {
-        gsap.set('[data-hero-card-shell]', { clearProps: 'all' })
-        gsap.set('[data-hero-card-content]', { clearProps: 'all' })
-        gsap.set('[data-hero-title-shell]', { clearProps: 'all' })
-        gsap.set('[data-intro-overlay]', { autoAlpha: 0 })
-        playHeroIntro()
+        // 首屏入场：底色从右下角椭圆展开，名字逐行从压扁状态弹回，随后文案与数据落下
+        const heroIntro = gsap
+          .timeline({ paused: true, onComplete: () => gsap.set('[data-hero-card-shell]', { clearProps: 'clipPath' }) })
+          .fromTo('[data-hero-card-shell]', { clipPath: 'ellipse(20% 0% at 100% 100%)' }, { clipPath: 'ellipse(150% 130% at 100% 100%)', duration: 1.1, ease: 'circ.out' }, 0)
+          .fromTo(
+            '[data-hero-word]',
+            { transformOrigin: 'top left', yPercent: -10, xPercent: 40, scaleY: 0.1, scaleX: 0.85, rotate: 8, opacity: 0 },
+            { yPercent: 0, xPercent: 0, scaleY: 1, scaleX: 1, rotate: 0, opacity: 1, duration: 1.2, ease: 'elastic.out(1, 0.72)', stagger: 0.09 },
+            0.15,
+          )
+          .fromTo('[data-hero-copy]', { y: '-0.75em', opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: 'expo.out' }, 0.55)
+          .fromTo('[data-hero-metric]', { y: '-0.75em', opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: 'expo.out', stagger: 0.07 }, 0.7)
+        ScrollTrigger.create({ trigger: '[data-hero-card-shell]', start: 'top 72%', once: true, onEnter: () => heroIntro.play() })
       }
-
-      const canUseNarrativeMotion = window.matchMedia('(min-width: 768px)').matches
 
       if (!reducedMotion) {
         gsap.to('[data-hero-line]', {
@@ -442,41 +316,7 @@ export default function AboutPage() {
           stagger: 0.04,
           scrollTrigger: { trigger: '.hero-mast', start: 'top top', end: 'bottom top', scrub: 1.1 },
         })
-        if (canUseNarrativeMotion) {
-          gsap.utils.toArray<HTMLElement>('[data-scroll-float]').forEach((title) => {
-            gsap.from(title.querySelectorAll('[data-scroll-float-char]'), {
-              opacity: 0,
-              yPercent: 120,
-              rotateX: -72,
-              rotateZ: () => gsap.utils.random(-8, 8),
-              transformOrigin: '50% 100%',
-              duration: 0.95,
-              ease: 'back.out(1.7)',
-              stagger: 0.025,
-              scrollTrigger: { trigger: title, start: 'top 82%', end: 'bottom 44%', scrub: 0.55 },
-            })
-          })
-
-          gsap.utils.toArray<HTMLElement>('[data-scroll-reveal]').forEach((paragraph) => {
-            gsap.fromTo(
-              paragraph.querySelectorAll('[data-scroll-reveal-word]'),
-              { opacity: 0.18, y: 18, filter: 'blur(8px)' },
-              {
-                opacity: 1,
-                y: 0,
-                filter: 'blur(0px)',
-                ease: 'none',
-                stagger: 0.018,
-                scrollTrigger: { trigger: paragraph, start: 'top 92%', end: 'top 56%', scrub: 0.45 },
-              },
-            )
-          })
-        }
       }
-
-      const handleResize = () => syncIntroLineToHeroCard(root)
-      window.addEventListener('resize', handleResize)
-      motionCleanups.push(() => window.removeEventListener('resize', handleResize))
 
       setupPressureTitle()
       setupCapabilityCarousel()
@@ -496,26 +336,6 @@ export default function AboutPage() {
 
   const resetPressure = () => {
     pressurePointerRef.current.active = false
-  }
-
-  const handleStartClick = () => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const splash = splashRef.current
-
-    document.getElementById('about-core')?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' })
-
-    if (reducedMotion || !splash) {
-      setHeroStarted(true)
-      return
-    }
-
-    splash.style.pointerEvents = 'none'
-    gsap.to(splash, {
-      autoAlpha: 0,
-      duration: 0.5,
-      ease: 'power2.out',
-      onComplete: () => setHeroStarted(true),
-    })
   }
 
   const handleLanyardToggle = () => {
@@ -546,37 +366,6 @@ export default function AboutPage() {
 
   return (
     <div ref={pageRef} className="space-y-10 lg:space-y-14">
-      <div aria-hidden="true" data-intro-overlay className={`hero-intro-overlay ${!introVisible ? 'hero-intro-overlay-hidden' : ''}`}>
-        <div className="hero-intro-stage">
-          <div data-intro-line-wrap className="hero-intro-line-wrap">
-            <span data-intro-line className="hero-intro-line" />
-            <span data-intro-dot className="hero-intro-dot" />
-          </div>
-        </div>
-      </div>
-
-      {!heroStarted && (
-        <section ref={splashRef} className="about-start-page" aria-label="Portfolio start">
-          <Suspense fallback={null}>
-            <BallpitBackground count={58} />
-          </Suspense>
-          <div className="about-start-content">
-            <div className="eyebrow-pill">
-              <span className="dot-live" />
-              <span>AI Application / Full-stack / Product</span>
-            </div>
-            <div className="about-start-title">
-              <span>MINYU</span>
-              <span>JI</span>
-            </div>
-            <p>Building practical AI products with thoughtful interfaces, reliable systems, and product judgment.</p>
-            <button className="button-primary" type="button" onClick={handleStartClick}>
-              Start
-            </button>
-          </div>
-        </section>
-      )}
-
       {showDesktopLanyard && (
         <button
           type="button"
@@ -619,11 +408,13 @@ export default function AboutPage() {
                         data-hero-line
                         className={`impact-line pressure-word ${line.accent ? 'impact-line-accent' : ''} ${line.cn ? 'impact-line-cn' : ''}`}
                       >
-                        {Array.from(line.text).map((char, index) => (
-                          <span key={`${line.text}-${index}`} data-pressure-char className="pressure-char">
-                            {char}
-                          </span>
-                        ))}
+                        <span data-hero-word className="hero-word">
+                          {Array.from(line.text).map((char, index) => (
+                            <span key={`${line.text}-${index}`} data-pressure-char className="pressure-char">
+                              {char}
+                            </span>
+                          ))}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -645,6 +436,7 @@ export default function AboutPage() {
 
               <div className="flex flex-wrap gap-3">
                 <Link className="button-primary" to="/projects">View Selected Works</Link>
+                <button className="button-secondary" type="button" onClick={replayInkRoad}>重看开场 ↺</button>
               </div>
 
               <div className="grid gap-3 sm:grid-cols-3">
@@ -683,6 +475,8 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <WorksStrip />
+
       <section data-rail-section className="capability-carousel-section">
         <div className="space-y-3">
           <div className="section-title">能力画像</div>
@@ -710,24 +504,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="narrative-section" aria-label="About narrative">
-        {narrativeSections.map((section) => (
-          <article key={section.title} className="narrative-block">
-            <div className="narrative-kicker">{section.kicker}</div>
-            <ScrollFloatTitle>{section.title}</ScrollFloatTitle>
-            <div className="narrative-copy">
-              {section.paragraphs.map((paragraph) => (
-                <ScrollRevealText key={paragraph}>{paragraph}</ScrollRevealText>
-              ))}
-            </div>
-          </article>
-        ))}
-        <div className="narrative-actions">
-          <Link className="button-primary" to="/lab">进入 Lab</Link>
-          <Link className="button-secondary" to="/projects">查看项目列表</Link>
-          <Link className="button-secondary" to="/tooluse">工具分享</Link>
-        </div>
-      </section>
+      <UnboxSection cards={narrativeSections} />
     </div>
   )
 }
