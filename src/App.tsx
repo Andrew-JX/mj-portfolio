@@ -83,6 +83,8 @@ export default function App() {
 
         <HomeIntro />
 
+        <div className="home-content-viewport">
+        <div className="home-content-face">
         <header
           ref={headerRef}
           className={`site-header sticky top-0 z-50 border-b backdrop-blur-xl transition-colors duration-500 ${
@@ -175,6 +177,9 @@ export default function App() {
             </div>
           </div>
         </footer>
+
+        </div>
+        </div>
 
         <TorchToggle />
       </div>

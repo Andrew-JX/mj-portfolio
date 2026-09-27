@@ -43,9 +43,6 @@ export default function UnboxSection({ cards }: { cards: UnboxCard[] }) {
 
       tl.fromTo(box, { y: 90, rotateX: -34, rotateY: -46, scale: 0.82 }, { y: 0, rotateX: -22, rotateY: -32, scale: 1, duration: 1.2, ease: 'power2.out' }, 0)
         .to(box, { rotateY: -14, duration: 8.8 }, 1.2)
-        .fromTo(section.querySelectorAll('[data-unbox-word]'),
-          { transformOrigin: 'top left', yPercent: -10, xPercent: 40, scaleY: 0.1, scaleX: 0.85, rotate: 8, opacity: 0 },
-          { yPercent: 0, xPercent: 0, scaleY: 1, scaleX: 1, rotate: 0, opacity: 1, duration: 0.9, ease: 'elastic.out(1, 0.72)', stagger: 0.12 }, 0)
         .to(flap('front'), { '--flap': '-226deg', duration: 1.1, ease: 'back.out(1.6)' }, 1.0)
         .to(flap('back'), { '--flap': '-226deg', duration: 1.1, ease: 'back.out(1.6)' }, 1.15)
         .to(flap('left'), { '--flap': '-206deg', duration: 1.0, ease: 'back.out(1.6)' }, 1.7)
@@ -86,7 +83,7 @@ export default function UnboxSection({ cards }: { cards: UnboxCard[] }) {
             <div className="unbox-panel" data-unbox-panel>
               <h2 className="display-subhead unbox-title" aria-label="Open the box.">
                 {'Open the box.'.split(' ').map((word, index) => (
-                  <span key={`${word}-${index}`} data-unbox-word aria-hidden="true">{word}</span>
+                  <span key={`${word}-${index}`} aria-hidden="true">{word}</span>
                 ))}
               </h2>
               <p className="unbox-lead">往下滚动，拆开我现在手上的事。</p>

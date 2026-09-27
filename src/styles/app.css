@@ -4562,6 +4562,53 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
   overflow: hidden;
 }
 
+.inkroad-face {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* 交接完成即移除透视与裁剪，让 sticky 页眉恢复原生行为。 */
+.home-cube-outgoing,
+.home-cube-incoming {
+  perspective: calc(var(--cube-height) * 3);
+  perspective-origin: 50% calc(var(--cube-height) / 2);
+  transform: translateY(var(--cube-offset));
+  overflow: visible;
+}
+
+.home-cube-incoming {
+  position: relative;
+  z-index: 3;
+}
+
+.home-cube-outgoing > .inkroad-face,
+.home-cube-incoming > .home-content-face {
+  position: relative;
+  transform-origin: 50% calc(var(--cube-height) / 2);
+  transform: translateZ(calc(-1 * var(--cube-depth) - var(--cube-retreat))) rotateX(var(--cube-angle)) translateZ(var(--cube-depth));
+  backface-visibility: hidden;
+  will-change: transform;
+  background: var(--bg);
+}
+
+.home-cube-incoming > .home-content-face {
+  clip-path: inset(0 0 max(0px, calc(100% - var(--cube-height))) 0);
+}
+
+.home-cube-outgoing > .inkroad-face::after,
+.home-cube-incoming > .home-content-face::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--cube-height);
+  z-index: 100;
+  pointer-events: none;
+  background: #000;
+  opacity: var(--cube-shade);
+}
+
 .inkroad-canvas,
 .inkroad-fallback {
   position: absolute;
@@ -4721,52 +4768,6 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
 .inkroad-speed-meta { display: grid; gap: 0.3rem; min-width: 8.5rem; }
 .inkroad-speed-meta strong { font-size: 0.66rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; }
 
-/* 章节标题：与首页 MINYU JI 同一套 Inter 紧字距 */
-.inkroad-title {
-  position: absolute;
-  top: 18%;
-  left: 50%;
-  width: min(90vw, 62rem);
-  transform: translateX(-50%);
-  display: grid;
-  justify-items: center;
-  gap: 0.55rem;
-  text-align: center;
-  color: var(--ink);
-}
-.inkroad-title::before {
-  content: '';
-  position: absolute;
-  inset: -16% 6%;
-  z-index: -1;
-  background: radial-gradient(closest-side, rgba(242, 237, 225, 0.78), rgba(242, 237, 225, 0));
-  filter: blur(8px);
-}
-.inkroad-title h2 {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  font-size: clamp(3rem, 7.6vw, 7rem);
-  font-weight: 500;
-  line-height: 0.9;
-  letter-spacing: -0.07em;
-}
-.inkroad-title h2 span { display: inline-block; margin: 0 0.12em; }
-.inkroad-title-kicker {
-  padding: 0.25rem 0.5rem;
-  background: var(--ink);
-  color: #f5f4f3;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-}
-.inkroad-title-tag { font-family: var(--font-mono); font-size: clamp(0.66rem, 1vw, 0.78rem); letter-spacing: 0.1em; text-transform: uppercase; }
-.inkroad[data-time='night'] .inkroad-title,
-.inkroad[data-time='dusk'] .inkroad-title { color: #f5f4f3; }
-.inkroad[data-time='night'] .inkroad-title::before,
-.inkroad[data-time='dusk'] .inkroad-title::before { background: radial-gradient(closest-side, rgba(20, 16, 44, 0.62), rgba(20, 16, 44, 0)); }
-.inkroad[data-time='night'] .inkroad-title-kicker,
-.inkroad[data-time='dusk'] .inkroad-title-kicker { background: var(--accent); color: #1e1e1e; }
-
 .inkroad-hint {
   position: absolute;
   left: 50%;
@@ -4794,39 +4795,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
   50% { transform: translate(-50%, 6px); }
 }
 
-.inkroad-board-card {
-  position: absolute;
-  top: calc(clamp(22px, 3vw, 38px) + 3.1rem);
-  right: clamp(22px, 3vw, 42px);
-  display: flex;
-  gap: 0.6rem;
-  align-items: center;
-  max-width: 17rem;
-  padding: 0.55rem 0.7rem;
-  color: var(--text);
-  text-decoration: none;
-  animation: inkroad-board-in 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
-  transition: transform 0.18s ease, border-color 0.18s ease;
-}
-.inkroad-board-card:hover { transform: translate(-2px, -2px); border-color: var(--accent); }
-.inkroad-board-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.inkroad-board-index { display: grid; flex: none; place-items: center; width: 1.8rem; height: 1.8rem; background: var(--accent); color: var(--bg); font-size: 0.7rem; }
-.inkroad-board-meta { display: grid; gap: 0.15rem; min-width: 0; }
-.inkroad-board-meta small { overflow: hidden; color: var(--muted); font-size: 0.52rem; letter-spacing: 0.1em; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
-.inkroad-board-meta strong { font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 500; letter-spacing: -0.03em; }
-.inkroad-board-cta { margin-left: auto; color: var(--accent); font-size: 0.58rem; letter-spacing: 0.06em; white-space: nowrap; }
-
-@keyframes inkroad-board-in {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: none; }
-}
-
 /* 入场动画结束前 HUD 隐藏；结束后四角像站点页眉一样落下 */
 .inkroad[data-entered='false'] .inkroad-corner,
 .inkroad[data-entered='false'] .inkroad-route,
-.inkroad[data-entered='false'] .inkroad-title,
-.inkroad[data-entered='false'] .inkroad-hint,
-.inkroad[data-entered='false'] .inkroad-board-card { visibility: hidden; }
+.inkroad[data-entered='false'] .inkroad-hint { visibility: hidden; }
 .inkroad[data-entered='true'] .inkroad-top-left,
 .inkroad[data-entered='true'] .inkroad-top-right { animation: inkroad-drop 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
 .inkroad[data-entered='true'] .inkroad-route,
@@ -4845,14 +4817,11 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
   .inkroad-bottom-right { left: 16px; right: 16px; bottom: 16px; justify-content: space-between; }
   .inkroad-speed-meta { grid-template-columns: auto auto; align-items: center; min-width: 0; }
   .inkroad-speed-meta strong { grid-column: 1 / -1; }
-  .inkroad-title { top: 25%; }
   .inkroad-hint { bottom: 196px; }
-  .inkroad-board-card { top: calc(clamp(22px, 3vw, 38px) + 6.2rem); left: auto; right: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .inkroad-hint,
-  .inkroad-board-card,
   .inkroad[data-entered='true'] .inkroad-corner,
   .inkroad[data-entered='true'] .inkroad-route { animation: none; }
 }
@@ -5081,4 +5050,42 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
   .unbox-year { font-size: 2.8rem; }
   .unbox-stamp { top: 2rem; font-size: 0.56rem; }
   .works-hint { display: none; }
+}
+
+/* About：完整阅读每章后，沿同一方向翻到下一面。 */
+.about-cube-page { --about-header-height: 88px; }
+.about-cube-section { position: relative; }
+.about-cube-face {
+  display: flow-root;
+  min-height: calc(100svh - var(--about-header-height));
+  padding-block: 2rem;
+  background: var(--bg);
+}
+.about-cube-face:has(> .hero-mast) { padding-top: 0; }
+.about-cube-turning {
+  position: relative;
+  z-index: 4;
+  perspective: calc(var(--cube-height) * 3);
+  perspective-origin: 50% var(--cube-origin);
+  transform: translateY(var(--cube-offset));
+}
+.about-cube-turning > .about-cube-face {
+  position: relative;
+  transform-origin: 50% var(--cube-origin);
+  transform: translateZ(calc(-1 * var(--cube-depth) - var(--cube-retreat))) rotateX(var(--cube-angle)) translateZ(var(--cube-depth));
+  backface-visibility: hidden;
+  will-change: transform;
+  clip-path: inset(var(--cube-crop-top) -50vw var(--cube-crop-bottom));
+}
+.about-cube-turning > .about-cube-face::after {
+  content: '';
+  position: absolute;
+  top: var(--cube-crop-top);
+  left: 0;
+  right: 0;
+  height: var(--cube-height);
+  background: #000;
+  opacity: var(--cube-shade);
+  pointer-events: none;
+  z-index: 100;
 }

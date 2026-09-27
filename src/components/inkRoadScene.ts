@@ -11,8 +11,6 @@ export type InkRoadFrame = {
   speed: number
   heading: number
   progress: number
-  // 前方最近的路边广告牌下标，没有时为 -1
-  billboard: number
 }
 
 export type InkRoadBillboardSpec = {
@@ -1247,7 +1245,16 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
   let tokenCount = 0
 
   // --- 路边广告牌：点击进入项目详情 ---
-  type Board = { slug: string; s: number; group: THREE.Group; face: THREE.Mesh }
+  type Board = {
+    slug: string
+    group: THREE.Group
+    face: THREE.Mesh
+    accent: THREE.Color
+    trim: THREE.MeshBasicMaterial
+    lamp: THREE.MeshBasicMaterial
+    glow: THREE.MeshBasicMaterial
+    wash: THREE.MeshBasicMaterial
+  }
   const boards: Board[] = []
   const boardCanvases: Array<{ canvas: HTMLCanvasElement; texture: THREE.CanvasTexture; spec: InkRoadBillboardSpec; index: number }> = []
   boardPlacements.forEach(({ spec, s }, index) => {
@@ -1292,10 +1299,53 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     const face = new THREE.Mesh(faceGeo, faceMat)
     face.position.z = 0.02
     for (const mesh of [frame, face]) mesh.frustumCulled = false
-    group.add(frame, face)
+    // 色边白天保持清楚；灯条、背光与牌面洗光随晨昏夜色渐亮。
+    const accent = new THREE.Color((BOARD_TONES[spec.tone] ?? BOARD_TONES.mono)[0])
+    const trimMat = withBend(new THREE.MeshBasicMaterial({ color: accent }))
+    const trimShape = new THREE.Shape()
+    const rectangle = (path: THREE.Path, w: number, h: number) => {
+      path.moveTo(-w / 2, -h / 2)
+      path.lineTo(w / 2, -h / 2)
+      path.lineTo(w / 2, h / 2)
+      path.lineTo(-w / 2, h / 2)
+      path.closePath()
+    }
+    rectangle(trimShape, W + 0.44, H + 0.44)
+    const cutout = new THREE.Path()
+    rectangle(cutout, W + 0.12, H + 0.12)
+    trimShape.holes.push(cutout)
+    const trimGeo = new THREE.ShapeGeometry(trimShape)
+    const trim = new THREE.Mesh(trimGeo, trimMat)
+    trim.position.z = 0.025
+
+    const lampMat = withBend(new THREE.MeshBasicMaterial({ color: '#fff4d6' }))
+    const lampGeo = new THREE.BoxGeometry(W * 0.56, 0.1, 0.34)
+    const lamp = new THREE.Mesh(lampGeo, lampMat)
+    lamp.position.set(0, H / 2 + 0.4, 0.48)
+
+    // 复用光晕纹理与弯折材质，不增加实时光源或阴影渲染。
+    const glowMat = withBend(new THREE.MeshBasicMaterial({
+      map: haloTex, color: accent, transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, depthWrite: false,
+    }))
+    const glowGeo = new THREE.PlaneGeometry(W * 1.5, H * 1.8)
+    const glow = new THREE.Mesh(glowGeo, glowMat)
+    glow.position.z = -0.5
+    const washMat = withBend(new THREE.MeshBasicMaterial({
+      map: haloTex, color: '#ffe3b0', transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, depthWrite: false,
+    }))
+    const washGeo = new THREE.PlaneGeometry(W * 0.95, H * 0.85)
+    const wash = new THREE.Mesh(washGeo, washMat)
+    wash.position.set(0, H * 0.12, 0.06)
+    for (const mesh of [trim, lamp, glow, wash]) mesh.frustumCulled = false
+    // 柔光不参与墨线法线通道，避免透明边缘被描成实心方框。
+    glow.layers.set(1)
+    wash.layers.set(1)
+    group.add(frame, face, trim, lamp, glow, wash)
     scene.add(group)
-    disposables.push(frameGeo, faceGeo, texture)
-    boards.push({ slug: spec.slug, s, group, face })
+    disposables.push(frameGeo, faceGeo, texture, trimGeo, lampGeo, glowGeo, washGeo)
+    boards.push({ slug: spec.slug, group, face, accent, trim: trimMat, lamp: lampMat, glow: glowMat, wash: washMat })
     boardCanvases.push({ canvas: canvas2d, texture, spec, index })
   })
   let fontsDisposed = false
@@ -1395,6 +1445,7 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     bulb: new THREE.Color(target.bulb),
   })
   let targetC = targetColors()
+  const boardLampColor = new THREE.Color('#fff2c9')
   const applyTime = (k: number) => {
     for (const key of Object.keys(targetC) as Array<keyof typeof targetC>) live[key].lerp(targetC[key], k)
     live.sunDir.lerp(new THREE.Vector3(...target.sunDir).normalize(), k)
@@ -1418,6 +1469,14 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     haloMat.uniforms.uColor.value.copy(live.bulb)
     haloMat.uniforms.uOpacity.value = live.halo
     halos.visible = live.halo > 0.01
+    boards.forEach((board) => {
+      board.trim.color.copy(board.accent).lerp(live.bulb, live.halo * 0.6)
+      board.lamp.color.set('#d7d0ba').lerp(boardLampColor, live.halo)
+      board.glow.color.copy(board.accent).lerp(live.bulb, 0.5)
+      board.glow.opacity = live.halo * 0.85
+      board.wash.color.set('#ffe9c6').lerp(live.sun, 0.25)
+      board.wash.opacity = live.halo * 0.2
+    })
     ;(scene.fog as THREE.Fog).color.copy(live.bottom)
   }
   applyTime(1)
@@ -1544,10 +1603,9 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
       const scale = board.group.scale.x + ((index === hoveredBoard ? 1.06 : 1) - board.group.scale.x) * (1 - Math.exp(-dt * 10))
       board.group.scale.setScalar(scale)
     })
-    const billboard = boards.findIndex((board) => board.s - state.carS > -6 && board.s - state.carS < 95)
 
     const heading = Math.atan2(f.tan.x, -f.tan.z)
-    options.onFrame?.({ speed: state.speed * 3.2, heading, progress: state.p, billboard })
+    options.onFrame?.({ speed: state.speed * 3.2, heading, progress: state.p })
   }
 
   const render = () => {

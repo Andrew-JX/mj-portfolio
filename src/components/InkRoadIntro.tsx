@@ -41,13 +41,12 @@ function chapterAt(progress: number) {
 export default function InkRoadIntro() {
   const sectionRef = useRef<HTMLElement | null>(null)
   const stageRef = useRef<HTMLDivElement | null>(null)
-  const titleRef = useRef<HTMLDivElement | null>(null)
+  const viewportRef = useRef<HTMLDivElement | null>(null)
   const speedRef = useRef<HTMLSpanElement | null>(null)
   const compassRef = useRef<HTMLSpanElement | null>(null)
   const fillRef = useRef<HTMLSpanElement | null>(null)
   const engineRef = useRef<InkRoadEngine | null>(null)
   const chapterRef = useRef(0)
-  const boardRef = useRef(-1)
   const navigate = useNavigate()
   const navigateRef = useRef(navigate)
   navigateRef.current = navigate
@@ -55,14 +54,13 @@ export default function InkRoadIntro() {
   const [chapter, setChapter] = useState(0)
   const [timeChoice, setTimeChoice] = useState<TimeChoice>('auto')
   const [cameraMode, setCameraMode] = useState<InkRoadCameraMode>('chase')
-  // 入场动画（色带扫屏 + MJ 弹出）结束前，HUD 和章节标题保持隐藏
+  // 入场动画（色带扫屏 + MJ 弹出）结束前，HUD 保持隐藏
   const [entered, setEntered] = useState(reducedMotion)
   const [loaderDone, setLoaderDone] = useState(reducedMotion)
   const loaderRef = useRef<HTMLDivElement | null>(null)
   const [tokens, setTokens] = useState({ count: 0, total: 0 })
   const [moved, setMoved] = useState(false)
   const [failed, setFailed] = useState(false)
-  const [nearBoard, setNearBoard] = useState(-1)
 
   const resolvedTime = timeChoice === 'auto' ? autoTime() : timeChoice
   const timeMeta = inkRoadTimes.find((item) => item.id === resolvedTime) ?? inkRoadTimes[1]
@@ -80,11 +78,7 @@ export default function InkRoadIntro() {
         chapterStarts: inkRoadChapters.map((item) => item.start),
         billboards: billboardSpecs,
         onBillboard: (slug) => navigateRef.current(`/projects/${slug}`),
-        onFrame: ({ speed, heading, progress, billboard }) => {
-          if (billboard !== boardRef.current) {
-            boardRef.current = billboard
-            setNearBoard(billboard)
-          }
+        onFrame: ({ speed, heading, progress }) => {
           if (speedRef.current) speedRef.current.textContent = String(Math.min(Math.round(speed), 199)).padStart(3, '0')
           if (compassRef.current) compassRef.current.style.transform = `rotate(${heading}rad)`
           if (fillRef.current) fillRef.current.style.transform = `scaleX(${Math.min(progress / 0.94, 1)})`
@@ -165,6 +159,62 @@ export default function InkRoadIntro() {
     }
   }, [reducedMotion])
 
+  // 两个真实页面共用同一段滚动距离，在交接处绕同一个立方体中心旋转。
+  useEffect(() => {
+    const section = sectionRef.current
+    const viewport = viewportRef.current
+    const content = section?.parentElement?.querySelector<HTMLElement>('.home-content-viewport')
+    if (!section || !viewport || !content) return undefined
+
+    const media = gsap.matchMedia()
+    media.add('(prefers-reduced-motion: no-preference)', () => {
+      const reset = () => {
+        viewport.classList.remove('home-cube-outgoing')
+        content.classList.remove('home-cube-incoming')
+        for (const element of [viewport, content]) {
+          for (const name of ['--cube-height', '--cube-depth', '--cube-retreat', '--cube-angle', '--cube-offset', '--cube-shade']) {
+            element.style.removeProperty(name)
+          }
+        }
+      }
+      const render = (progress: number) => {
+        if (progress <= 0 || progress >= 1) {
+          reset()
+          return
+        }
+        const height = viewport.offsetHeight
+        const angle = progress * 90
+        const retreat = Math.sin(progress * Math.PI) * height * 0.18
+        for (const element of [viewport, content]) {
+          element.style.setProperty('--cube-height', `${height}px`)
+          element.style.setProperty('--cube-depth', `${height / 2}px`)
+          element.style.setProperty('--cube-retreat', `${retreat}px`)
+        }
+        viewport.style.setProperty('--cube-angle', `${angle}deg`)
+        viewport.style.setProperty('--cube-offset', `${progress * height}px`)
+        viewport.style.setProperty('--cube-shade', `${progress * 0.55}`)
+        content.style.setProperty('--cube-angle', `${angle - 90}deg`)
+        content.style.setProperty('--cube-offset', `${-(1 - progress) * height}px`)
+        content.style.setProperty('--cube-shade', `${(1 - progress) * 0.55}`)
+        viewport.classList.add('home-cube-outgoing')
+        content.classList.add('home-cube-incoming')
+      }
+      const transition = ScrollTrigger.create({
+        trigger: section,
+        start: () => `bottom ${viewport.offsetHeight}px`,
+        end: 'bottom top',
+        onUpdate: (self) => render(self.progress),
+        onRefresh: (self) => render(self.progress),
+      })
+      render(transition.progress)
+      return () => {
+        transition.kill()
+        reset()
+      }
+    })
+    return () => media.revert()
+  }, [])
+
   useEffect(() => {
     engineRef.current?.setTime(resolvedTime)
   }, [resolvedTime])
@@ -191,26 +241,6 @@ export default function InkRoadIntro() {
     }
   }, [reducedMotion])
 
-  // 章节标题：逐词从压扁、倾斜的状态弹回原形
-  useEffect(() => {
-    const title = titleRef.current
-    if (!title || reducedMotion || !entered) return undefined
-    const tl = gsap.timeline()
-    tl.fromTo(
-      title.querySelectorAll('[data-ink-word]'),
-      { transformOrigin: 'top left', yPercent: -10, xPercent: 40, scaleY: 0.1, scaleX: 0.85, rotate: 8, opacity: 0 },
-      { yPercent: 0, xPercent: 0, scaleY: 1, scaleX: 1, rotate: 0, opacity: 1, duration: 1.1, ease: 'elastic.out(1, 0.72)', stagger: 0.07 },
-    ).fromTo(
-      title.querySelectorAll('[data-ink-fade]'),
-      { y: '-0.75em', opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.6, ease: 'expo.out', stagger: 0.08 },
-      0.15,
-    )
-    return () => {
-      tl.kill()
-    }
-  }, [chapter, entered, reducedMotion])
-
   const scrollToProgress = (progress: number) => {
     const section = sectionRef.current
     if (!section) return
@@ -226,7 +256,6 @@ export default function InkRoadIntro() {
 
 
   const current = inkRoadChapters[chapter]
-  const board = nearBoard >= 0 ? billboardSpecs[nearBoard] : null
 
   return (
     <section
@@ -245,7 +274,8 @@ export default function InkRoadIntro() {
         </div>
       )}
 
-      <div ref={stageRef} className="inkroad-stage">
+      <div ref={viewportRef} className="inkroad-stage">
+      <div ref={stageRef} className="inkroad-face">
         {failed && <div className="inkroad-fallback" aria-hidden="true" />}
 
         <p className="sr-only">
@@ -290,37 +320,12 @@ export default function InkRoadIntro() {
             ))}
           </nav>
 
-          <div ref={titleRef} key={current.id} className="inkroad-title" aria-live="polite">
-            <span data-ink-fade className="inkroad-title-kicker">
-              {String(chapter + 1).padStart(2, '0')} / {current.cn}
-            </span>
-            <h2 aria-label={current.title}>
-              {current.title.split(' ').map((word, index) => (
-                <span key={`${word}-${index}`} data-ink-word aria-hidden="true">
-                  {word}
-                </span>
-              ))}
-            </h2>
-            <span data-ink-fade className="inkroad-title-tag">{current.tagline}</span>
-          </div>
-
           {!moved && !reducedMotion && (
             <div className="inkroad-hint" aria-hidden="true">
               <span>Scroll to drive</span>
               <span>向下滚动开车</span>
               <i />
             </div>
-          )}
-
-          {board && (
-            <Link key={board.slug} to={`/projects/${board.slug}`} className="inkroad-board-card inkroad-card">
-              <span className="inkroad-board-index" aria-hidden="true">{String(nearBoard + 1).padStart(2, '0')}</span>
-              <span className="inkroad-board-meta">
-                <small>Roadside · {board.eyebrow}</small>
-                <strong>{board.name}</strong>
-              </span>
-              <span className="inkroad-board-cta">查看详情 →</span>
-            </Link>
           )}
 
           <div className="inkroad-route inkroad-card">
@@ -360,6 +365,7 @@ export default function InkRoadIntro() {
             </span>
           </div>
         </div>
+      </div>
       </div>
     </section>
   )

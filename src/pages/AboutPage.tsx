@@ -1,4 +1,4 @@
-import type { PointerEvent as ReactPointerEvent } from 'react'
+import type { PointerEvent as ReactPointerEvent, ReactNode } from 'react'
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
@@ -6,6 +6,17 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { replayInkRoad } from '@/components/inkRoadVisit'
 import UnboxSection from '@/components/UnboxSection'
 import WorksStrip from '@/components/WorksStrip'
+import { useAboutCube } from '@/composables/useAboutCube'
+
+function AboutFace({ children }: { children: ReactNode }) {
+  return (
+    <div data-about-cube-section className="about-cube-section">
+      <div className="about-cube-viewport">
+        <div className="about-cube-face">{children}</div>
+      </div>
+    </div>
+  )
+}
 
 const Lanyard = lazy(() => import('@/components/Lanyard'))
 
@@ -90,6 +101,7 @@ const pressureLines = [
 
 export default function AboutPage() {
   const pageRef = useRef<HTMLDivElement | null>(null)
+  useAboutCube(pageRef)
   const lanyardLayerRef = useRef<HTMLDivElement | null>(null)
   const [displayText, setDisplayText] = useState('')
   const [lanyardRevealed, setLanyardRevealed] = useState(false)
@@ -365,7 +377,7 @@ export default function AboutPage() {
   }
 
   return (
-    <div ref={pageRef} className="space-y-10 lg:space-y-14">
+    <div ref={pageRef} className="about-cube-page">
       {showDesktopLanyard && (
         <button
           type="button"
@@ -395,139 +407,146 @@ export default function AboutPage() {
         </div>
       )}
 
-      <section id="about-core" data-hero-card-shell className="hero-mast">
-        <div data-hero-card-content className="hero-card-content">
-          <div className="hero-grid">
-            <div className="space-y-7">
-              <div className="space-y-4">
-                <div data-hero-title-shell className="hero-title-shell" onPointerMove={handlePressureMove} onPointerLeave={resetPressure}>
-                  <div className="impact-stack pressure-title">
-                    {pressureLines.map((line) => (
-                      <div
-                        key={line.text}
-                        data-hero-line
-                        className={`impact-line pressure-word ${line.accent ? 'impact-line-accent' : ''} ${line.cn ? 'impact-line-cn' : ''}`}
-                      >
-                        <span data-hero-word className="hero-word">
-                          {Array.from(line.text).map((char, index) => (
-                            <span key={`${line.text}-${index}`} data-pressure-char className="pressure-char">
-                              {char}
-                            </span>
-                          ))}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div data-hero-copy className="hero-body space-y-4">
-                  <div className="text-2xl font-semibold sm:text-3xl">
-                    <span className="text-gradient-sky typing-cursor">{displayText}</span>
-                  </div>
-                  <p className="max-w-2xl">
-                    我目前的主线方向是 AI 应用开发、AI 全栈与 AI 解决方案。相比“把模型接上去”，
-                    我更关心如何把 AI 能力做成真实可用、可解释、可验证的产品体验，并把状态流、接口边界、数据建模和部署落地一起处理好。
-                  </p>
-                  <p className="max-w-xl text-[0.95rem] text-stone-300/78">
-                    我喜欢在产品、工程和 AI 之间来回穿梭，把模糊的想法整理成清晰的体验，再一步步做成可以真实使用、持续迭代的产品。
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <Link className="button-primary" to="/projects">View Selected Works</Link>
-                <button className="button-secondary" type="button" onClick={replayInkRoad}>重看开场 ↺</button>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-3">
-                {signalMetrics.map((item) => (
-                  <article key={item.label} data-hero-metric className="metric-card border-glow-card">
-                    <div className="metric-value">{item.value}</div>
-                    <div className="metric-label">{item.label}</div>
-                  </article>
-                ))}
-              </div>
-            </div>
-
-            <div className="hero-side">
-              <div className="hero-side-caption border-glow-card">
-                <span className="index-badge">个人信息 / Profile</span>
-                <dl className="hero-info-list">
-                  <div className="hero-info-row">
-                    <dt className="hero-info-label">任职</dt>
-                    <dd className="hero-info-content">
-                      <div className="hero-info-position"><strong>DIP</strong><span>AI 工程师</span></div>
-                    </dd>
-                  </div>
-                  <div className="hero-info-row">
-                    <dt className="hero-info-label">教育</dt>
-                    <dd className="hero-info-content hero-education-list">
-                      <div className="hero-education-item">
-                        <span className="hero-info-meta">硕士 · 2025.03 — 2026.10</span>
-                        <span>Master of IT</span>
-                      </div>
-                      <div className="hero-education-item">
-                        <span className="hero-info-meta">本科 · 2020.09 — 2024.07</span>
-                        <span>南京信息工程大学</span>
-                        <span className="hero-info-secondary">软件工程</span>
-                      </div>
-                    </dd>
-                  </div>
-                  <div className="hero-info-row">
-                    <dt className="hero-info-label">方向</dt>
-                    <dd className="hero-info-content">AI 应用开发 / AI 全栈 / AI 解决方案</dd>
-                  </div>
-                  <div className="hero-info-row">
-                    <dt className="hero-info-label">邮箱</dt>
-                    <dd className="hero-info-content hero-info-emails">
-                      <a href="mailto:JX15996596656@163.com">JX15996596656@163.com</a>
-                      <a href="mailto:minyuj207@gmail.com">minyuj207@gmail.com</a>
-                    </dd>
-                  </div>
-                  <div className="hero-info-row">
-                    <dt className="hero-info-label">主页</dt>
-                    <dd className="hero-info-content hero-info-profiles">
-                      <a href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer"><span className="hero-info-meta">GitHub</span>Andrew-JX ↗</a>
-                      <a href="https://gitee.com/ji-minyu" target="_blank" rel="noreferrer"><span className="hero-info-meta">Gitee</span>ji-minyu ↗</a>
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <WorksStrip />
-
-      <section data-rail-section className="capability-carousel-section">
-        <div className="space-y-3">
-          <div className="section-title">能力画像</div>
-          <h2 className="display-subhead max-w-3xl">What I focus on right now.</h2>
-        </div>
-
-        <div data-capability-stage className="capability-carousel-stage">
-          <div data-capability-track className="capability-carousel-track">
-            {capabilityCards.map((card) => (
-              <article key={card.id} data-capability-card className="capability-card">
-                <div className="rail-card-top">
-                  <span className="index-badge">{card.label}</span>
-                  <span className="rail-kicker">{card.kicker}</span>
-                </div>
+      <AboutFace>
+        <section id="about-core" data-hero-card-shell className="hero-mast">
+          <div data-hero-card-content className="hero-card-content">
+            <div className="hero-grid">
+              <div className="space-y-7">
                 <div className="space-y-4">
-                  <h3 className="rail-title">{card.title}</h3>
-                  <p className="rail-summary">{card.summary}</p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {card.bullets.map((bullet) => <span key={bullet} className="chip chip-citrus">{bullet}</span>)}
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+                  <div data-hero-title-shell className="hero-title-shell" onPointerMove={handlePressureMove} onPointerLeave={resetPressure}>
+                    <div className="impact-stack pressure-title">
+                      {pressureLines.map((line) => (
+                        <div
+                          key={line.text}
+                          data-hero-line
+                          className={`impact-line pressure-word ${line.accent ? 'impact-line-accent' : ''} ${line.cn ? 'impact-line-cn' : ''}`}
+                        >
+                          <span data-hero-word className="hero-word">
+                            {Array.from(line.text).map((char, index) => (
+                              <span key={`${line.text}-${index}`} data-pressure-char className="pressure-char">
+                                {char}
+                              </span>
+                            ))}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-      <UnboxSection cards={narrativeSections} />
+                  <div data-hero-copy className="hero-body space-y-4">
+                    <div className="text-2xl font-semibold sm:text-3xl">
+                      <span className="text-gradient-sky typing-cursor">{displayText}</span>
+                    </div>
+                    <p className="max-w-2xl">
+                      我目前的主线方向是 AI 应用开发、AI 全栈与 AI 解决方案。相比“把模型接上去”，
+                      我更关心如何把 AI 能力做成真实可用、可解释、可验证的产品体验，并把状态流、接口边界、数据建模和部署落地一起处理好。
+                    </p>
+                    <p className="max-w-xl text-[0.95rem] text-stone-300/78">
+                      我喜欢在产品、工程和 AI 之间来回穿梭，把模糊的想法整理成清晰的体验，再一步步做成可以真实使用、持续迭代的产品。
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <Link className="button-primary" to="/projects">View Selected Works</Link>
+                  <button className="button-secondary" type="button" onClick={replayInkRoad}>重看开场 ↺</button>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {signalMetrics.map((item) => (
+                    <article key={item.label} data-hero-metric className="metric-card border-glow-card">
+                      <div className="metric-value">{item.value}</div>
+                      <div className="metric-label">{item.label}</div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+
+              <div className="hero-side">
+                <div className="hero-side-caption border-glow-card">
+                  <span className="index-badge">个人信息 / Profile</span>
+                  <dl className="hero-info-list">
+                    <div className="hero-info-row">
+                      <dt className="hero-info-label">任职</dt>
+                      <dd className="hero-info-content">
+                        <div className="hero-info-position"><strong>DIP</strong><span>AI 工程师</span></div>
+                      </dd>
+                    </div>
+                    <div className="hero-info-row">
+                      <dt className="hero-info-label">教育</dt>
+                      <dd className="hero-info-content hero-education-list">
+                        <div className="hero-education-item">
+                          <span className="hero-info-meta">硕士 · 2025.03 — 2026.10</span>
+                          <span>Master of IT</span>
+                        </div>
+                        <div className="hero-education-item">
+                          <span className="hero-info-meta">本科 · 2020.09 — 2024.07</span>
+                          <span>南京信息工程大学</span>
+                          <span className="hero-info-secondary">软件工程</span>
+                        </div>
+                      </dd>
+                    </div>
+                    <div className="hero-info-row">
+                      <dt className="hero-info-label">方向</dt>
+                      <dd className="hero-info-content">AI 应用开发 / AI 全栈 / AI 解决方案</dd>
+                    </div>
+                    <div className="hero-info-row">
+                      <dt className="hero-info-label">邮箱</dt>
+                      <dd className="hero-info-content hero-info-emails">
+                        <a href="mailto:JX15996596656@163.com">JX15996596656@163.com</a>
+                        <a href="mailto:minyuj207@gmail.com">minyuj207@gmail.com</a>
+                      </dd>
+                    </div>
+                    <div className="hero-info-row">
+                      <dt className="hero-info-label">主页</dt>
+                      <dd className="hero-info-content hero-info-profiles">
+                        <a href="https://github.com/Andrew-JX/" target="_blank" rel="noreferrer"><span className="hero-info-meta">GitHub</span>Andrew-JX ↗</a>
+                        <a href="https://gitee.com/ji-minyu" target="_blank" rel="noreferrer"><span className="hero-info-meta">Gitee</span>ji-minyu ↗</a>
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </AboutFace>
+
+      <AboutFace><WorksStrip /></AboutFace>
+
+      <AboutFace>
+
+        <section data-rail-section className="capability-carousel-section">
+          <div className="space-y-3">
+            <div className="section-title">能力画像</div>
+            <h2 className="display-subhead max-w-3xl">What I focus on right now.</h2>
+          </div>
+
+          <div data-capability-stage className="capability-carousel-stage">
+            <div data-capability-track className="capability-carousel-track">
+              {capabilityCards.map((card) => (
+                <article key={card.id} data-capability-card className="capability-card">
+                  <div className="rail-card-top">
+                    <span className="index-badge">{card.label}</span>
+                    <span className="rail-kicker">{card.kicker}</span>
+                  </div>
+                  <div className="space-y-4">
+                    <h3 className="rail-title">{card.title}</h3>
+                    <p className="rail-summary">{card.summary}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {card.bullets.map((bullet) => <span key={bullet} className="chip chip-citrus">{bullet}</span>)}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+      </AboutFace>
+
+      <AboutFace><UnboxSection cards={narrativeSections} /></AboutFace>
     </div>
   )
 }
