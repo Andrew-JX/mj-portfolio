@@ -12,7 +12,9 @@ function AboutFace({ children }: { children: ReactNode }) {
   return (
     <div data-about-cube-section className="about-cube-section">
       <div className="about-cube-viewport">
-        <div className="about-cube-face">{children}</div>
+        <div className="about-cube-face">
+          <div className="about-cube-content">{children}</div>
+        </div>
       </div>
     </div>
   )

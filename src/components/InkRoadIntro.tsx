@@ -168,25 +168,38 @@ export default function InkRoadIntro() {
 
     const media = gsap.matchMedia()
     media.add('(prefers-reduced-motion: no-preference)', () => {
+      let viewportWidth = viewport.clientWidth
+      let viewportHeight = viewport.offsetHeight
+      let lastProgress = 0
       const reset = () => {
         viewport.classList.remove('home-cube-outgoing')
         content.classList.remove('home-cube-incoming')
         for (const element of [viewport, content]) {
-          for (const name of ['--cube-height', '--cube-depth', '--cube-retreat', '--cube-angle', '--cube-offset', '--cube-shade']) {
+          for (const name of ['--cube-height', '--cube-perspective', '--cube-depth', '--cube-retreat', '--cube-angle', '--cube-offset', '--cube-shade']) {
             element.style.removeProperty(name)
           }
         }
       }
-      const render = (progress: number) => {
+      const render = () => {
+        const height = viewport.offsetHeight
+        const resized = viewportWidth !== viewport.clientWidth || viewportHeight !== height
+        viewportWidth = viewport.clientWidth
+        viewportHeight = height
+        if (resized && lastProgress > 0 && lastProgress < 1) {
+          const bottom = section.getBoundingClientRect().bottom + window.scrollY
+          window.scrollTo({ top: bottom - height + lastProgress * height, behavior: 'instant' })
+        }
+        const progress = (height - section.getBoundingClientRect().bottom) / height
+        lastProgress = progress
         if (progress <= 0 || progress >= 1) {
           reset()
           return
         }
-        const height = viewport.offsetHeight
         const angle = progress * 90
         const retreat = Math.sin(progress * Math.PI) * height * 0.18
         for (const element of [viewport, content]) {
           element.style.setProperty('--cube-height', `${height}px`)
+          element.style.setProperty('--cube-perspective', `${Math.max(viewport.clientWidth, height) * 3}px`)
           element.style.setProperty('--cube-depth', `${height / 2}px`)
           element.style.setProperty('--cube-retreat', `${retreat}px`)
         }
@@ -203,11 +216,19 @@ export default function InkRoadIntro() {
         trigger: section,
         start: () => `bottom ${viewport.offsetHeight}px`,
         end: 'bottom top',
-        onUpdate: (self) => render(self.progress),
-        onRefresh: (self) => render(self.progress),
+        onUpdate: render,
+        onRefresh: render,
       })
-      render(transition.progress)
+      let resizeFrame = 0
+      const observer = new ResizeObserver(() => {
+        cancelAnimationFrame(resizeFrame)
+        resizeFrame = requestAnimationFrame(() => transition.refresh())
+      })
+      observer.observe(viewport)
+      render()
       return () => {
+        observer.disconnect()
+        cancelAnimationFrame(resizeFrame)
         transition.kill()
         reset()
       }

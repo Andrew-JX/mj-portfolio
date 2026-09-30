@@ -16,15 +16,30 @@ export function useAboutCube(pageRef: RefObject<HTMLDivElement | null>) {
     const measureHeader = () => {
       page.style.setProperty('--about-header-height', `${header.offsetHeight}px`)
     }
+    let renderCube = () => {}
+    let resizeFrame = 0
+    const refreshLayout = () => {
+      cancelAnimationFrame(resizeFrame)
+      resizeFrame = requestAnimationFrame(() => {
+        measureHeader()
+        renderCube()
+      })
+    }
     measureHeader()
-    const observer = new ResizeObserver(measureHeader)
+    const observer = new ResizeObserver(refreshLayout)
     observer.observe(header)
+    observer.observe(page)
+    window.addEventListener('resize', refreshLayout)
 
     const media = gsap.matchMedia()
     media.add('(prefers-reduced-motion: no-preference)', () => {
+      let viewportWidth = window.innerWidth
+      let viewportHeight = window.innerHeight
+      let headerHeight = header.offsetHeight
+      let activeTurn: { index: number; progress: number } | null = null
       const reset = (index: number) => {
         viewports[index].classList.remove('about-cube-turning')
-        for (const property of ['--cube-height', '--cube-depth', '--cube-retreat', '--cube-angle', '--cube-offset', '--cube-shade', '--cube-origin', '--cube-crop-top', '--cube-crop-bottom']) {
+        for (const property of ['--cube-height', '--cube-perspective', '--cube-depth', '--cube-retreat', '--cube-angle', '--cube-offset', '--cube-shade', '--cube-origin', '--cube-crop-top', '--cube-crop-bottom']) {
           viewports[index].style.removeProperty(property)
         }
       }
@@ -33,6 +48,7 @@ export function useAboutCube(pageRef: RefObject<HTMLDivElement | null>) {
         const cropTop = incoming ? 0 : Math.max(0, faces[index].offsetHeight - height)
         const values = {
           '--cube-height': `${height}px`,
+          '--cube-perspective': `${Math.max(viewports[index].clientWidth, height) * 3}px`,
           '--cube-depth': `${height / 2}px`,
           '--cube-retreat': `${Math.sin(progress * Math.PI) * height * 0.18}px`,
           '--cube-angle': `${(progress - (incoming ? 1 : 0)) * 90}deg`,
@@ -49,10 +65,21 @@ export function useAboutCube(pageRef: RefObject<HTMLDivElement | null>) {
       const render = () => {
         viewports.forEach((_, index) => reset(index))
         const height = Math.max(1, window.innerHeight - header.offsetHeight)
+        const resized = viewportWidth !== window.innerWidth || viewportHeight !== window.innerHeight || headerHeight !== header.offsetHeight
+        viewportWidth = window.innerWidth
+        viewportHeight = window.innerHeight
+        headerHeight = header.offsetHeight
+        // 窗口变化会重排整页；用原来的翻面进度恢复到同一段交接。
+        if (resized && activeTurn) {
+          const bottom = sections[activeTurn.index].getBoundingClientRect().bottom + window.scrollY
+          window.scrollTo({ top: bottom - window.innerHeight + activeTurn.progress * height, behavior: 'instant' })
+        }
+        activeTurn = null
         for (let index = 0; index < sections.length - 1; index++) {
           const bottom = sections[index].getBoundingClientRect().bottom
           const progress = (window.innerHeight - bottom) / height
           if (progress > 0 && progress < 1) {
+            activeTurn = { index, progress }
             renderFace(index, progress, false)
             renderFace(index + 1, progress, true)
             break
@@ -66,8 +93,10 @@ export function useAboutCube(pageRef: RefObject<HTMLDivElement | null>) {
         onUpdate: render,
         onRefresh: render,
       })
+      renderCube = render
       render()
       return () => {
+        renderCube = () => {}
         trigger.kill()
         viewports.forEach((_, index) => reset(index))
       }
@@ -75,6 +104,8 @@ export function useAboutCube(pageRef: RefObject<HTMLDivElement | null>) {
     return () => {
       media.revert()
       observer.disconnect()
+      window.removeEventListener('resize', refreshLayout)
+      cancelAnimationFrame(resizeFrame)
       page.style.removeProperty('--about-header-height')
     }
   }, [pageRef])

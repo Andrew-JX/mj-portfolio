@@ -4572,7 +4572,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
 /* 交接完成即移除透视与裁剪，让 sticky 页眉恢复原生行为。 */
 .home-cube-outgoing,
 .home-cube-incoming {
-  perspective: calc(var(--cube-height) * 3);
+  perspective: var(--cube-perspective);
   perspective-origin: 50% calc(var(--cube-height) / 2);
   transform: translateY(var(--cube-offset));
   overflow: visible;
@@ -5055,17 +5055,27 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
 /* About：完整阅读每章后，沿同一方向翻到下一面。 */
 .about-cube-page { --about-header-height: 88px; }
 .about-cube-section { position: relative; }
+.about-cube-viewport { margin-inline: calc(50% - 50vw); }
 .about-cube-face {
   display: flow-root;
   min-height: calc(100svh - var(--about-header-height));
   padding-block: 2rem;
   background: var(--bg);
 }
-.about-cube-face:has(> .hero-mast) { padding-top: 0; }
+.about-cube-face:has(> .about-cube-content > .hero-mast) { padding-top: 0; }
+.about-cube-content {
+  display: flow-root;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+@media (min-width: 640px) {
+  .about-cube-content { padding-inline: 24px; }
+}
 .about-cube-turning {
   position: relative;
   z-index: 4;
-  perspective: calc(var(--cube-height) * 3);
+  perspective: var(--cube-perspective);
   perspective-origin: 50% var(--cube-origin);
   transform: translateY(var(--cube-offset));
 }
@@ -5075,7 +5085,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
   transform: translateZ(calc(-1 * var(--cube-depth) - var(--cube-retreat))) rotateX(var(--cube-angle)) translateZ(var(--cube-depth));
   backface-visibility: hidden;
   will-change: transform;
-  clip-path: inset(var(--cube-crop-top) -50vw var(--cube-crop-bottom));
+  clip-path: inset(var(--cube-crop-top) 0 var(--cube-crop-bottom));
 }
 .about-cube-turning > .about-cube-face::after {
   content: '';
