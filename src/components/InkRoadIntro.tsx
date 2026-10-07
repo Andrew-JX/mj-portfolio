@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { inkRoadChapters, inkRoadTimes, type InkRoadTime } from '@/data/inkRoad'
 import { createInkRoadEngine, type InkRoadCameraMode, type InkRoadEngine } from '@/components/inkRoadScene'
 import { roadsideWorks } from '@/components/roadsideWorks'
+import { INK_SWEEP_PATH } from '@/components/inkSweep'
+import { inkNavigate } from '@/components/inkEvents'
 import { markInkRoadSeen } from '@/components/inkRoadVisit'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -47,9 +49,6 @@ export default function InkRoadIntro() {
   const fillRef = useRef<HTMLSpanElement | null>(null)
   const engineRef = useRef<InkRoadEngine | null>(null)
   const chapterRef = useRef(0)
-  const navigate = useNavigate()
-  const navigateRef = useRef(navigate)
-  navigateRef.current = navigate
   const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [chapter, setChapter] = useState(0)
   const [timeChoice, setTimeChoice] = useState<TimeChoice>('auto')
@@ -77,7 +76,7 @@ export default function InkRoadIntro() {
         lowPower,
         chapterStarts: inkRoadChapters.map((item) => item.start),
         billboards: billboardSpecs,
-        onBillboard: (slug) => navigateRef.current(`/projects/${slug}`),
+        onBillboard: (slug) => inkNavigate(`/projects/${slug}`),
         onFrame: ({ speed, heading, progress }) => {
           if (speedRef.current) speedRef.current.textContent = String(Math.min(Math.round(speed), 199)).padStart(3, '0')
           if (compassRef.current) compassRef.current.style.transform = `rotate(${heading}rad)`
@@ -289,7 +288,7 @@ export default function InkRoadIntro() {
       {!loaderDone && (
         <div ref={loaderRef} className="inkroad-loader" aria-hidden="true">
           <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M -30 118 C 10 70, 38 112, 56 62 S 88 4, 132 -18" pathLength={1} />
+            <path d={INK_SWEEP_PATH} pathLength={1} />
           </svg>
           <span data-loader-logo className="inkroad-loader-logo">MJ</span>
         </div>

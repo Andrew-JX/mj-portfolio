@@ -1,11 +1,12 @@
 import type { PointerEvent as ReactPointerEvent, ReactNode } from 'react'
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { replayInkRoad } from '@/components/inkRoadVisit'
 import UnboxSection from '@/components/UnboxSection'
 import WorksStrip from '@/components/WorksStrip'
+import CapabilityInk, { type CapabilityItem } from '@/components/CapabilityInk'
 import { useAboutCube } from '@/composables/useAboutCube'
 
 function AboutFace({ children }: { children: ReactNode }) {
@@ -20,22 +21,9 @@ function AboutFace({ children }: { children: ReactNode }) {
   )
 }
 
-const Lanyard = lazy(() => import('@/components/Lanyard'))
-
 gsap.registerPlugin(ScrollTrigger)
 
-type CapabilityCard = {
-  id: string
-  label: string
-  title: string
-  kicker: string
-  summary: string
-  bullets: string[]
-}
-
-const publicAsset = (path: string) => `${import.meta.env.BASE_URL}${path}`
-
-const capabilityCards: CapabilityCard[] = [
+const capabilityCards: CapabilityItem[] = [
   {
     id: 'motion',
     label: '01 / AI 应用开发',
@@ -104,21 +92,9 @@ const pressureLines = [
 export default function AboutPage() {
   const pageRef = useRef<HTMLDivElement | null>(null)
   useAboutCube(pageRef)
-  const lanyardLayerRef = useRef<HTMLDivElement | null>(null)
   const [displayText, setDisplayText] = useState('')
-  const [lanyardRevealed, setLanyardRevealed] = useState(false)
-  const [showDesktopLanyard, setShowDesktopLanyard] = useState(() => window.matchMedia('(min-width: 1024px)').matches)
   const typingStateRef = useRef({ roleIdx: 0, displayText: '', isDeleting: false })
   const pressurePointerRef = useRef({ active: false, x: 0, y: 0 })
-
-  useEffect(() => {
-    const desktopQuery = window.matchMedia('(min-width: 1024px)')
-    const syncDesktopLanyard = () => setShowDesktopLanyard(desktopQuery.matches)
-
-    syncDesktopLanyard()
-    desktopQuery.addEventListener('change', syncDesktopLanyard)
-    return () => desktopQuery.removeEventListener('change', syncDesktopLanyard)
-  }, [])
 
   useEffect(() => {
     let typingTimer: ReturnType<typeof setTimeout> | undefined
@@ -206,102 +182,6 @@ export default function AboutPage() {
       })
     }
 
-    const setupCapabilityCarousel = () => {
-      const stage = root.querySelector<HTMLElement>('[data-capability-stage]')
-      const cards = gsap.utils.toArray<HTMLElement>('[data-capability-card]')
-      if (!stage || cards.length === 0) return
-
-      let angle = 0
-      let velocity = 0
-      let startX = 0
-      let startAngle = 0
-      let pointerId: number | null = null
-      let activeIndex = -1
-      const autoSpeed = 0.0018
-
-      const render = () => {
-        const radiusX = Math.max(Math.min(stage.clientWidth * 0.34, 360), 150)
-        const radiusZ = Math.max(Math.min(stage.clientWidth * 0.18, 230), 110)
-        let nextActiveIndex = 0
-        let frontDepth = -Infinity
-
-        cards.forEach((card, index) => {
-          const theta = angle + (index / cards.length) * Math.PI * 2
-          const x = Math.sin(theta) * radiusX
-          const z = Math.cos(theta) * radiusZ
-          const depth = (Math.cos(theta) + 1) / 2
-
-          if (z > frontDepth) {
-            frontDepth = z
-            nextActiveIndex = index
-          }
-
-          gsap.set(card, {
-            xPercent: -50,
-            yPercent: -50,
-            x,
-            z,
-            rotationY: -theta * (180 / Math.PI),
-            scale: 0.78 + depth * 0.28,
-            opacity: 0.38 + depth * 0.62,
-            zIndex: Math.round(depth * 100),
-          })
-        })
-
-        if (nextActiveIndex !== activeIndex) {
-          activeIndex = nextActiveIndex
-          cards.forEach((card, index) => card.toggleAttribute('data-active', index === activeIndex))
-        }
-      }
-
-      const onPointerDown = (event: PointerEvent) => {
-        pointerId = event.pointerId
-        startX = event.clientX
-        startAngle = angle
-        velocity = 0
-        stage.setPointerCapture(pointerId)
-        stage.classList.add('capability-carousel-dragging')
-      }
-      const onPointerMove = (event: PointerEvent) => {
-        if (event.pointerId !== pointerId) return
-        const nextAngle = startAngle + (event.clientX - startX) * 0.006
-        velocity = nextAngle - angle
-        angle = nextAngle
-        render()
-      }
-      const onPointerUp = (event: PointerEvent) => {
-        if (event.pointerId !== pointerId) return
-        pointerId = null
-        stage.classList.remove('capability-carousel-dragging')
-        if (stage.hasPointerCapture(event.pointerId)) stage.releasePointerCapture(event.pointerId)
-      }
-      const tickCarousel = () => {
-        if (pointerId !== null) return
-        const hasMomentum = Math.abs(velocity) >= 0.0001
-        angle += hasMomentum ? velocity : autoSpeed
-        if (hasMomentum) velocity *= 0.92
-        render()
-      }
-      const onResize = () => render()
-
-      render()
-      stage.addEventListener('pointerdown', onPointerDown)
-      stage.addEventListener('pointermove', onPointerMove)
-      stage.addEventListener('pointerup', onPointerUp)
-      stage.addEventListener('pointercancel', onPointerUp)
-      window.addEventListener('resize', onResize)
-      gsap.ticker.add(tickCarousel)
-
-      motionCleanups.push(() => {
-        stage.removeEventListener('pointerdown', onPointerDown)
-        stage.removeEventListener('pointermove', onPointerMove)
-        stage.removeEventListener('pointerup', onPointerUp)
-        stage.removeEventListener('pointercancel', onPointerUp)
-        window.removeEventListener('resize', onResize)
-        gsap.ticker.remove(tickCarousel)
-      })
-    }
-
     const context = gsap.context(() => {
       if (reducedMotion) {
         gsap.set('[data-hero-card-shell]', { clearProps: 'all' })
@@ -333,7 +213,6 @@ export default function AboutPage() {
       }
 
       setupPressureTitle()
-      setupCapabilityCarousel()
 
     }, root)
 
@@ -352,63 +231,9 @@ export default function AboutPage() {
     pressurePointerRef.current.active = false
   }
 
-  const handleLanyardToggle = () => {
-    if (lanyardRevealed) {
-      const layer = lanyardLayerRef.current
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-      if (reducedMotion || !layer) {
-        setLanyardRevealed(false)
-        return
-      }
-
-      gsap.killTweensOf(layer)
-      gsap.to(layer, {
-        autoAlpha: 0,
-        duration: 0.32,
-        ease: 'power2.in',
-        onComplete: () => {
-          gsap.set(layer, { clearProps: 'opacity,visibility' })
-          setLanyardRevealed(false)
-        },
-      })
-      return
-    }
-
-    setLanyardRevealed(true)
-  }
 
   return (
     <div ref={pageRef} className="about-cube-page">
-      {showDesktopLanyard && (
-        <button
-          type="button"
-          className={`hero-lanyard-trigger ${lanyardRevealed ? 'hero-lanyard-trigger-open' : ''}`}
-          aria-label={lanyardRevealed ? '收起挂件' : '展开挂件'}
-          aria-expanded={lanyardRevealed}
-          onClick={handleLanyardToggle}
-        >
-          <svg aria-hidden="true" viewBox="0 0 24 24" className="hero-lanyard-trigger-icon">
-            <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-      )}
-
-      {showDesktopLanyard && lanyardRevealed && (
-        <div ref={lanyardLayerRef} className="hero-lanyard-layer">
-          <Suspense fallback={null}>
-            <Lanyard
-              position={[0, 0, 24]}
-              gravity={[0, -40, 0]}
-              frontImage={publicAsset('lanyard-card-front.svg?v=2')}
-              frontPortraitImage={publicAsset('profile-photo.jpg')}
-              backImage={publicAsset('lanyard-card-back.svg')}
-              imageFit="cover"
-            />
-          </Suspense>
-        </div>
-      )}
-
       <AboutFace>
         <section id="about-core" data-hero-card-shell className="hero-mast">
           <div data-hero-card-content className="hero-card-content">
@@ -519,32 +344,7 @@ export default function AboutPage() {
 
       <AboutFace>
 
-        <section data-rail-section className="capability-carousel-section">
-          <div className="space-y-3">
-            <div className="section-title">能力画像</div>
-            <h2 className="display-subhead max-w-3xl">What I focus on right now.</h2>
-          </div>
-
-          <div data-capability-stage className="capability-carousel-stage">
-            <div data-capability-track className="capability-carousel-track">
-              {capabilityCards.map((card) => (
-                <article key={card.id} data-capability-card className="capability-card">
-                  <div className="rail-card-top">
-                    <span className="index-badge">{card.label}</span>
-                    <span className="rail-kicker">{card.kicker}</span>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="rail-title">{card.title}</h3>
-                    <p className="rail-summary">{card.summary}</p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {card.bullets.map((bullet) => <span key={bullet} className="chip chip-citrus">{bullet}</span>)}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+        <CapabilityInk items={capabilityCards} />
 
       </AboutFace>
 

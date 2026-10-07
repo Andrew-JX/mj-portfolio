@@ -533,87 +533,7 @@ select {
   will-change: opacity;
 }
 
-/* 挂件锚定在视口而非文档流：不管滚动到哪里，都从页头那个箭头位置垂下来，
-   点一下收起来。绳子的挂点在画布顶部正中（3D 锚点 y=4，约画布高度的 2.75% 处），
-   top 数值让挂点正好落在页头下沿。画布本身收得比之前紧凑，
-   floating 在其它内容之上时占位更小。 */
-.hero-lanyard-layer {
-  position: fixed;
-  top: 4.5rem;
-  left: 50%;
-  z-index: 40;
-  width: min(26rem, 54vw);
-  height: clamp(24rem, 42vh, 30rem);
-  transform: translateX(-50%);
-  overflow: visible;
-  /* 容器本身不吃指针事件，只有卡片和绳子所在的画布区域可交互，
-     R3F 会在自己的画布容器上内联 pointer-events: auto。 */
-  pointer-events: none;
-  touch-action: none;
-}
-
-.hero-lanyard-layer .lanyard-wrapper {
-  height: 100%;
-}
-
-.hero-lanyard-trigger {
-  position: fixed;
-  top: 1.5rem;
-  left: 50%;
-  z-index: 60;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.1rem;
-  height: 2.1rem;
-  transform: translateX(-50%);
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  opacity: 0.3;
-  transition: opacity 0.24s ease, color 0.24s ease, transform 0.24s ease;
-}
-
-.hero-lanyard-trigger:hover,
-.hero-lanyard-trigger:focus-visible {
-  opacity: 0.9;
-  color: var(--accent);
-  transform: translateX(-50%) translateY(0.15rem);
-}
-
-.hero-lanyard-trigger:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.hero-lanyard-trigger-icon {
-  width: 1.15rem;
-  height: 1.15rem;
-  transition: transform 0.28s ease;
-}
-
-.hero-lanyard-trigger-open {
-  opacity: 0.55;
-}
-
-.hero-lanyard-trigger-open .hero-lanyard-trigger-icon {
-  transform: rotate(180deg);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-lanyard-trigger,
-  .hero-lanyard-trigger-icon {
-    transition: none !important;
-  }
-}
-
 @media (max-width: 1023px) {
-
-  .hero-lanyard-layer {
-    display: none;
-  }
 
   .hero-side {
     position: static;
@@ -1094,98 +1014,6 @@ select {
 .showcase-input:focus {
   border-color: rgba(251, 146, 60, 0.3);
   box-shadow: 0 0 0 4px rgba(251, 146, 60, 0.08);
-}
-
-.capability-carousel-section {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  gap: 1.5rem;
-}
-
-.lanyard-wrapper {
-  position: relative;
-  z-index: 0;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transform: scale(1);
-  transform-origin: center;
-}
-
-.capability-carousel-stage {
-  position: relative;
-  min-height: 34rem;
-  margin-inline: calc(50% - 50vw);
-  overflow: hidden;
-  perspective: 1100px;
-  perspective-origin: 50% 46%;
-  cursor: grab;
-  user-select: none;
-  touch-action: pan-y;
-}
-
-.capability-carousel-dragging {
-  cursor: grabbing;
-}
-
-.capability-carousel-track {
-  position: absolute;
-  inset: 0;
-  transform-style: preserve-3d;
-}
-
-.capability-card {
-  position: absolute;
-  left: 50%;
-  top: 52%;
-  display: flex;
-  min-height: 21rem;
-  width: min(28rem, 78vw);
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 1.25rem;
-  border-radius: 2rem;
-  border: 1px solid rgba(251, 146, 60, 0.14);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent),
-    rgba(20, 14, 11, 0.62);
-  padding: 1.35rem;
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.16);
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  transition: border-color 0.32s ease, background-color 0.32s ease, box-shadow 0.32s ease;
-  will-change: transform, opacity, z-index;
-}
-
-.capability-card[data-active] {
-  border-color: rgba(251, 146, 60, 0.32);
-  background:
-    radial-gradient(circle at top center, rgba(251, 146, 60, 0.18), transparent 42%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.09), transparent),
-    rgba(20, 14, 11, 0.84);
-  box-shadow: 0 22px 72px rgba(0, 0, 0, 0.28);
-}
-
-[data-theme="light"] .capability-card {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.8), transparent),
-    rgba(255, 248, 242, 0.88);
-}
-
-[data-theme="light"] .capability-card[data-active] {
-  background:
-    radial-gradient(circle at top center, rgba(251, 146, 60, 0.16), transparent 42%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.88), transparent),
-    rgba(255, 249, 244, 0.96);
-}
-
-@media (min-width: 640px) {
-  .capability-card {
-    padding: 1.7rem;
-  }
 }
 
 .lab-card-grid {
@@ -3633,13 +3461,12 @@ select {
   }
 
   .project-card-shell:hover,
-  .panel-card:hover,
-  .button-primary:hover,
-  .button-secondary:hover,
-  .nav-link:hover,
-  .lanyard-card,
-  .lab-tilt-card,
-  .lab-tilt-card:hover {
+.panel-card:hover,
+.button-primary:hover,
+.button-secondary:hover,
+.nav-link:hover,
+.lab-tilt-card,
+.lab-tilt-card:hover {
     transform: none;
   }
 
@@ -4503,17 +4330,7 @@ select {
 }
 .showcase-input::placeholder { color: var(--muted); }
 .showcase-input:focus { border-color: var(--accent); box-shadow: 0 1px 0 var(--accent); }
-.capability-card,
-.capability-card[data-active],
-[data-theme="light"] .capability-card,
-[data-theme="light"] .capability-card[data-active] {
-  border-radius: 0;
-  border-color: var(--line-strong);
-  background: var(--bg-elevated);
-  box-shadow: 5px 5px 0 var(--line);
-}
-.capability-card[data-active],
-[data-theme="light"] .capability-card[data-active] { border-color: var(--accent); }
+
 .project-preview-shell { border-radius: 0; }
 .site-footer { border-color: var(--line); font-family: var(--font-mono); }
 a:focus-visible,
@@ -5099,3 +4916,103 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
   pointer-events: none;
   z-index: 100;
 }
+
+/* 全站墨水层：盖在内容上方但不接收指针，靠混合模式不遮挡文字 */
+.ink-fluid {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+[data-theme="light"] .ink-fluid { mix-blend-mode: multiply; }
+
+/* 页脚落款印章 */
+/* 右侧给固定的主题切换按钮留出位置 */
+.site-footer-inner { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; justify-content: space-between; }
+.site-footer-inner > .seal-stamp { margin-right: 72px; }
+.seal-stamp {
+  appearance: none;
+  display: grid;
+  justify-items: center;
+  gap: 0.2rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.seal-stamp:disabled { cursor: default; }
+.seal-stamp:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.seal-stamp-canvas { width: 300px; height: 210px; }
+.seal-stamp-canvas canvas { display: block; width: 100%; height: 100%; }
+.seal-stamp-caption { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; transition: color 0.2s ease; }
+.seal-stamp:hover .seal-stamp-caption { color: var(--accent); }
+@media (max-width: 640px) {
+  .site-footer-inner { justify-content: center; }
+  .site-footer-inner > .seal-stamp { margin: 0 0 72px; }
+  .seal-stamp-canvas { width: 220px; height: 170px; }
+}
+
+/* 站内转场色带：与开场入场同一条曲线 */
+.route-sweep { position: fixed; inset: 0; z-index: 500; pointer-events: none; visibility: hidden; }
+.route-sweep svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.route-sweep path { fill: none; stroke: var(--accent); stroke-linecap: butt; }
+
+/* 能力画像：钉住的水墨能力图 */
+.capability-ink { position: relative; height: calc(var(--cap-steps) * 85svh); }
+.capability-ink-stage {
+  position: sticky;
+  top: var(--about-header-height, 72px);
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+  height: calc(100svh - var(--about-header-height, 72px));
+  padding-block: 1.5rem;
+}
+.capability-ink-copy { display: grid; gap: 1.8rem; align-content: center; }
+.capability-ink-steps { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+.capability-ink-steps button {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.capability-ink-steps button span { color: var(--accent); }
+.capability-ink-steps button:hover { border-color: var(--accent); color: var(--text); transform: translate(-1px, -1px); }
+.capability-ink-steps button[aria-current='step'] { border-color: var(--accent); color: var(--text); box-shadow: 3px 3px 0 var(--accent-soft); }
+.capability-ink-steps button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.capability-ink-detail { display: grid; gap: 1rem; min-height: 15rem; align-content: start; }
+.capability-ink-kicker { color: var(--accent); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.capability-ink-detail h3 { margin: 0; font-family: 'Inter', sans-serif; font-size: clamp(2.6rem, 5vw, 4.6rem); font-weight: 500; line-height: 0.95; letter-spacing: -0.06em; color: var(--text); }
+.capability-ink-detail h3 span { display: inline-block; margin-right: 0.18em; }
+.capability-ink-detail p { max-width: 32rem; margin: 0; color: var(--text-soft); line-height: 1.85; }
+.capability-ink-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.capability-ink-chips span { padding: 0.3rem 0.55rem; border: 1px solid var(--line-strong); color: var(--text-soft); font-family: var(--font-mono); font-size: 0.68rem; }
+.capability-ink-canvas-host { position: relative; height: min(72svh, 640px); }
+.capability-ink-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.capability-ink-index { position: absolute; z-index: 1; top: 1.6rem; right: 1.8rem; color: #1e1e1e; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; }
+.capability-ink-static { height: auto; }
+.capability-ink-static .capability-ink-stage { position: relative; top: 0; height: auto; padding-block: 3rem; }
+
+@media (max-width: 900px) {
+  .capability-ink-stage { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: 1rem; padding-block: 1rem; }
+  .capability-ink-copy { gap: 0.9rem; }
+  .capability-ink-copy .display-subhead { font-size: 1.6rem; }
+  .capability-ink-detail { min-height: 0; gap: 0.6rem; }
+  .capability-ink-detail h3 { font-size: 2.2rem; }
+  .capability-ink-detail p { font-size: 0.86rem; line-height: 1.65; }
+  .capability-ink-canvas-host { height: 100%; min-height: 220px; }
+}
+

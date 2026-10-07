@@ -15,7 +15,6 @@
 
 | 目录 | 作用 |
 |---|---|
-| `src/assets` | 构建时引入的静态资源 |
 | `src/components` | 可复用展示组件 |
 | `src/composables` | 复用 hooks |
 | `src/data` | 页面数据源，只放数据不放逻辑 |

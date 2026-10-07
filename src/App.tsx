@@ -2,12 +2,15 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { HashRouter, NavLink, useLocation } from 'react-router-dom'
 import AppRoutes from '@/router'
 import TorchToggle from '@/components/TorchToggle'
+import RouteTransition from '@/components/RouteTransition'
 import { useTheme } from '@/composables/useTheme'
 import { INKROAD_REPLAY_EVENT, shouldPlayInkRoad } from '@/components/inkRoadVisit'
 
 // 首页开场的墨线公路放在页眉之前：它是整页的封面，驶完才进入站点本体。
 // 首次访问或在首页刷新时出现；离开首页后收起，“重看开场”可以再次挂上。
 const InkRoadIntro = lazy(() => import('@/components/InkRoadIntro'))
+const InkFluid = lazy(() => import('@/components/InkFluid'))
+const SealStamp = lazy(() => import('@/components/SealStamp'))
 
 function HomeIntro() {
   const { pathname } = useLocation()
@@ -156,30 +159,40 @@ export default function App() {
 
         <footer className={`site-footer border-t transition-colors duration-500 ${isDark ? 'border-white/8' : 'border-stone-900/10'}`}>
           <div
-            className={`mx-auto flex max-w-[1240px] flex-col gap-2 px-5 py-8 text-sm sm:px-6 ${
+            className={`site-footer-inner mx-auto max-w-[1240px] px-5 py-8 text-sm sm:px-6 ${
               isDark ? 'text-stone-400' : 'text-stone-600'
             }`}
           >
-            <div className="flex items-center gap-2">
-              <span className="dot-live" />
-              <span>Portfolio / AI App / AI Full-stack / Product</span>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <span className="dot-live" />
+                <span>Portfolio / AI App / AI Full-stack / Product</span>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <a href="https://jimmyuuu.com" target="_blank" rel="noreferrer">jimmyuuu.com</a>
+                <a href="https://mj-portfolio-gray.vercel.app/#/" target="_blank" rel="noreferrer">Mirror · Vercel</a>
+                <a href="https://mj-portfolio.jx15996596656.workers.dev" target="_blank" rel="noreferrer">Mirror · Cloudflare</a>
+              </div>
+              <div className="flex flex-wrap gap-x-3 gap-y-1">
+                <span>版权所有 © {new Date().getFullYear()} 吉敏宇</span>
+                <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">
+                  苏ICP备2026054660号-1
+                </a>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <a href="https://jimmyuuu.com" target="_blank" rel="noreferrer">jimmyuuu.com</a>
-              <a href="https://mj-portfolio-gray.vercel.app/#/" target="_blank" rel="noreferrer">Mirror · Vercel</a>
-              <a href="https://mj-portfolio.jx15996596656.workers.dev" target="_blank" rel="noreferrer">Mirror · Cloudflare</a>
-            </div>
-            <div className="flex flex-wrap gap-x-3 gap-y-1">
-              <span>版权所有 © {new Date().getFullYear()} 吉敏宇</span>
-              <a href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">
-                苏ICP备2026054660号-1
-              </a>
-            </div>
+            <Suspense fallback={null}>
+              <SealStamp />
+            </Suspense>
           </div>
         </footer>
 
         </div>
         </div>
+
+        <Suspense fallback={null}>
+          <InkFluid />
+        </Suspense>
+        <RouteTransition />
 
         <TorchToggle />
       </div>

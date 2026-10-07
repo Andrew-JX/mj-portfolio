@@ -66,6 +66,7 @@ export default function WorksStrip() {
       lastT = performance.now()
       velocity = 0
       draggedRef.current = false
+      delete viewport.dataset.dragged
       gsap.killTweensOf(track)
     }
     const onMove = (event: PointerEvent) => {
@@ -73,6 +74,8 @@ export default function WorksStrip() {
       const dx = event.clientX - startX
       if (!draggedRef.current && Math.abs(dx) > 6) {
         draggedRef.current = true
+        // 页面转场在 document 捕获阶段先拿到点击，靠这个标记跳过拖动后的那次点击
+        viewport.dataset.dragged = 'true'
         viewport.setPointerCapture(event.pointerId)
         viewport.classList.add('works-dragging')
       }
@@ -103,6 +106,7 @@ export default function WorksStrip() {
         event.preventDefault()
         event.stopPropagation()
         draggedRef.current = false
+        delete viewport.dataset.dragged
       }
     }
     // 键盘 Tab 到视野外的卡片时，把它移进视野

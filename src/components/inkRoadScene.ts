@@ -546,6 +546,7 @@ uniform float uFar;
 uniform float uDpr;
 uniform float uBorder;
 uniform float uFrame;
+uniform float uSpeed;
 uniform vec3 uPaper;
 uniform vec3 uInk;
 varying vec2 vUv;
@@ -566,6 +567,15 @@ void main() {
     + texture2D(tColor, uv + wob - vec2(0.0, px.y * 2.5)).rgb;
   blur *= 0.25;
   vec3 col = mix(base, blur, 0.35);
+
+  // 车速越快，画面四周沿放射方向拖出轻微残影
+  vec2 toCenter = uv - 0.5;
+  float streak = uSpeed * smoothstep(0.18, 0.72, length(toCenter));
+  if (streak > 0.001) {
+    vec3 trail = col;
+    for (int i = 1; i <= 4; i++) trail += texture2D(tColor, uv + wob - toCenter * streak * 0.022 * float(i)).rgb;
+    col = mix(col, trail / 5.0, clamp(streak * 1.4, 0.0, 1.0));
+  }
 
   float grain = fbm(uv * uRes / (9.0 * uDpr));
   col *= 0.9 + 0.16 * grain;
@@ -676,6 +686,71 @@ void main() {
 }
 `
 
+// 墨烟粒子：圆点贴图按粒子随机旋转，颜色在墨色与洋红之间
+const PUFF_VERTEX = /* glsl */ `
+uniform float uBend;
+uniform vec3 uBendOrigin;
+uniform vec3 uBendDir;
+uniform vec3 uBendUp;
+uniform float uBendStart;
+uniform float uScale;
+attribute float aSize;
+attribute float aAlpha;
+attribute float aTint;
+attribute float aRot;
+varying float vAlpha;
+varying float vTint;
+varying float vRot;
+void main() {
+  vec3 transformed = position;
+  ${BEND_VERTEX}
+  gl_PointSize = aSize * uScale / max(-mvPosition.z, 1.0);
+  vAlpha = aAlpha;
+  vTint = aTint;
+  vRot = aRot;
+}
+`
+
+const PUFF_FRAGMENT = /* glsl */ `
+uniform sampler2D uMap;
+uniform vec3 uInk;
+uniform vec3 uMagenta;
+varying float vAlpha;
+varying float vTint;
+varying float vRot;
+void main() {
+  vec2 c = gl_PointCoord - 0.5;
+  float cs = cos(vRot);
+  float sn = sin(vRot);
+  c = mat2(cs, -sn, sn, cs) * c;
+  float a = texture2D(uMap, c + 0.5).a * vAlpha;
+  if (a < 0.01) discard;
+  gl_FragColor = vec4(mix(uInk, uMagenta, vTint), a);
+  #include <colorspace_fragment>
+}
+`
+
+// 不规则墨团：几个错位的径向渐变叠成一块晕开的墨
+function blotTexture() {
+  const canvas = document.createElement('canvas')
+  canvas.width = 128
+  canvas.height = 128
+  const ctx = canvas.getContext('2d')!
+  const rand = rng(31)
+  for (let k = 0; k < 7; k++) {
+    const x = 64 + (rand() - 0.5) * 34
+    const y = 64 + (rand() - 0.5) * 34
+    const r = 22 + rand() * 26
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r)
+    g.addColorStop(0, 'rgba(255,255,255,0.55)')
+    g.addColorStop(0.7, 'rgba(255,255,255,0.32)')
+    g.addColorStop(1, 'rgba(255,255,255,0)')
+    ctx.fillStyle = g
+    ctx.fillRect(0, 0, 128, 128)
+  }
+  return new THREE.CanvasTexture(canvas)
+}
+
 // ---------------------------------------------------------------------------
 
 export function createInkRoadEngine(container: HTMLElement, options: EngineOptions): InkRoadEngine {
@@ -688,6 +763,10 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, premultipliedAlpha: true, powerPreference: 'high-performance' })
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.NoToneMapping
+  // 阴影只在彩色通道前更新一次，法线通道不需要
+  renderer.shadowMap.enabled = !lowPower
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  renderer.shadowMap.autoUpdate = false
   renderer.autoClear = true
 
   const dprCap = lowPower ? 1 : 1.6
@@ -739,6 +818,7 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
   const normalMat = withBend(new THREE.MeshNormalMaterial({ side: THREE.DoubleSide }))
 
   const props = new GeoBag()
+  const clouds = new GeoBag()
   const windows = new GeoBag()
   const bulbs = new GeoBag()
   const haloPositions: number[] = []
@@ -800,6 +880,7 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     geo.setIndex(indices)
     geo.computeVertexNormals()
     const road = new THREE.Mesh(geo, roadMat)
+    road.receiveShadow = true
     road.frustumCulled = false
     scene.add(road)
     disposables.push(geo)
@@ -854,6 +935,7 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     const water = new THREE.PlaneGeometry(6400, 6400, lowPower ? 90 : 160, lowPower ? 90 : 160)
     water.rotateX(-Math.PI / 2)
     const sea = new THREE.Mesh(water, waterMat)
+    sea.receiveShadow = true
     sea.position.set(-40, -3, -600)
     sea.frustumCulled = false
     scene.add(sea)
@@ -1098,23 +1180,31 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     addIslandTown(new THREE.Vector3(x, y, z), r, true, Math.round(r / 5))
   }
 
+  const tmpCloud = new THREE.Vector3()
   for (let k = 0; k < (lowPower ? 18 : 40); k++) {
     const cx = -320 + rand() * 520
     const cz = -80 - rand() * 1000
     const cy = 36 + rand() * 150
-    if (Math.hypot(cx + 64, cz + 680) < 80 && cy < 150) continue
+    // 云团离路至少留出镜头跟车的空间，否则回环和螺旋段镜头会穿进云里
+    let nearRoad = false
+    for (let i = 0; i < track.count && !nearRoad; i += 6) nearRoad = track.P[i].distanceTo(tmpCloud.set(cx, cy, cz)) < 48
+    if (nearRoad) continue
     for (let p = 0; p < 5; p++) {
       const puff = lumpy(new THREE.IcosahedronGeometry(5 + rand() * 7, 1), 0.25, rand() * 10)
       puff.scale(1.4, 0.62, 1)
       puff.translate(cx + (rand() - 0.5) * 22, cy + rand() * 4, cz + (rand() - 0.5) * 14)
-      props.add(puff, null, ['#ffffff', '#e4e2f4'])
+      clouds.add(puff, null, ['#ffffff', '#e4e2f4'])
     }
   }
 
   const propsMesh = new THREE.Mesh(props.build(), propsMat)
+  propsMesh.castShadow = true
+  propsMesh.receiveShadow = true
+  // 云单独成一组：不投影，免得在街面落下大块暗斑
+  const cloudMesh = new THREE.Mesh(clouds.build(), propsMat)
   const windowMesh = new THREE.Mesh(windows.build(), windowMat)
   const bulbMesh = new THREE.Mesh(bulbs.build(), bulbMat)
-  for (const mesh of [propsMesh, windowMesh, bulbMesh]) {
+  for (const mesh of [propsMesh, cloudMesh, windowMesh, bulbMesh]) {
     mesh.frustumCulled = false
     scene.add(mesh)
     disposables.push(mesh.geometry)
@@ -1162,12 +1252,20 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
 
   const hemi = new THREE.HemisphereLight('#e8f2ff', '#efe3c9', 1.3)
   const sun = new THREE.DirectionalLight('#fff3dd', 1.4)
-  scene.add(hemi, sun)
+  sun.castShadow = !lowPower
+  sun.shadow.mapSize.set(2048, 2048)
+  Object.assign(sun.shadow.camera, { left: -62, right: 62, top: 62, bottom: -62, near: 60, far: 360 })
+  sun.shadow.bias = -0.0004
+  sun.shadow.normalBias = 0.35
+  scene.add(hemi, sun, sun.target)
   scene.fog = new THREE.Fog('#eef4f7', 180, 1250)
 
   // --- 小车 ---
   const car = new THREE.Group()
+  // 车身单独挂在底盘上，才能随转弯侧倾、随加减速俯仰；前轮挂在转向节上
+  const chassis = new THREE.Group()
   const wheels: THREE.Mesh[] = []
+  const frontPivots: THREE.Group[] = []
   {
     const bag = new GeoBag()
     const part = (w: number, h: number, d: number, x: number, y: number, z: number, color: string) => {
@@ -1200,7 +1298,11 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     spare.translate(0, 1.2, 2.0)
     bag.add(spare, null, '#2a2733')
     const body = new THREE.Mesh(bag.build(), propsMat)
-    car.add(body)
+    body.castShadow = true
+    body.position.y = -0.9
+    chassis.position.y = 0.9
+    chassis.add(body)
+    car.add(chassis)
     disposables.push(body.geometry)
     const wheelBag = new GeoBag()
     const tire = new THREE.CylinderGeometry(0.58, 0.58, 0.48, 12)
@@ -1213,9 +1315,18 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     disposables.push(wheelGeo)
     for (const [x, z] of [[-1.15, -1.2], [1.15, -1.2], [-1.15, 1.25], [1.15, 1.25]] as const) {
       const wheel = new THREE.Mesh(wheelGeo, propsMat)
-      wheel.position.set(x, 0.58, z)
+      wheel.castShadow = true
       wheels.push(wheel)
-      car.add(wheel)
+      if (z < 0) {
+        const pivot = new THREE.Group()
+        pivot.position.set(x, 0.58, z)
+        pivot.add(wheel)
+        frontPivots.push(pivot)
+        car.add(pivot)
+      } else {
+        wheel.position.set(x, 0.58, z)
+        car.add(wheel)
+      }
     }
     car.scale.setScalar(1.05)
     scene.add(car)
@@ -1243,6 +1354,74 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     }
   }
   let tokenCount = 0
+
+  // --- 墨烟：车尾吐出的小墨团，收集符号时溅出洋红墨点 ---
+  const PUFFS = lowPower ? 90 : 180
+  const puffPos = new Float32Array(PUFFS * 3)
+  const puffSize = new Float32Array(PUFFS)
+  const puffAlpha = new Float32Array(PUFFS)
+  const puffTint = new Float32Array(PUFFS)
+  const puffRot = new Float32Array(PUFFS)
+  const puffVel = Array.from({ length: PUFFS }, () => new THREE.Vector3())
+  const puffAge = new Float32Array(PUFFS).fill(1)
+  const puffSpan = new Float32Array(PUFFS).fill(1)
+  const puffSize0 = new Float32Array(PUFFS)
+  const puffAlpha0 = new Float32Array(PUFFS)
+  let puffCursor = 0
+  const puffGeo = new THREE.BufferGeometry()
+  puffGeo.setAttribute('position', new THREE.BufferAttribute(puffPos, 3))
+  puffGeo.setAttribute('aSize', new THREE.BufferAttribute(puffSize, 1))
+  puffGeo.setAttribute('aAlpha', new THREE.BufferAttribute(puffAlpha, 1))
+  puffGeo.setAttribute('aTint', new THREE.BufferAttribute(puffTint, 1))
+  puffGeo.setAttribute('aRot', new THREE.BufferAttribute(puffRot, 1))
+  const puffTex = blotTexture()
+  const puffMat = new THREE.ShaderMaterial({
+    uniforms: { ...bend, uMap: { value: puffTex }, uScale: { value: 400 }, uInk: { value: new THREE.Color('#2a2733') }, uMagenta: { value: new THREE.Color('#df48b2') } },
+    vertexShader: PUFF_VERTEX,
+    fragmentShader: PUFF_FRAGMENT,
+    transparent: true,
+    depthWrite: false,
+  })
+  const puffInkDay = new THREE.Color('#2a2733')
+  const puffInkNight = new THREE.Color('#d8d2f0')
+  const puffs = new THREE.Points(puffGeo, puffMat)
+  puffs.layers.set(1)
+  puffs.frustumCulled = false
+  scene.add(puffs)
+  disposables.push(puffGeo, puffMat, puffTex)
+
+  const spawnPuff = (position: THREE.Vector3, velocity: THREE.Vector3, size: number, alpha: number, tint: number, span: number) => {
+    const i = puffCursor
+    puffCursor = (puffCursor + 1) % PUFFS
+    puffPos[i * 3] = position.x
+    puffPos[i * 3 + 1] = position.y
+    puffPos[i * 3 + 2] = position.z
+    puffVel[i].copy(velocity)
+    puffAge[i] = 0
+    puffSpan[i] = span
+    puffSize0[i] = size
+    puffAlpha0[i] = alpha
+    puffTint[i] = tint
+    puffRot[i] = Math.random() * Math.PI * 2
+  }
+  const stepPuffs = (dt: number) => {
+    for (let i = 0; i < PUFFS; i++) {
+      if (puffAge[i] >= 1) {
+        puffAlpha[i] = 0
+        continue
+      }
+      puffAge[i] = Math.min(puffAge[i] + dt / puffSpan[i], 1)
+      const t = puffAge[i]
+      puffPos[i * 3] += puffVel[i].x * dt
+      puffPos[i * 3 + 1] += puffVel[i].y * dt
+      puffPos[i * 3 + 2] += puffVel[i].z * dt
+      puffVel[i].multiplyScalar(Math.max(1 - dt * 1.8, 0))
+      puffSize[i] = puffSize0[i] * (1 + t * 2.4)
+      puffAlpha[i] = puffAlpha0[i] * Math.pow(1 - t, 1.6)
+      puffRot[i] += dt * 0.6
+    }
+    for (const name of ['position', 'aSize', 'aAlpha', 'aTint', 'aRot']) puffGeo.getAttribute(name).needsUpdate = true
+  }
 
   // --- 路边广告牌：点击进入项目详情 ---
   type Board = {
@@ -1400,6 +1579,7 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
       uDpr: { value: dpr },
       uBorder: { value: 22 },
       uFrame: { value: 0 },
+      uSpeed: { value: 0 },
       uPaper: { value: new THREE.Color(PAPER) },
       uInk: { value: new THREE.Color(INK) },
     },
@@ -1468,6 +1648,8 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     bulbMat.color.copy(live.bulb)
     haloMat.uniforms.uColor.value.copy(live.bulb)
     haloMat.uniforms.uOpacity.value = live.halo
+    // 夜里墨色烟团看不见，按夜色程度换成淡紫白
+    puffMat.uniforms.uInk.value.copy(puffInkDay).lerp(puffInkNight, live.halo)
     halos.visible = live.halo > 0.01
     boards.forEach((board) => {
       board.trim.color.copy(board.accent).lerp(live.bulb, live.halo * 0.6)
@@ -1510,7 +1692,14 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     last: performance.now(),
     elapsed: 0,
     primed: false,
+    baseFov: 58,
+    roll: 0,
+    pitch: 0,
+    steer: 0,
+    puffClock: 0,
   }
+  const tmp = new THREE.Vector3()
+  const tmpVel = new THREE.Vector3()
 
   const revealLook = new THREE.Vector3(-60, 36, -560)
   const revealPos = new THREE.Vector3(250, 165, -360)
@@ -1528,7 +1717,9 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     const prevS = state.carS
     state.carS = progressToS(state.p)
     const rawSpeed = Math.abs(state.carS - prevS) / Math.max(dt, 1e-3)
+    const prevSpeed = state.speed
     state.speed += (rawSpeed - state.speed) * (1 - Math.exp(-dt * 4))
+    const speedK = Math.min(Math.max((state.speed - 4) / 40, 0), 1)
     state.topBlend += ((state.mode === 'top' ? 1 : 0) - state.topBlend) * (1 - Math.exp(-dt * 2.5))
     state.pointer.lerp(state.pointerTarget, 1 - Math.exp(-dt * 3))
 
@@ -1538,11 +1729,38 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     car.matrix.makeBasis(f.side, f.up, f.tan.clone().negate())
     car.quaternion.setFromRotationMatrix(car.matrix)
     car.rotateZ(Math.sin(state.elapsed * 1.7) * 0.012)
+    car.updateMatrixWorld()
     wheels.forEach((wheel) => {
       wheel.rotation.x -= (state.speed * dt) / 0.6
     })
 
-    const back = THREE.MathUtils.lerp(14.5, 9, state.topBlend)
+    // 车身：弯道往外侧倾、前轮转向、加速抬头减速点头，停着时发动机轻颤
+    const ahead = sampleFrame(state.carS + 8)
+    const turn = tmp.crossVectors(f.tan, ahead.tan).dot(f.up)
+    const blend = (rate: number) => 1 - Math.exp(-dt * rate)
+    state.roll += (THREE.MathUtils.clamp(-turn * 0.8 * speedK, -0.12, 0.12) - state.roll) * blend(4)
+    state.steer += (THREE.MathUtils.clamp(turn * 2.6, -0.45, 0.45) - state.steer) * blend(6)
+    const accel = (state.speed - prevSpeed) / Math.max(dt, 1e-3)
+    state.pitch += (THREE.MathUtils.clamp(accel * 0.0035, -0.07, 0.07) - state.pitch) * blend(5)
+    chassis.rotation.set(state.pitch, 0, state.roll)
+    chassis.position.y = 0.9 + Math.sin(state.elapsed * 44) * 0.014 * (1 - speedK)
+    frontPivots.forEach((pivot) => {
+      pivot.rotation.y = state.steer
+    })
+
+    // 墨烟：停着时偶尔一口，开得越快吐得越密
+    state.puffClock += dt * (2.2 + speedK * 24)
+    while (state.puffClock >= 1) {
+      state.puffClock -= 1
+      // 排气口在车尾左下；停着时只是一小口淡墨
+      tmp.set(-0.75 + (Math.random() - 0.5) * 0.3, 0.4, 2.15).applyMatrix4(car.matrixWorld)
+      tmpVel.copy(f.tan).multiplyScalar(-(state.speed * 0.12) - 0.4)
+        .addScaledVector(f.up, 0.5 + Math.random() * 0.7)
+        .addScaledVector(f.side, -0.4 + (Math.random() - 0.5) * 1.2)
+      spawnPuff(tmp, tmpVel, 0.45 + Math.random() * 0.4 + speedK * 0.9, 0.28 + speedK * 0.27, speedK > 0.2 && Math.random() < 0.22 ? 1 : 0, 0.9 + Math.random() * 0.6)
+    }
+
+    const back = THREE.MathUtils.lerp(14.5 + speedK * 2.5, 9, state.topBlend)
     const height = THREE.MathUtils.lerp(5.4, 30, state.topBlend)
     const chasePos = f.p.clone().addScaledVector(f.tan, -back).addScaledVector(f.up, height)
       .addScaledVector(f.side, state.pointer.x * 1.6)
@@ -1559,7 +1777,8 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
       state.camUp.copy(desiredUp)
       state.primed = true
     } else {
-      const ck = 1 - Math.exp(-dt * 5)
+      // 跟车要快一点，否则快速滚动时车会甩到画面深处
+      const ck = 1 - Math.exp(-dt * 8)
       state.camPos.lerp(desiredPos, ck)
       state.camLook.lerp(desiredLook, ck)
       state.camUp.lerp(desiredUp, 1 - Math.exp(-dt * 4)).normalize()
@@ -1578,6 +1797,10 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     for (const glyph of glyphs) {
       if (glyph.collected < 0 && state.carS > glyph.s) {
         glyph.collected = 0
+        for (let k = 0; k < 14; k++) {
+          tmpVel.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize().multiplyScalar(5 + Math.random() * 3).addScaledVector(glyph.up, 2)
+          spawnPuff(glyph.sprite.position, tmpVel, 0.45 + Math.random() * 0.4, 0.85, 1, 0.7 + Math.random() * 0.3)
+        }
         tokenCount++
         options.onToken?.(tokenCount, glyphs.length)
       }
@@ -1595,6 +1818,21 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     }
 
     applyTime(1 - Math.exp(-dt * 2.2))
+    // 阴影相机跟着车走，只覆盖车周围一片
+    if (sun.castShadow) {
+      sun.target.position.copy(car.position)
+      sun.position.copy(car.position).addScaledVector(tmp.copy(live.sunDir).normalize(), 200)
+      sun.target.updateMatrixWorld()
+    }
+    waveTex.offset.set(state.elapsed * 0.0045, state.elapsed * 0.002)
+    stepPuffs(dt)
+    const fov = state.baseFov + speedK * 7 * (1 - state.topBlend) * (1 - smooth(DRIVE_END - 0.02, 1, state.targetP))
+    if (Math.abs(camera.fov - fov) > 0.01) {
+      camera.fov = fov
+      camera.updateProjectionMatrix()
+    }
+    puffMat.uniforms.uScale.value = renderer.domElement.height * camera.projectionMatrix.elements[5] * 0.5
+    compositeMat.uniforms.uSpeed.value = speedK * 0.85 * (1 - smooth(DRIVE_END - 0.02, 1, state.targetP))
     skyMat.uniforms.uTime.value = state.elapsed
     compositeMat.uniforms.uTime.value = state.elapsed
     compositeMat.uniforms.uFrame.value = smooth(DRIVE_END + 0.01, 1, state.targetP)
@@ -1619,6 +1857,7 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
 
     renderer.setRenderTarget(colorRT)
     renderer.setClearColor((scene.fog as THREE.Fog).color, 1)
+    renderer.shadowMap.needsUpdate = true
     renderer.render(scene, camera)
 
     renderer.setRenderTarget(null)
@@ -1650,7 +1889,8 @@ export function createInkRoadEngine(container: HTMLElement, options: EngineOptio
     compositeMat.uniforms.uDpr.value = dpr
     compositeMat.uniforms.uBorder.value = (width < 700 ? 14 : 30) * dpr
     camera.aspect = width / Math.max(height, 1)
-    camera.fov = width < 700 ? 70 : 58
+    state.baseFov = width < 700 ? 70 : 58
+    camera.fov = state.baseFov
     camera.updateProjectionMatrix()
     if (!state.active) {
       update(0.016)
